@@ -51,35 +51,35 @@ Returns true if item existed & was successfully deleted, false otherwise.
 Deletes multiple items at once (reduced network traffic compared to
 individual operations)
 
-### add($key, $value, $expire = 0)
+### add($key, $value, $expire = 0): bool
 
 Adds an item under new key.
 Operation fails (returns false) if key already exists on server.
 
-### replace($key, $value, $expire = 0)
+### replace($key, $value, $expire = 0): bool
 
 Replaces an item.
 Operation fails (returns false) if key does not yet exist on server.
 
-### cas($token, $key, $value, $expire = 0)
+### cas($token, $key, $value, $expire = 0): bool
 
 Replaces an item in 1 atomic operation, to ensure it didn't change since
 it was originally read (= when the CAS token was issued)
 Operation fails (returns false) if CAS token didn't match.
 
-### increment($key, $offset = 1, $initial = 0, $expire = 0)
+### increment($key, $offset = 1, $initial = 0, $expire = 0): int|bool
 
 Increments a counter value.
 
-### decrement($key, $offset = 1, $initial = 0, $expire = 0)
+### decrement($key, $offset = 1, $initial = 0, $expire = 0): int|bool
 
 Decrements a counter value.
 
-### touch($key, $expire)
+### touch($key, $expire): bool
 
 Updates an item's expiration time without altering the stored value.
 
-### flush()
+### flush(): bool
 
 Clears the entire cache.
 
