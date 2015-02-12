@@ -160,7 +160,6 @@ abstract class KeyValueStoreTestCase extends PHPUnit_Framework_TestCase
 
         $this->assertEquals(true, $return);
         $this->assertEquals('value-2', $this->cache->get('key'));
-
     }
 
     public function testReplaceFail()
