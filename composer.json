@@ -20,6 +20,9 @@
     "phpunit/phpunit": "4.3.*",
     "satooshi/php-coveralls": "dev-master"
   },
+  "provide": {
+    "scrapbook/key-value-store-implementation": "~0.1"
+  },
   "autoload": {
     "psr-4": {
       "Scrapbook\\Cache\\": "src/",
