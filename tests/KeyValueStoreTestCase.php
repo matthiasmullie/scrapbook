@@ -43,6 +43,28 @@ abstract class KeyValueStoreTestCase extends PHPUnit_Framework_TestCase
         $this->assertEquals(false, $this->cache->get('key'));
     }
 
+    public function testGetNonReferential() {
+        // this is mostly for MemoryStore - other stores probably aren't at risk
+
+        $object = new \StdClass;
+        $object->value = 'test';
+        $this->cache->set('key', $object);
+
+        // clone the object because we'll be messing with it ;)
+        $comparison = clone $object;
+
+        // changing the object after it's been cached shouldn't affect cache
+        $object->value = 'updated-value';
+        $fromCache = $this->cache->get('key');
+        $this->assertEquals($comparison, $fromCache);
+
+        // changing the value we got from cache shouldn't change what's in cache
+        $fromCache->value = 'updated-value-2';
+        $fromCache2 = $this->cache->get('key');
+        $this->assertNotEquals($comparison, $fromCache);
+        $this->assertEquals($comparison, $fromCache2);
+    }
+
     public function testGetMulti()
     {
         $items = array(
