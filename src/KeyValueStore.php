@@ -66,7 +66,7 @@ interface KeyValueStore
      * Deletes multiple items at once (reduced network traffic compared to
      * individual operations)
      *
-     * @param  array  $keys
+     * @param  array $keys
      * @return bool
      */
     public function deleteMulti(array $keys);

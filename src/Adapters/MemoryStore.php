@@ -226,13 +226,14 @@ class MemoryStore implements KeyValueStore
      * (decrement just increments a negative value), but need their validation
      * split up (increment won't accept negative values)
      *
-     * @param string $key
-     * @param int $offset
-     * @param int $initial
-     * @param int $expire
+     * @param  string   $key
+     * @param  int      $offset
+     * @param  int      $initial
+     * @param  int      $expire
      * @return int|bool
      */
-    protected function doIncrement($key, $offset, $initial, $expire) {
+    protected function doIncrement($key, $offset, $initial, $expire)
+    {
         if (!$this->exists($key)) {
             $this->set($key, $initial, $expire);
 

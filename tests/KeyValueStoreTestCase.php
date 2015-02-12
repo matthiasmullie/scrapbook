@@ -43,10 +43,11 @@ abstract class KeyValueStoreTestCase extends PHPUnit_Framework_TestCase
         $this->assertEquals(false, $this->cache->get('key'));
     }
 
-    public function testGetNonReferential() {
+    public function testGetNonReferential()
+    {
         // this is mostly for MemoryStore - other stores probably aren't at risk
 
-        $object = new \StdClass;
+        $object = new \StdClass();
         $object->value = 'test';
         $this->cache->set('key', $object);
 
@@ -222,7 +223,8 @@ abstract class KeyValueStoreTestCase extends PHPUnit_Framework_TestCase
         $this->assertEquals(2, $this->cache->get('key'));
     }
 
-    public function testIncrementFail() {
+    public function testIncrementFail()
+    {
         $return = $this->cache->increment('key', -1, 0);
         $this->assertEquals(false, $return);
         $this->assertEquals(false, $this->cache->get('key'));
@@ -253,7 +255,8 @@ abstract class KeyValueStoreTestCase extends PHPUnit_Framework_TestCase
         $this->assertEquals(0, $this->cache->get('key'));
     }
 
-    public function testDecrementFail() {
+    public function testDecrementFail()
+    {
         $return = $this->cache->decrement('key', -1, 0);
         $this->assertEquals(false, $return);
         $this->assertEquals(false, $this->cache->get('key'));
