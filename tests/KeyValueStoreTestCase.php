@@ -200,6 +200,16 @@ abstract class KeyValueStoreTestCase extends PHPUnit_Framework_TestCase
         $this->assertEquals(2, $this->cache->get('key'));
     }
 
+    public function testIncrementFail() {
+        $return = $this->cache->increment('key', -1, 0);
+        $this->assertEquals(false, $return);
+        $this->assertEquals(false, $this->cache->get('key'));
+
+        $return = $this->cache->increment('key', 5, -2);
+        $this->assertEquals(false, $return);
+        $this->assertEquals(false, $this->cache->get('key'));
+    }
+
     public function testDecrement()
     {
         // set initial value
@@ -219,6 +229,16 @@ abstract class KeyValueStoreTestCase extends PHPUnit_Framework_TestCase
 
         $this->assertEquals(0, $return);
         $this->assertEquals(0, $this->cache->get('key'));
+    }
+
+    public function testDecrementFail() {
+        $return = $this->cache->decrement('key', -1, 0);
+        $this->assertEquals(false, $return);
+        $this->assertEquals(false, $this->cache->get('key'));
+
+        $return = $this->cache->decrement('key', 5, -2);
+        $this->assertEquals(false, $return);
+        $this->assertEquals(false, $this->cache->get('key'));
     }
 
     public function testTouch()

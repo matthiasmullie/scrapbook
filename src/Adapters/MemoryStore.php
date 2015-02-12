@@ -157,27 +157,11 @@ class MemoryStore implements KeyValueStore
      */
     public function increment($key, $offset = 1, $initial = 0, $expire = 0)
     {
-        if (!$this->exists($key)) {
-            if (!is_numeric($initial)) {
-                return false;
-            }
-
-            $this->set($key, $initial, $expire);
-
-            return $initial;
-        }
-
-        $value = $this->get($key);
-        if (!is_numeric($value) || $value < 0) {
+        if ($offset <= 0 || $initial < 0) {
             return false;
         }
 
-        $value += $offset;
-        // value can never be lower than 0
-        $value = max(0, $value);
-        $this->set($key, $value, $expire);
-
-        return $value;
+        return $this->doIncrement($key, $offset, $initial, $expire);
     }
 
     /**
@@ -185,7 +169,11 @@ class MemoryStore implements KeyValueStore
      */
     public function decrement($key, $offset = 1, $initial = 0, $expire = 0)
     {
-        return $this->increment($key, -$offset, $initial, $expire);
+        if ($offset <= 0 || $initial < 0) {
+            return false;
+        }
+
+        return $this->doIncrement($key, -$offset, $initial, $expire);
     }
 
     /**
@@ -231,6 +219,37 @@ class MemoryStore implements KeyValueStore
         }
 
         return true;
+    }
+
+    /**
+     * Shared between increment/decrement: both have mostly the same logic
+     * (decrement just increments a negative value), but need their validation
+     * split up (increment won't accept negative values)
+     *
+     * @param string $key
+     * @param int $offset
+     * @param int $initial
+     * @param int $expire
+     * @return int|bool
+     */
+    protected function doIncrement($key, $offset, $initial, $expire) {
+        if (!$this->exists($key)) {
+            $this->set($key, $initial, $expire);
+
+            return $initial;
+        }
+
+        $value = $this->get($key);
+        if (!is_numeric($value) || $value < 0) {
+            return false;
+        }
+
+        $value += $offset;
+        // value can never be lower than 0
+        $value = max(0, $value);
+        $this->set($key, $value, $expire);
+
+        return $value;
     }
 
     /**
