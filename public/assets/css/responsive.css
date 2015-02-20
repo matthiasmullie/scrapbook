@@ -1,0 +1,330 @@
+﻿/* Table of Contents
+==================================================
+    #Base (1180 Grid)
+    #Desktop (960 Grid)
+    #Tablet (Portrait)
+    #Mobile (Portrait)
+    #Mobile (Landscape)
+    #Clearing */
+    
+    
+/* #Base (1180 Grid)
+================================================== */
+
+    .container                                  { position: relative; width: 1200px; margin: 0 auto; padding: 0; }
+    .container .column,
+    .container .columns                         { float: left; display: inline; margin-left: 10px; margin-right: 10px; }
+    .row                                        { margin-bottom: 20px; }
+
+    /* Nested Column Classes */
+    .column.alpha, .columns.alpha               { margin-left: 0; }
+    .column.omega, .columns.omega               { margin-right: 0; }
+
+    /* Base Grid */
+    .container .one.column,
+    .container .one.columns                     { width: 55px;  }
+    .container .two.columns                     { width: 130px; }
+    .container .three.columns                   { width: 205px; }
+    .container .four.columns                    { width: 280px; }
+    .container .five.columns                    { width: 355px; }
+    .container .six.columns                     { width: 430px; }
+    .container .seven.columns                   { width: 505px; }
+    .container .eight.columns                   { width: 580px; }
+    .container .nine.columns                    { width: 655px; }
+    .container .ten.columns                     { width: 730px; }
+    .container .eleven.columns                  { width: 805px; }
+    .container .twelve.columns                  { width: 880px; }
+    .container .thirteen.columns                { width: 955px; }
+    .container .fourteen.columns                { width: 1030px; }
+    .container .fifteen.columns                 { width: 1105px; }
+    .container .sixteen.columns                 { width: 1180px; }
+
+    .container .one-third.column                { width: 380px; }
+    .container .two-thirds.column               { width: 780px; }
+    .container .twelve.alt.columns              { width: 860px; margin-right: 30px; }
+    .container .twelve.alt2.columns             { width: 860px; margin-left: 30px; }
+    .container .eleven.alt.columns              { width: 775px; margin-right: 30px; }
+	.container .four.alt.columns                { width: 265px; margin-right: 15px; }
+    .container .five.alt.columns                { width: 320px; margin-right: 15px; }
+	.container .one-third.alt.column               { width: 400px; margin:0px; }
+	.container .six.alt.columns                     { width: 480px; }
+	.container .two.alt.columns                     { width: 115px;  margin:0px;}
+    
+    body.boxed,
+    body.boxed #header                          { width: 1280px; }
+	body.boxed .tp-banner  { width: 1280px; margin:0 auto; }
+	
+
+
+    @media only screen and (min-width: 1200px) and (max-width: 1300px) {
+        body.boxed,
+        body.boxed #header                          { width: 100%; }
+		body.boxed .tp-banner                       { width: 100%; }
+    }
+
+
+/* #Dekstop (960 Grid)
+================================================== */
+
+    /* Note: Design for a width of 960px */
+
+    @media only screen and (min-width: 960px) and (max-width: 1199px) {
+        .container                                  { position: relative; width: 960px; margin: 0 auto; padding: 0; }
+        .container .column,
+        .container .columns                         { float: left; display: inline; margin-left: 10px; margin-right: 10px; }
+        .row                                        { margin-bottom: 20px; }
+
+        /* Nested Column Classes */
+        .column.alpha, .columns.alpha               { margin-left: 0; }
+        .column.omega, .columns.omega               { margin-right: 0; }
+
+        /* Base Grid */
+        .container .one.column,
+        .container .one.columns                     { width: 40px;  }
+        .container .two.columns                     { width: 100px; }
+        .container .three.columns                   { width: 160px; }
+        .container .four.columns                    { width: 220px; }
+        .container .five.columns                    { width: 280px; }
+        .container .six.columns                     { width: 340px; }
+        .container .seven.columns                   { width: 400px; }
+        .container .eight.columns                   { width: 460px; }
+        .container .nine.columns                    { width: 520px; }
+        .container .ten.columns                     { width: 580px; }
+        .container .eleven.columns                  { width: 640px; }
+        .container .twelve.columns                  { width: 700px; }
+        .container .thirteen.columns                { width: 760px; }
+        .container .fourteen.columns                { width: 820px; }
+        .container .fifteen.columns                 { width: 880px; }
+        .container .sixteen.columns                 { width: 940px; }
+
+        .container .one-third.column                { width: 300px; }
+        .container .two-thirds.column               { width: 620px; }
+        .container .twelve.alt.columns              { width: 680px; margin-right: 30px; }
+        .container .twelve.alt2.columns             { width: 680px; margin-left: 30px; }
+        .container .eleven.alt.columns              { width: 610px; margin-right: 30px; }
+        .container .five.alt.columns                { width: 245px; margin-right: 15px; }
+        
+        body.boxed,
+        body.boxed #header                          { width: 1020px; }
+		body.boxed .tp-banner                       { width: 1020px; margin:0 auto; }
+
+    }
+    
+    @media only screen and (min-width: 769px) and (max-width: 1040px) {
+        body.boxed,
+        body.boxed #header                          { width: 100%; }
+		body.boxed .tp-banner                       { width: 100%; }
+
+    }
+
+
+/* #Tablet (Portrait)
+================================================== */
+
+    /* Note: Design for a width of 768px */
+
+    @media only screen and (min-width: 768px) and (max-width: 959px) {
+        .container                                  { width: 768px; }
+        .container .column,
+        .container .columns                         { margin-left: 10px; margin-right: 10px;  }
+        .column.alpha, .columns.alpha               { margin-left: 0; margin-right: 10px; }
+        .column.omega, .columns.omega               { margin-right: 0; margin-left: 10px; }
+        .alpha.omega                                { margin-left: 0; margin-right: 0; }
+
+        .container .one.column,
+        .container .one.columns                     { width: 28px; }
+        .container .two.columns                     { width: 76px; }
+        .container .three.columns                   { width: 124px; }
+        .container .four.columns                    { width: 172px; }
+        .container .five.columns                    { width: 220px; }
+        .container .six.columns                     { width: 268px; }
+        .container .seven.columns                   { width: 316px; }
+        .container .eight.columns                   { width: 364px; }
+        .container .nine.columns                    { width: 412px; }
+        .container .ten.columns                     { width: 460px; }
+        .container .eleven.columns                  { width: 508px; }
+        .container .twelve.columns                  { width: 556px; }
+        .container .thirteen.columns                { width: 604px; }
+        .container .fourteen.columns                { width: 652px; }
+        .container .fifteen.columns                 { width: 700px; }
+        .container .sixteen.columns                 { width: 748px; }
+
+        .container .one-third.column                { width: 236px; }
+        .container .two-thirds.column               { width: 492px; }
+        .container .twelve.alt.columns              { width: 546px; margin-right: 20px; }
+        .container .twelve.alt2.columns             { width: 546px; margin-left: 20px; }
+        .container .eleven.alt.columns              { width: 488px; margin-right: 20px; }
+        .container .five.alt.columns                { width: 185px; margin-right: 15px; }
+
+        body.boxed,
+        body.boxed #header                          { width: 100% }
+		body.boxed .tp-banner                       { width: 100%; }
+
+    }
+
+
+/* #Mobile (Landscape)
+================================================== */
+
+    /* Note: Design for a width of 480px */
+
+    @media only screen and (min-width: 480px) and (max-width: 767px) {
+        .container { width: 420px; }
+        .container .columns,
+        .container .column { margin: 0; }
+
+        .container .one.column,
+        .container .one.columns,
+        .container .two.columns,
+        .container .three.columns,
+        .container .four.columns,
+        .container .five.columns,
+        .container .six.columns,
+        .container .seven.columns,
+        .container .eight.columns,
+        .container .nine.columns,
+        .container .ten.columns,
+        .container .eleven.columns,
+        .container .twelve.columns,
+        .container .thirteen.columns,
+        .container .fourteen.columns,
+        .container .fifteen.columns,
+        .container .sixteen.columns,
+        .container .one-third.column,
+        .container .two-thirds.column,
+        .container .twelve.alt.columns,
+        .container .twelve.alt2.columns,
+        .container .five.alt.columns,
+        .container .eleven.alt.columns { width: 420px; }
+        
+        .container .twelve.alt2.columns { margin-left: 0; }
+        .container .fourteen.carousel.columns  { width: 340px; }
+        .container .one.carousel.column  { width: 40px; }
+        
+        body.boxed,
+        body.boxed #header                          { width: 100% }
+		body.boxed .tp-banner                       { width: 100%; }
+		#header .topbar { display:none!important;}
+		#header-search-button{ display:none!important;}
+		.image-center {margin: 5px auto 0 0!important;}
+		.happy-clients-photo img {margin: 5px auto 10px 20%!important;}
+		.happy-clients-cite {margin: 5px 0px 10px 5px!important; width: 80%!important; float:left!important;}
+		.chart { float: left!important; width: 100%!important; margin-bottom:100px!important; left:30px!important; position:relative;}
+		.bg-facts{ background:none!important;}
+		#recent-blog{ margin-top:50px!important;}
+		.stats { margin-left:-40px!important; border-right:0px solid rgba(0,0,0,0.1)!important;}
+		.stats.brddark { margin-left:-40px!important; border-right:0px solid rgba(0,0,0,0.1)!important;}
+		.button-group .button {	font-size: 14px!important; padding: 10px 0!important;	width: 80%!important; border-radius:2px!important;}
+	     input.newsletter{	width: 58%!important;}#tline-content{ background:url(../images/bg-timeline.png) repeat-y center center; width:95%!important; }
+		 .tline-box  { width:95%!important;  } 
+		 img {width: 100%;}
+		 .parallex-slider-title-black { font-size:1.5em!important; letter-spacing:0.1em!important; }
+		 .parallex-slider-title-slider { font-size:1em!important; letter-spacing:0.1em!important; position:absolute; top:30%!important; left:47%!important;	 }
+
+		
+    }
+
+/*  #Mobile (Portrait)
+================================================== */
+
+    /* Note: Design for a width of 320px */
+
+    @media only screen and (max-width: 767px) {
+        .container { width: 300px; }
+        .container .columns,
+        .container .column { margin: 0; }
+
+        .container .one.column,
+        .container .one.columns,
+        .container .two.columns,
+        .container .three.columns,
+        .container .four.columns,
+        .container .five.columns,
+        .container .six.columns,
+        .container .seven.columns,
+        .container .eight.columns,
+        .container .nine.columns,
+        .container .ten.columns,
+        .container .eleven.columns,
+        .container .twelve.columns,
+        .container .thirteen.columns,
+        .container .fourteen.columns,
+        .container .fifteen.columns,
+        .container .sixteen.columns,
+        .container .one-third.column,
+        .container .two-thirds.column,
+        .container .twelve.alt.columns,
+        .container .twelve.alt2.columns,
+        .container .five.alt.columns,
+        .container .eleven.alt.columns { width: 300px; }
+        
+        .container .twelve.alt2.columns { margin-left: 0; }
+        .container .fourteen.carousel.columns  { width: 240px; }
+        .container .one.carousel.column  { width: 30px; }
+        
+        body.boxed,
+        body.boxed #header                          { width: 100% }
+		body.boxed .tp-banner                          { width: 100%!important; }
+		#header #logo {	margin-top: 18px!important;	}
+		.team-alt .img-wrp, .team-alt .content { width:100%!important;}
+		#header .topbar { display:none!important;}
+		#header-search-button{ display:none!important;}
+		.image-center {margin: 5px auto 0 0!important;}
+		.happy-clients-photo img {margin: 5px auto 10px 20%!important;}
+		.happy-clients-cite {margin: 5px 0px 10px 5px!important; width: 80%!important; float:left!important;}
+		.chart { float: left!important; width: 100%!important; margin-bottom:0px!important; left:30px!important; position:relative; top:0px!important; padding:0px 20px!important;}
+		.bg-facts{ background:none!important;}
+		#recent-blog{ margin-top:50px!important;}
+		.stats { margin-left:-40px!important; border-right:0px solid rgba(0,0,0,0.1)!important;}
+		.stats.brddark { margin-left:-40px!important; border-right:0px solid rgba(0,0,0,0.1)!important;}
+		.button-group .button {	font-size: 14px!important; padding: 10px 0!important;	width: 90%!important; border-radius:2px!important;}
+	     input.newsletter{	width: 58%!important;} 
+		 #tline-content{ background:url(../images/bg-timeline.png) repeat-y center center; width:95%!important; }
+		 .tline-box  { width:95%!important;  }
+		 
+		 img {width: 100%;}
+		 .parallex-slider-title-black { font-size:1.5em!important; letter-spacing:0.1em!important; }
+		 .parallex-slider-title-slider { font-size:1em!important; letter-spacing:0.1em!important; position:absolute; top:30%!important; left:47%!important;	 }
+		 
+		 .showbiz-navigation-4{ margin-top:20px!important;}
+		 .sb-navigation-left-3, .sb-navigation-right-3 { margin-top: 45px!important;}
+
+
+    }
+
+
+
+/* #Clearing
+================================================== */
+
+    /* Self Clearing Goodness */
+    .container:after { content: "\0020"; display: block; height: 0; clear: both; visibility: hidden; }
+
+    /* Use clearfix class on parent to clear nested columns,
+    or wrap each row of columns in a <div class="row"> */
+    .clearfix:before,
+    .clearfix:after,
+    .row:before,
+    .row:after {
+      content: '\0020';
+      display: block;
+      overflow: hidden;
+      visibility: hidden;
+      width: 0;
+      height: 0; }
+    .row:after,
+    .clearfix:after {
+      clear: both; }
+    .row,
+    .clearfix {
+      zoom: 1; }
+
+    /* You can also use a <br class="clear" /> to clear columns */
+    .clear {
+      clear: both;
+      display: block;
+      overflow: hidden;
+      visibility: hidden;
+      width: 0;
+      height: 0;
+    }

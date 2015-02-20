@@ -1,0 +1,58 @@
+---
+layout: default
+title: Home
+weight: 0
+---
+
+
+<div class="container">
+	<div class="twelve columns">
+		<hr class="sep40">
+
+		<h2>What is Scrapbook?</h2>
+
+		<hr class="sep10">
+
+		<p>
+			Scrapbook is a collection of cache-related PHP projects.
+			The cornerstone is <a href="{{ site.baseurl }}projects/key-value-store.html">key-value-store</a>, which sets a standard interface for cache adapters to implement.
+			All adapters hide their inner workings behind a shared implementation.
+			Using it means you're not just building for <a href="{{ site.baseurl }}adapters/memcached.html">Memcached</a>. You code will work just fine on <a href="{{ site.baseurl }}adapters/redis.html">Redis</a>, without modifications! Or vice versa. Or on <a href="{{ site.baseurl }}adapters/mysql.html">SQL</a>. I'm sure you get the picture.
+		</p>
+		<p>
+			Having 1 shared interface to connect with all those backends means additional can be built tools on top of them & they'll work for all key-value stores.
+			Like making them them <a href="{{ site.baseurl }}adapters/psr-cache.html">PSR-6 compatible</a>. Or implementing a <a href="{{ site.baseurl }}adapters/buffered-cache.html">buffered</a> or <a href="{{ site.baseurl }}adapters/transactional-cache.html">transactional</a> cache.
+		</p>
+	</div>
+
+	<div class="four columns" id="features-adapters">
+		<hr class="sep40">
+
+		<div class="icon-left">
+			<i class="ss-layergroup"></i>
+		</div>
+
+		<div class="featured-desc-2">
+			<h3>Adapters</h3>
+			<hr class="sep5">
+
+			<ul class="list-1">
+				<li><a href="{{ site.baseurl }}adapters/memcached.html">Memcached</a></li>
+				<li><a href="{{ site.baseurl }}adapters/redis.html">Redis</a></li>
+				<li><a href="{{ site.baseurl }}adapters/mysql.html">MySQL</a></li>
+				<li><a href="{{ site.baseurl }}adapters/sqlite.html">SQLite</a></li>
+				<li><a href="{{ site.baseurl }}adapters/postgresql.html">PostgreSQL</a></li>
+				<li><a href="{{ site.baseurl }}adapters/memory.html">Memory</a></li>
+			</ul>
+		</div>
+	</div>
+
+	<hr class="sep30">
+</div>
+
+
+{% include build.html %}
+
+<hr class="sep30">
+
+{% include features.html %}

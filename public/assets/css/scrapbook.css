@@ -1,0 +1,251 @@
+/*
+ * Top & footer social widgets share same include, but top ones have an extra
+ * class that causes a hover effect, which should be ignored in footer.
+ */
+.social-icons-footer a:before {
+	display: none;
+}
+
+.social-icons-footer li i {
+	font-size: 16px;
+	padding-top: 0;
+	margin-top: 5px;
+}
+
+/*
+ * And I have some icons for myself in that footer.
+ */
+.matthias-social i {
+	font-size: 16px;
+	padding: 0 5px;
+}
+
+/*
+ * Make the logo bigger.
+ */
+#logo {
+	margin-top: 23px;
+}
+
+#logo a img {
+	height: 54px;
+}
+
+/*
+ * Show label text immediately after radios/checkboxes.
+ */
+#features label {
+	display: inline;
+}
+
+#features textarea#build_composer,
+#features textarea#build_source {
+	width: 100%;
+	box-sizing: border-box;
+}
+
+#features textarea#build_composer {
+	height: 77px;
+}
+#features textarea#build_source {
+	height: 225px;
+}
+
+/*
+ * Some fixes for my unintended use of .featured-desc-2
+ */
+.featured-desc-2 {
+	margin-top: 0;
+	margin-botton: 20px;
+}
+
+.featured-desc-2 li {
+	display: block;
+}
+
+.featured-desc-2 a {
+	position: inherit;
+	font-size: inherit;
+}
+
+/*
+ * Also unintended use of .featured-box in "projects" page.
+ */
+.featured-box {
+	margin-bottom: 40px;
+}
+
+/*
+ * Code snippets!
+ */
+code, kbd, pre, samp {
+	font-family: Menlo, Monaco, Consolas, "Courier New", monospace;
+}
+
+pre {
+	background: none repeat scroll 0 0 #fafcfe;
+	border-left: 3px solid #5f8cb4;
+	color: #666;
+	margin: 10px 0 20px;
+	padding: 10px 20px;
+	line-height: 24px;
+}
+
+/*
+ * Hovering over links gives no other color in default theme...
+ */
+a:hover {
+	color: #666;
+}
+
+/*
+ * .back has the same color links usually do. I'll change the back default text
+ * color to a lightblue-ish, and link color to white.
+ */
+.services-box-animated .back p {
+	color: #d4eeff;
+}
+
+.services-box-animated .back a {
+	color: #fff;
+}
+
+.services-box-animated .back a:hover {
+	color: #d4eeff;
+}
+
+/*
+ * ... and I'm going to have a reasonable amount of text in there, so better
+ * cancel out the align=center for better legibility.
+ */
+.services-box-animated .back {
+	text-align: left;
+}
+
+/*
+ * I also want white landing boxes, which on hover should then be gray-ish.
+ */
+.landing-boxes:hover {
+	background-color: #f2f4f6;
+}
+
+.bg-light-blue .landing-boxes:hover {
+	background-color: #fff;
+}
+
+/*
+ * Call me stupid, but I have no idea what that 40px padding is for. It affects
+ * more than it should, and <hr class="sepXY"> are used for spacing everywhere.
+ */
+.bg-light-blue {
+	margin: 0;
+}
+
+/*
+ * I don't really like how this line thingy takes up another 25px below title.
+ */
+.brd-headling {
+	margin-bottom: 5px;
+}
+
+/*
+ * Default margin below parallex-inner (the title band thingy) is 60 - just a
+ * bit too much, for my taste.
+ */
+.parallex-inner {
+	margin-bottom: 40px;
+}
+
+/*
+ * I don't really have content for a big doormat (.footer), so I'll only have
+ * the small footer (for now) and make that one black instead.
+ */
+#footer-bottom {
+	background-color: #232d37;
+	color: #bcc1c5
+}
+
+#footer-bottom a {
+	color: #fff;
+}
+
+#footer-bottom a:hover {
+	color: #d4eeff;
+}
+
+/*
+ * Sticky footer.
+ * The box-sizing is because of the padding being given to body for the sticky
+ * header.
+ */
+html, body, .jPanelMenu-panel {
+	height: 100%;
+	box-sizing: border-box;
+}
+
+#wrapper {
+	min-height: 100%;
+	margin: 0 auto -60px;
+}
+
+#footer-bottom, #push {
+	height: 60px;
+	box-sizing: border-box;
+}
+
+/*
+ * There's no icon for packagist - I'll use ss-downloadbox & stuff it in the
+ * social icons.
+ */
+.download i, .download:before {
+	margin: 13px 0 0 13px;
+}
+
+.download:before {
+	font-size: 16px;
+	line-height: 16px;
+	color: #a0a5aa;
+	-webkit-transition: all 0.15s ease-in-out;
+	-moz-transition: all 0.15s ease-in-out;
+	-o-transition: all 0.15s ease-in-out;
+	-ms-transition: all 0.15s ease-in-out;
+	transition: all 0.15s ease-in-out;
+	position: absolute;
+	z-index: 20;
+
+	top: 0;
+	opacity:1;
+}
+
+.download:hover:before {
+	top: 30px;
+	opacity: 0;
+}
+
+.download:hover {
+	background-color: #c67700;
+}
+
+/*
+ * I want (recent) FontAwesome icons, not the crap included with this template!
+ */
+.twitter:before, .wordpress:before, .facebook:before, .linkedin:before, .steam:before, .tumblr:before, .github:before, .delicious:before, .instagram:before, .xing:before, .amazon:before, .dropbox:before, .paypal:before, .lastfm:before, .gplus:before, .yahoo:before, .pinterest:before, .dribbble:before, .flickr:before, .reddit:before, .vimeo:before, .spotify:before, .rss:before, .youtube:before, .blogger:before, .appstore:before, .digg:before, .evernote:before, .fivehundredpx:before, .forrst:before, .stumbleupon:before, .dribbble:before, .download:before {
+	font-family: "FontAwesome";
+	font-size: 16px;
+}
+
+.social-icons li a i {
+	font-size: 16px;
+}
+
+.github:before {
+	content: "\f09b";
+}
+
+.download:before {
+	content: "\f019";
+}
+
+.rss:before {
+	content: "\f09e";
+}

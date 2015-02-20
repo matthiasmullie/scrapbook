@@ -1,0 +1,33 @@
+<nav id="navigation" class="menu">
+  <ul id="responsive">
+    <li>
+      <a href="{{ site.baseurl }}"{% if page.url == "/index.html" %} id="current"{% endif %}>Home</a>
+    </li>
+
+    {% comment %}
+    The code below dynamically generates a sidebar nav of pages with
+    `layout: page` in the front-matter. See readme for usage.
+    {% endcomment %}
+
+    {% assign pages_list = site.pages | sort:"weight" %}
+    {% for node in pages_list %}
+      {% if node.title != null %}
+        {% if node.layout != "default" and node.layout != "post" and node.layout != "adapter" and node.layout != "project" %}
+          <li>
+            <a href="{{ node.url }}"{% if page.url == node.url %} id="current"{% endif %}>{{ node.title }}</a>
+
+            {{! <ul><li><a href="..."></a></li></ul> can be nested deeper for submenus }}
+          </li>
+        {% endif %}
+      {% endif %}
+    {% endfor %}
+
+    <li>
+      <a href="https://github.com/scrapbook/">Contribute</a>
+    </li>
+
+    <li>
+      <a href="http://docs.scrapbook.cash">Documentation</a>
+    </li>
+  </ul>
+</nav>

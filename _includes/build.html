@@ -1,0 +1,88 @@
+<div class="bg-light-blue" id="features">
+	<div class="container">
+		<hr class="sep40">
+
+		<div class="five columns">
+			<h2>Build your cache</h2>
+			<hr class="sep10">
+
+			<p>Installation is easy! It's so straightforward that it can be scripted. Just select your desired configuration and see what you need to get started:</p>
+
+			<textarea id="build_composer" readonly></textarea>
+		</div>
+
+		<div class="seven columns">
+			<textarea id="build_source" readonly></textarea>
+		</div>
+
+		<div class="two columns">
+			<h3 class="headline">Adapter</h3>
+			<span class="brd-headling"></span>
+			<div class="clearfix"></div>
+
+			<form>
+				<input type="radio" name="adapter" value="memcached" id="adapter_memcached" checked />
+				<label for="adapter_memcached">Memcached</label>
+
+				<br>
+
+				<input type="radio" name="adapter" value="redis" id="adapter_redis" />
+				<label for="adapter_redis">Redis</label>
+
+				<br>
+
+				<input type="radio" name="adapter" value="mysql" id="adapter_mysql" />
+				<label for="adapter_mysql">MySQL</label>
+
+				<br>
+
+				<input type="radio" name="adapter" value="sqlite" id="adapter_sqlite" />
+				<label for="adapter_sqlite">SQLite</label>
+
+				<br>
+
+				<input type="radio" name="adapter" value="pgsql" id="adapter_pgsql" />
+				<label for="adapter_pgsql">PostgreSQL</label>
+
+				<br>
+
+				<input type="radio" name="adapter" value="memory" id="adapter_memory" />
+				<label for="adapter_memory">Memory</label>
+			</form>
+		</div>
+
+		<div class="two columns">
+			<h3 class="headline">Type</h3>
+			<span class="brd-headling"></span>
+			<div class="clearfix"></div>
+
+			<form>
+				<input type="radio" name="type" value="keyvaluestore" id="type_keyvaluestore" checked />
+				<label for="type_keyvaluestore">Key-value store</label>
+
+				<br>
+
+				<input type="radio" name="type" value="psr6" id="type_psr6" />
+				<label for="type_psr6">PSR-6</label>
+			</form>
+
+			<hr class="sep15">
+
+			<h3 class="headline">Extras</h3>
+			<span class="brd-headling"></span>
+			<div class="clearfix"></div>
+
+			<form>
+				<input type="checkbox" name="extra" value="buffered" id="extra_buffered" />
+				<label for="extra_buffered">Buffered</label>
+
+				<br>
+
+				<input type="checkbox" name="extra" value="transactional" id="extra_transactional" />
+				<label for="extra_transactional">Transactional</label>
+			</form>
+		</div>
+
+		<hr class="sep60">
+	</div>
+</div>

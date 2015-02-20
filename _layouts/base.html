@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<!--[if IE 8 ]><html class="ie ie8" lang="en"> <![endif]-->
+<!--[if (gte IE 9)|!(IE)]><!-->
+<html lang="en">
+<!--<![endif]-->
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+	<link rel="stylesheet" type="text/css" href="{{ site.baseurl }}public/assets/css/style.css">
+	<link rel="stylesheet" type="text/css" href="{{ site.baseurl }}public/assets/css/colors/grayblue.css" id="colors">
+	<link rel="stylesheet" type="text/css" href="{{ site.baseurl }}public/assets/css/scrapbook.css">
+
+	<!--[if lt IE 9]>
+	<script src="{{ site.baseurl }}public/assets/js/html5shiv.min.js"></script>
+	<![endif]-->
+
+	{% include head_meta.html %}
+</head>
+<body>
+{% include ga.html %}
+
+<div id="wrapper">
+	<header id="header">
+		<div class="topbar">
+			<div class="container">
+				<div class="sixteen columns">
+					<ul class="social-icons right">
+						{% include social.html %}
+					</ul>
+				</div>
+			</div>
+		</div>
+
+		<div class="container">
+			<div class="three columns">
+				<div id="mobile-navigation">
+					<a href="#menu" class="menu-trigger"><i class="fa fa-reorder"></i></a>
+				</div>
+				<div id="logo">
+					<h1><a href="{{ site.baseurl }}"><img src="{{ site.baseurl }}public/logo_side.png" alt="" /></a></h1>
+				</div>
+			</div>
+			<div class="thirteen columns">
+				{% include menu.html %}
+			</div>
+		</div>
+	</header>
+
+	{{ content }}
+
+	<div id="push"></div>
+</div>
+
+<div id="footer-bottom">
+	<div class="container">
+		<div class="eight columns">
+			<p class="matthias-social">
+				By <a href="http://www.mullie.eu">Matthias Mullie</a>:
+				<a href="https://twitter.com/matthiasmullie/" class="tooltip top" title="Matthias on Twitter"><i class="fa fa-twitter"></i></a>
+				<a href="https://www.linkedin.com/in/matthiasmullie" class="tooltip top" title="Matthias on LinkedIn"><i class="fa fa-linkedin"></i></a>
+				<a href="https://github.com/matthiasmullie" class="tooltip top" title="Matthias on GitHub"><i class="fa fa-github"></i></a>
+				<a href="http://stackoverflow.com/users/802993/matthiasmullie" class="tooltip top" title="Matthias on StackOverflow"><i class="fa fa-stack-overflow"></i></a>
+				<a href="http://www.mullie.eu/contact.html" class="tooltip top" title="Contact Matthias"><i class="fa fa-envelope"></i></a>
+			</p>
+		</div>
+		<div class="eight columns">
+			<ul class="social-icons-footer">
+				{% include social.html %}
+			</ul>
+		</div>
+	</div>
+</div>
+
+<script src="{{ site.baseurl }}public/assets/js/jquery.min.js"></script>
+<script src="{{ site.baseurl }}public/assets/js/jquery.tooltips.min.js"></script>
+<script src="{{ site.baseurl }}public/assets/js/jquery.jpanelmenu.js"></script>
+<script src="{{ site.baseurl }}public/assets/js/ss-gizmo.js"></script>
+<script src="{{ site.baseurl }}public/assets/js/custom.js"></script>
+</body>
+</html>

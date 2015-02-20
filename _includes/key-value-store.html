@@ -1,0 +1,89 @@
+<h3 class="headline">get($key, &$token = null): mixed|bool</h3>
+<span class="brd-headling"></span>
+<div class="clearfix"></div>
+
+<p>Retrieves an item from the cache.</p>
+
+<h3 class="headline">getMulti(array $keys, array &$tokens = null): mixed[]</h3>
+<span class="brd-headling"></span>
+<div class="clearfix"></div>
+
+<p>Retrieves multiple items at once (reduced network traffic compared to
+individual operations)</p>
+
+<p>Return value will be an associative array. Keys missing in cache will be
+omitted from the array.</p>
+
+<h3 class="headline">set($key, $value, $expire = 0): bool</h3>
+<span class="brd-headling"></span>
+<div class="clearfix"></div>
+
+<p>Stores an item, regardless of whether or not it already exists.</p>
+
+<h3 class="headline">setMulti(array $items, $expire = 0): bool</h3>
+<span class="brd-headling"></span>
+<div class="clearfix"></div>
+
+<p>Store multiple items at once (reduced network traffic compared to
+individual operations)</p>
+
+<h3 class="headline">delete($key): bool</h3>
+<span class="brd-headling"></span>
+<div class="clearfix"></div>
+
+<p>Deletes an item from the cache.</p>
+<p>Returns true if item existed & was successfully deleted, false otherwise.</p>
+
+<h3 class="headline">deleteMulti(array $keys): bool</h3>
+<span class="brd-headling"></span>
+<div class="clearfix"></div>
+
+<p>Deletes multiple items at once (reduced network traffic compared to
+individual operations)</p>
+
+<h3 class="headline">add($key, $value, $expire = 0): bool</h3>
+<span class="brd-headling"></span>
+<div class="clearfix"></div>
+
+<p>Adds an item under new key.</p>
+<p>Operation fails (returns false) if key already exists on server.</p>
+
+<h3 class="headline">replace($key, $value, $expire = 0): bool</h3>
+<span class="brd-headling"></span>
+<div class="clearfix"></div>
+
+<p>Replaces an item.</p>
+<p>Operation fails (returns false) if key does not yet exist on server.</p>
+
+<h3 class="headline">cas($token, $key, $value, $expire = 0): bool</h3>
+<span class="brd-headling"></span>
+<div class="clearfix"></div>
+
+<p>Replaces an item in 1 atomic operation, to ensure it didn't change since
+it was originally read (= when the CAS token was issued)</p>
+
+<p>Operation fails (returns false) if CAS token didn't match.</p>
+
+<h3 class="headline">increment($key, $offset = 1, $initial = 0, $expire = 0): int|bool</h3>
+<span class="brd-headling"></span>
+<div class="clearfix"></div>
+
+<p>Increments a counter value.</p>
+
+<h3 class="headline">decrement($key, $offset = 1, $initial = 0, $expire = 0): int|bool</h3>
+<span class="brd-headling"></span>
+<div class="clearfix"></div>
+
+<p>Decrements a counter value.</p>
+
+<h3 class="headline">touch($key, $expire): bool</h3>
+<span class="brd-headling"></span>
+<div class="clearfix"></div>
+
+<p>Updates an item's expiration time without altering the stored value.</p>
+
+<h3 class="headline">flush(): bool</h3>
+<span class="brd-headling"></span>
+<div class="clearfix"></div>
+
+<p>Clears the entire cache.</p>

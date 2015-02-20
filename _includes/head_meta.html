@@ -1,0 +1,51 @@
+<title>
+{% if page.title == "Home" %}
+  {{ site.title }} &middot; {{ site.tagline }}
+{% else %}
+  {{ page.title }} &middot; {{ site.title }}
+{% endif %}
+</title>
+
+{{! Icons }}
+<link rel="apple-touch-icon-precomposed" sizes="144x144" href="{{ site.baseurl }}public/apple-touch-icon-144-precomposed.png">
+<link rel="shortcut icon" href="{{ site.baseurl }}public/favicon.ico">
+
+{{! RSS }}
+<link rel="alternate" type="application/atom+xml" title="Atom" href="{{ site.baseurl }}atom.xml">
+<link rel="alternate" type="application/rss+xml" title="RSS" href="{{ site.baseurl }}feed.xml">
+
+{{! SEO & social }}
+<meta name="author" content="{{ site.author.gplus }}">
+<link rel="author" href="{{ site.author.gplus }}" />
+
+<meta name="twitter:card" content="summary" />
+<meta name="twitter:site" content="{{ site.twitter }}" />
+<meta name="twitter:creator" content="{{ site.author.twitter }}" />
+
+{% if page.title == "Home" %}
+<link rel="canonical" href="{{ site.url }}" />
+<meta name="description" content="{{ site.tagline }}" />
+<meta property="og:title" content="{{ site.title }}" />
+<meta property="og:description" content="{{ site.tagline }}" />
+{% else %}
+<link rel="canonical" href="{{ site.url }}{{ page.url }}/" />
+<meta name="description" content="{{ page.description | strip_html }}" />
+<meta property="og:title" content="{{ page.title }}" />
+<meta property="og:description" content="{{ page.description | strip_html }}" />
+<meta name="twitter:description" content="{{ page.description | strip_html }}" />
+{% endif %}
+
+<meta property="og:url" content="{{ site.url }}{{ page.url }}/" />
+<meta property="og:site_name" content="{{ site.title }}" />
+
+{% if page.date %}
+<meta property="og:type" content="article" />
+<meta property="og:image" content="{{ site.url }}/public/posts/{{ page.image }}" />
+<meta property="article:published_time" content="{{ page.date }}" />
+<meta property="article:modified_time" content="{{ page.date }}" />
+<meta property="article:author" content="{{ site.author.gplus }}" />
+<meta property="article:tag" content="{{ page.tags | array_to_sentence_string }}" />
+{% else %}
+<meta property="og:type" content="blog" />
+<meta property="og:image" content="{{ site.url }}/{{ site.image }}" />
+{% endif %}

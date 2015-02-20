@@ -1,0 +1,35 @@
+# Dependencies
+markdown:         redcarpet
+highlighter:      pygments
+
+# Permalinks
+permalink:        pretty
+
+# Setup
+title:            Scrapbook
+tagline:          'Cache for PHP'
+description:      'Scrapbook, Cache for PHP'
+url:              http://scrapbook.cache
+baseurl:          /
+image:            public/logo.png
+
+author:
+  name:           'Matthias Mullie'
+  gplus:          https://plus.google.com/u/0/114103174273569238978
+  twitter:        matthiasmullie
+
+twitter:          scrapbook_cache
+
+paginate:         5
+
+# Custom vars
+version:          1.0.0
+
+github:
+  repo:           https://github.com/scrapbook/scrapbook.github.io
+
+permalink:        /:title
+
+gems:
+  # Generate sitemap
+  - jekyll-sitemap

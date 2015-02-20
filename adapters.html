@@ -1,0 +1,25 @@
+---
+layout: page
+title: Adapters
+weight: 1
+---
+
+<div class="container">
+	{% assign pages_list = site.pages | sort:"weight" %}
+	{% for node in pages_list %}
+		{% if node.title != null %}
+			{% if node.layout == "adapter" %}
+				<div class="one-third alt column {% cycle 'bg-light-blue', '' %}">
+					<div class="landing-boxes">
+						<a href="{{ node.url }}"><img src="{{ site.baseurl }}public/adapters/{{ node.image }}" alt="Memcached"></a>
+						<h3>{{ node.title }}</h3>
+						<p>
+							{{ node.description }}<br/>
+							<a href="{{ node.url }}" class="button color"><i class="fa fa-book"></i> Docs &rsaquo;</a>
+						</p>
+					</div>
+				</div>
+			{% endif %}
+		{% endif %}
+	{% endfor %}
+</div>
