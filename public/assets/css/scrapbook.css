@@ -142,6 +142,15 @@ a:hover {
 }
 
 /*
+ * I'm applying bg-light-blue directly to some column, to alternate their
+ * color (for adapters). However, it has a 1px border-top & -bottom, so they
+ * don't align perfectly.
+ */
+.column.bg-light-blue {
+	border: 0;
+}
+
+/*
  * I don't really like how this line thingy takes up another 25px below title.
  */
 .brd-headling {
