@@ -171,6 +171,12 @@
 			composer: "composer require scrapbook/redis"
 		},
 
+		apc: {
+			src: "// create Scrapbook cache object\n" +
+				"$cache = new \\Scrapbook\\Adapters\\Apc();\n",
+			composer: "composer require scrapbook/apc"
+		},
+
 		mysql: {
 			src: "// create \\PDO object pointing to your MySQL server\n" +
 				"$client = new \\PDO('mysql:dbname=cache;host=127.0.0.1', 'root', '');\n" +
