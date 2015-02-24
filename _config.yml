@@ -7,7 +7,6 @@ permalink:        pretty
 
 # Setup
 title:            Scrapbook
-tagline:          'Cache for PHP'
 description:      'Scrapbook, Cache for PHP'
 url:              http://www.scrapbook.cash
 baseurl:          /

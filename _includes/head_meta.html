@@ -1,6 +1,6 @@
 <title>
 {% if page.title == "Home" %}
-  {{ site.title }} &middot; {{ site.tagline }}
+  {{ site.title }} &middot; {{ site.description }}
 {% else %}
   {{ page.title }} &middot; {{ site.title }}
 {% endif %}
@@ -25,10 +25,10 @@
 
 {% if page.title == "Home" %}
 <link rel="canonical" href="{{ site.url }}" />
-<meta name="description" content="{{ site.tagline }}" />
+<meta name="description" content="{{ site.description }}" />
 <meta property="og:title" content="{{ site.title }}" />
-<meta property="og:description" content="{{ site.tagline }}" />
-<meta name="twitter:description" content="{{ site.tagline }}" />
+<meta property="og:description" content="{{ site.description }}" />
+<meta name="twitter:description" content="{{ site.description }}" />
 {% else %}
 <link rel="canonical" href="{{ site.url }}{{ page.url }}" />
 <meta name="description" content="{{ page.description | strip_html }}" />
