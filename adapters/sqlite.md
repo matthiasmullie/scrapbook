@@ -2,7 +2,7 @@
 layout: adapter
 title: SQLite
 description: SQLite is a software library that implements a self-contained, serverless, zero-configuration, transactional SQL database engine.
-weight: 3
+weight: 4
 image: sqlite.jpg
 homepage: http://www.sqlite.org
 project: scrapbook/sql
