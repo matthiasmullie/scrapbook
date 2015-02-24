@@ -1,6 +1,6 @@
 ---
 layout: adapter
-title: Apc
+title: APC
 description: APC is a free and open opcode cache for PHP. Its goal is to provide a free, open, and robust framework for caching and optimizing PHP intermediate code. 
 weight: 2
 image: apc.jpg
