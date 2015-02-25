@@ -16,7 +16,10 @@ weight: 0
 			Scrapbook is a collection of cache-related PHP projects.
 			The cornerstone is <a href="{{ site.baseurl }}projects/key-value-store.html">key-value-store</a>, which sets a standard interface for cache adapters to implement.
 			All adapters hide their inner workings behind a shared implementation.
-			Using it means you're not just building for <a href="{{ site.baseurl }}adapters/memcached.html">Memcached</a>. You code will work just fine on <a href="{{ site.baseurl }}adapters/redis.html">Redis</a> or <a href="{{ site.baseurl }}adapters/apc.html">APC</a>, without modifications! Or vice versa. Or even <a href="{{ site.baseurl }}adapters/mysql.html">SQL</a>. I'm sure you get the picture.
+			Using it means you're not just building for <a href="{{ site.baseurl }}adapters/memcached.html">Memcached</a>.
+			You code will work just fine on <a href="{{ site.baseurl }}adapters/redis.html">Redis</a> or <a href="{{ site.baseurl }}adapters/apc.html">APC</a>, without modifications!
+			Or vice versa. Or even <a href="{{ site.baseurl }}adapters/mysql.html">SQL</a> or <a href="{{ site.baseurl }}adapters/filesystem.html">file cache</a>.
+			I'm sure you get the picture.
 		</p>
 		<p>
 			Having 1 shared interface to connect with all those backends means additional can be built tools on top of them & they'll work for all key-value stores.
@@ -42,6 +45,7 @@ weight: 0
 				<li><a href="{{ site.baseurl }}adapters/mysql.html">MySQL</a></li>
 				<li><a href="{{ site.baseurl }}adapters/sqlite.html">SQLite</a></li>
 				<li><a href="{{ site.baseurl }}adapters/postgresql.html">PostgreSQL</a></li>
+				<li><a href="{{ site.baseurl }}adapters/filesystem.html">Filesystem</a></li>
 				<li><a href="{{ site.baseurl }}adapters/memory.html">Memory</a></li>
 			</ul>
 		</div>

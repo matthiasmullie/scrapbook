@@ -202,6 +202,12 @@
 			composer: "composer require scrapbook/sql"
 		},
 
+		filesystem: {
+			src: "// create Scrapbook cache object\n" +
+				"$cache = new \\Scrapbook\\Adapters\\Filesystem('/path/to/cache');\n",
+			composer: "composer require scrapbook/filesystem"
+		},
+
 		memory: {
 			src: "// create Scrapbook cache object\n" +
 				"$cache = new \\Scrapbook\\Adapters\\MemoryStore();\n",
