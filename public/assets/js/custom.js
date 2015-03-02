@@ -171,6 +171,15 @@
 			composer: "composer require scrapbook/redis"
 		},
 
+		couchbase: {
+			src: "// create \\CouchbaseBucket object pointing to your Couchbase server\n" +
+				"$cluster = new \\CouchbaseCluster('couchbase://localhost');\n" +
+				"$bucket = $cluster->openBucket('default');\n" +
+				"// create Scrapbook cache object\n" +
+				"$cache = new \\Scrapbook\\Adapters\\Couchbase($bucket);\n",
+			composer: "composer require scrapbook/couchbase"
+		},
+
 		apc: {
 			src: "// create Scrapbook cache object\n" +
 				"$cache = new \\Scrapbook\\Adapters\\Apc();\n",

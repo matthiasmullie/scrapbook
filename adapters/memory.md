@@ -2,7 +2,7 @@
 layout: adapter
 title: MemoryStore
 description: PHP can keep data in memory, too! PHP arrays as storage are particularly useful to run tests against, since you don't have to install any other service.
-weight: 7
+weight: 8
 image: memory.jpg
 homepage:
 project: scrapbook/key-value-store

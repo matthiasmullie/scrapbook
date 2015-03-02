@@ -2,7 +2,7 @@
 layout: adapter
 title: Filesystem
 description: While it's not the fastest kind of cache in terms of I/O access times, opening a file usually still beats redoing expensive computations.
-weight: 6
+weight: 7
 image: filesystem.jpg
 homepage:
 project: scrapbook/filesystem
