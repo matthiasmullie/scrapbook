@@ -25,7 +25,9 @@ abstract class KeyValueStoreTestCase extends PHPUnit_Framework_TestCase
 
     protected function tearDown()
     {
-        $this->cache->flush();
+        if ($this->cache) {
+            $this->cache->flush();
+        }
 
         parent::tearDown();
     }
