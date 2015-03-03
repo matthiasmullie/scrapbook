@@ -145,6 +145,10 @@ class MemoryStore implements KeyValueStore
      */
     public function cas($token, $key, $value, $expire = 0)
     {
+        if (!$this->exists($key)) {
+            return false;
+        }
+
         $this->get($key, $comparison);
         if ($comparison !== $token) {
             return false;
