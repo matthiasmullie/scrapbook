@@ -82,11 +82,12 @@ class MemoryStore implements KeyValueStore
      */
     public function setMulti(array $items, $expire = 0)
     {
+        $success = array();
         foreach ($items as $key => $value) {
-            $this->set($key, $value, $expire);
+            $success[$key] = $this->set($key, $value, $expire);
         }
 
-        return true;
+        return $success;
     }
 
     /**
@@ -106,13 +107,13 @@ class MemoryStore implements KeyValueStore
      */
     public function deleteMulti(array $keys)
     {
-        $success = true;
+        $success = array();
 
         foreach ($keys as $key) {
-            $success &= $this->delete($key);
+            $success[$key] = $this->delete($key);
         }
 
-        return (bool) $success;
+        return $success;
     }
 
     /**

@@ -95,7 +95,8 @@ abstract class KeyValueStoreTestCase extends PHPUnit_Framework_TestCase
 
         $return = $this->cache->setMulti($items);
 
-        $this->assertEquals(true, $return);
+        $expect = array_fill_keys(array_keys($items), true);
+        $this->assertEquals($expect, $return);
         $this->assertEquals('value', $this->cache->get('key'));
         $this->assertEquals('value2', $this->cache->get('key2'));
     }
@@ -126,14 +127,26 @@ abstract class KeyValueStoreTestCase extends PHPUnit_Framework_TestCase
         $this->cache->setMulti($items);
         $return = $this->cache->deleteMulti(array_keys($items));
 
-        $this->assertEquals(true, $return);
+        $expect = array_fill_keys(array_keys($items), true);
+        $this->assertEquals($expect, $return);
         $this->assertEquals(false, $this->cache->get('key'));
         $this->assertEquals(false, $this->cache->get('key2'));
 
-        // delete non-existing key (they've been deleted already)
+        // delete all non-existing key (they've been deleted already)
         $return = $this->cache->deleteMulti(array_keys($items));
 
-        $this->assertEquals(false, $return);
+        $expect = array_fill_keys(array_keys($items), false);
+        $this->assertEquals($expect, $return);
+        $this->assertEquals(false, $this->cache->get('key'));
+        $this->assertEquals(false, $this->cache->get('key2'));
+
+        // delete existing & non-existing key
+        $this->cache->set('key', 'value');
+        $return = $this->cache->deleteMulti(array_keys($items));
+
+        $expect = array_fill_keys(array_keys($items), false);
+        $expect['key'] = true;
+        $this->assertEquals($expect, $return);
         $this->assertEquals(false, $this->cache->get('key'));
         $this->assertEquals(false, $this->cache->get('key2'));
     }
