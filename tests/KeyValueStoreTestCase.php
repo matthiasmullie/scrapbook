@@ -96,7 +96,7 @@ abstract class KeyValueStoreTestCase extends PHPUnit_Framework_TestCase
         // should be treated as if the value doesn't exist)
         $return = $this->cache->replace('key', 'value');
         $this->assertEquals($return, false);
-        $return = $this->cache->touch('key', time() + 1);
+        $return = $this->cache->touch('key', time() + 2);
         $this->assertEquals($return, false);
         $return = $this->cache->add('key', 'value');
         $this->assertEquals($return, true);
@@ -406,7 +406,7 @@ abstract class KeyValueStoreTestCase extends PHPUnit_Framework_TestCase
         $this->cache->set('key', 'value');
 
         // not yet expired
-        $this->cache->touch('key', time() + 1);
+        $this->cache->touch('key', time() + 2);
         $this->assertEquals('value', $this->cache->get('key'));
     }
 
