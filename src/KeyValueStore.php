@@ -97,7 +97,7 @@ interface KeyValueStore
      * Return value will be an associative array in [key => status] form, where
      * status is a boolean true for success, or false for failure.
      *
-     * @param  array $keys
+     * @param  array  $keys
      * @return bool[]
      */
     public function deleteMulti(array $keys);
@@ -196,12 +196,12 @@ interface KeyValueStore
      *
      * Return value is a boolean true when the operation succeeds, or false on
      * failure.
-     * 
+     *
      * @param  string $key
-     * @param  int    $expire  Time when item falls out of the cache:
-     *                         0 = permanent (doesn't expires);
-     *                         under 2592000 (30 days) = relative time, in seconds from now;
-     *                         over 2592000 = absolute time, unix timestamp
+     * @param  int    $expire Time when item falls out of the cache:
+     *                        0 = permanent (doesn't expires);
+     *                        under 2592000 (30 days) = relative time, in seconds from now;
+     *                        over 2592000 = absolute time, unix timestamp
      * @return bool
      */
     public function touch($key, $expire);
@@ -211,7 +211,7 @@ interface KeyValueStore
      *
      * Return value is a boolean true when the operation succeeds, or false on
      * failure.
-     * 
+     *
      * @return bool
      */
     public function flush();
