@@ -5,7 +5,7 @@ weight: 0
 ---
 
 <div class="container">
-	<div class="twelve columns">
+	<div class="eleven columns">
 		<hr class="sep40">
 
 		<h2>What is Scrapbook?</h2>
@@ -17,9 +17,7 @@ weight: 0
 			The cornerstone is <a href="{{ site.baseurl }}projects/key-value-store.html">key-value-store</a>, which sets a standard interface for cache adapters to implement.
 			All adapters hide their inner workings behind a shared implementation.
 			Using it means you're not just building for <a href="{{ site.baseurl }}adapters/memcached.html">Memcached</a>.
-			You code will work just fine on <a href="{{ site.baseurl }}adapters/redis.html">Redis</a>, <a href="{{ site.baseurl }}adapters/couchbase.html">Couchbase</a> or <a href="{{ site.baseurl }}adapters/apc.html">APC</a>, without modifications!
-			Or vice versa. Or even <a href="{{ site.baseurl }}adapters/mysql.html">SQL</a> or <a href="{{ site.baseurl }}adapters/filesystem.html">file cache</a>.
-			I'm sure you get the picture.
+			You code will work just fine on <a href="{{ site.baseurl }}adapters.html">any of the other adapters</a>, without modifications!
 		</p>
 		<p>
 			Having 1 shared interface to connect with all those backends means additional can be built tools on top of them & they'll work for all key-value stores.
@@ -27,7 +25,7 @@ weight: 0
 		</p>
 	</div>
 
-	<div class="four columns" id="features-adapters">
+	<div class="five columns" id="features-adapters">
 		<hr class="sep40">
 
 		<div class="icon-left">
@@ -38,12 +36,14 @@ weight: 0
 			<h3>Adapters</h3>
 			<hr class="sep5">
 
-			<ul class="list-1">
+			<ul class="list-1" style="float: left">
 				<li><a href="{{ site.baseurl }}adapters/memcached.html">Memcached</a></li>
 				<li><a href="{{ site.baseurl }}adapters/redis.html">Redis</a></li>
 				<li><a href="{{ site.baseurl }}adapters/couchbase.html">Couchbase</a></li>
 				<li><a href="{{ site.baseurl }}adapters/apc.html">APC</a></li>
 				<li><a href="{{ site.baseurl }}adapters/mysql.html">MySQL</a></li>
+			</ul>
+			<ul class="list-1" style="float: right">
 				<li><a href="{{ site.baseurl }}adapters/sqlite.html">SQLite</a></li>
 				<li><a href="{{ site.baseurl }}adapters/postgresql.html">PostgreSQL</a></li>
 				<li><a href="{{ site.baseurl }}adapters/filesystem.html">Filesystem</a></li>
