@@ -21,7 +21,7 @@
     "satooshi/php-coveralls": "dev-master"
   },
   "provide": {
-    "scrapbook/key-value-store-implementation": "~0.1"
+    "scrapbook/key-value-store-implementation": "~0.2"
   },
   "autoload": {
     "psr-4": {
