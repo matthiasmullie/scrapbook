@@ -8,7 +8,7 @@ use ReflectionObject;
 use MatthiasMullie\Scrapbook\KeyValueStore;
 use MatthiasMullie\Scrapbook\Psr6\Pool;
 
-abstract class Psr6Test extends AdapterProviderTestCase
+class Psr6Test extends AdapterProviderTestCase
 {
     public function adapterProvider()
     {
