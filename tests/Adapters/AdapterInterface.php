@@ -4,7 +4,8 @@ namespace MatthiasMullie\Scrapbook\Tests\Adapters;
 
 use MatthiasMullie\Scrapbook\KeyValueStore;
 
-interface AdapterInterface {
+interface AdapterInterface
+{
     /**
      * @return KeyValueStore
      */

@@ -25,10 +25,11 @@ abstract class AdapterProviderTestCase extends PHPUnit_Framework_TestCase
         $env = getenv('ADAPTER');
         $adapters = $env ? array($env) : $this->getAllAdapters();
 
-        $this->adapters = array_map(function($adapter) {
+        $this->adapters = array_map(function ($adapter) {
             $class = "\\MatthiasMullie\\Scrapbook\\Tests\\Adapters\\$adapter";
             /** @var AdapterInterface $adapter */
-            $adapter = new $class;
+            $adapter = new $class();
+
             return $adapter->get();
         }, $adapters);
 
@@ -47,7 +48,7 @@ abstract class AdapterProviderTestCase extends PHPUnit_Framework_TestCase
         $files = array_values($files);
 
         // since we're PSR-4, just stripping .php from the filename = classnames
-        $adapters = array_map(function($file) {
+        $adapters = array_map(function ($file) {
             return preg_replace('/\.php$/', '', $file);
         }, $files);
 
@@ -68,7 +69,7 @@ abstract class AdapterProviderTestCase extends PHPUnit_Framework_TestCase
      */
     public function adapterProvider()
     {
-        return array_map(function(KeyValueStore $adapter) {
+        return array_map(function (KeyValueStore $adapter) {
             return array($adapter);
         }, $this->getAdapters());
     }

@@ -135,7 +135,7 @@ class Redis implements KeyValueStore
         $this->client->multi();
         $this->client->mset($items);
 
-        // redis has no convenient multi-expire method
+        // Redis has no convenient multi-expire method
         foreach ($items as $key => $value) {
             $this->client->expire($key, $ttl);
         }
@@ -268,7 +268,7 @@ class Redis implements KeyValueStore
             }
 
             if ($this->supportsOptionsArray()) {
-                // failed execution, but not because our redis version is too old
+                // failed execution, but not because our Redis version is too old
                 return false;
             }
         }

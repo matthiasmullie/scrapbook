@@ -14,7 +14,7 @@ class BufferedStoreTest extends AdapterTest
 
         // make BufferedStore objects for all adapters & run
         // the regular test suite again
-        return array_map(function(KeyValueStore $adapter) {
+        return array_map(function (KeyValueStore $adapter) {
             return array(new BufferedStore($adapter));
         }, $this->adapters);
     }
