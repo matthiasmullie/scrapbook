@@ -31,14 +31,17 @@ after_script:
   - php vendor/bin/coveralls
 
 matrix:
-  exclude:
+  fast_finish: true
+  allow_failures:
+    - php: 7.0
+      env: ADAPTER=Apc
+    - php: 7.0
+      env: ADAPTER=Memcached
+    - php: 7.0
+      env: ADAPTER=Redis
+    - php: 7.0
+      env: ADAPTER=Couchbase
     - php: hhvm
-      env: Couchbase
-    - php: 7.0
-      env: Memcached
-    - php: 7.0
-      env: Redis
-    - php: 7.0
-      env: Couchbase
+      env: ADAPTER=Couchbase
 
 sudo: required
