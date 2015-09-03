@@ -2,6 +2,7 @@
 
 namespace MatthiasMullie\Scrapbook\Tests;
 
+use MatthiasMullie\Scrapbook\Exception\Exception;
 use MatthiasMullie\Scrapbook\KeyValueStore;
 use MatthiasMullie\Scrapbook\Tests\Adapters\AdapterInterface;
 use PHPUnit_Framework_TestCase;
@@ -25,13 +26,25 @@ abstract class AdapterProviderTestCase extends PHPUnit_Framework_TestCase
         $env = getenv('ADAPTER');
         $adapters = $env ? array($env) : $this->getAllAdapters();
 
-        $this->adapters = array_map(function ($adapter) {
-            $class = "\\MatthiasMullie\\Scrapbook\\Tests\\Adapters\\$adapter";
-            /** @var AdapterInterface $adapter */
-            $adapter = new $class();
+        $failures = array();
+        foreach ($adapters as $class) {
+            $fqcn = "\\MatthiasMullie\\Scrapbook\\Tests\\Adapters\\$class";
 
-            return $adapter->get();
-        }, $adapters);
+            /** @var AdapterInterface $adapter */
+            $adapter = new $fqcn();
+
+            try {
+                $this->adapters[] = $adapter->get();
+            } catch (Exception $e) {
+                // ignore failures during setup (e.g. Couchbase may
+                // have an unhealthy server from time to time)
+                $failures[] = $class;
+            }
+        }
+
+        if (!$this->adapters) {
+            $this->markTestSkipped('Failed to initialize '.implode($failures));
+        }
 
         return $this->adapters;
     }

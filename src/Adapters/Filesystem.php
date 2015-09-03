@@ -3,7 +3,7 @@
 namespace MatthiasMullie\Scrapbook\Adapters;
 
 use MatthiasMullie\Scrapbook\KeyValueStore;
-use MatthiasMullie\Scrapbook\Exception\PathNotWritableException;
+use MatthiasMullie\Scrapbook\Exception\PathNotWritable;
 
 /**
  * Filesystem adapter. Data will be written to filesystem, in separate files.
@@ -22,12 +22,12 @@ class Filesystem implements KeyValueStore
     /**
      * @param string $path
      *
-     * @throws PathNotWritableException
+     * @throws PathNotWritable
      */
     public function __construct($path)
     {
         if (!is_writable($path)) {
-            throw new PathNotWritableException("$path is not writable.");
+            throw new PathNotWritable("$path is not writable.");
         }
 
         $this->path = rtrim($path, '/');

@@ -2,6 +2,7 @@
 
 namespace MatthiasMullie\Scrapbook\Adapters;
 
+use MatthiasMullie\Scrapbook\Exception\ServerUnhealthy;
 use MatthiasMullie\Scrapbook\KeyValueStore;
 
 /**
@@ -23,10 +24,18 @@ class Couchbase implements KeyValueStore
 
     /**
      * @param \CouchbaseBucket $client
+     * @throws ServerUnhealthy
      */
     public function __construct(\CouchbaseBucket $client)
     {
         $this->client = $client;
+
+        $info = $this->client->manager()->info();
+        foreach ($info['nodes'] as $node) {
+            if ($node['status'] !== 'healthy') {
+                throw new ServerUnhealthy('Server isn\'t ready yet');
+            }
+        }
     }
 
     /**
