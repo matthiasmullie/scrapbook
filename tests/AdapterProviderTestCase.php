@@ -68,8 +68,6 @@ abstract class AdapterProviderTestCase extends PHPUnit_Framework_TestCase
      */
     public function adapterProvider()
     {
-        var_dump($this->adapters);
-
         return array_map(function(KeyValueStore $adapter) {
             return array($adapter);
         }, $this->getAdapters());
