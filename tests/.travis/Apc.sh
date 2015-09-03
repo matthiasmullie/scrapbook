@@ -3,8 +3,7 @@ then
     if [[ `php-config --vernum` -ge 50500 ]]
     then
         pecl config-set preferred_state beta
-        printf "yes\n"
-        pecl install apcu
+        printf "yes\n" | pecl install apcu
     else
         echo 'extension="apc.so"' >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
     fi
