@@ -1,14 +1,36 @@
 language: php
 
 php:
+  - 7.0
   - 5.6
   - 5.5
   - 5.4
   - 5.3
   - hhvm
 
+env:
+  - ADAPTER=MemoryStore
+  - ADAPTER=Apc
+  - ADAPTER=Memcached
+  - ADAPTER=Redis
+  - ADAPTER=Couchbase
+  - ADAPTER=MySQL
+  - ADAPTER=SQLite
+  - ADAPTER=PostgreSQL
+  - ADAPTER=Filesystem
+
+services:
+  - memcached
+  - redis
+
 before_script:
+  - tests/.travis/$ADAPTER.sh
   - composer self-update && composer install --dev
 
 after_script:
   - php vendor/bin/coveralls
+
+matrix:
+  exclude:
+    - php: hhvm
+      env: Couchbase
