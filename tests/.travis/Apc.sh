@@ -1,4 +1,4 @@
-if [ ! -d /etc/hhvm ]
+if [[ "$TRAVIS_PHP_VERSION" != "hhvm" ]]
 then
     if [[ `php-config --vernum` -ge 50500 ]]
     then

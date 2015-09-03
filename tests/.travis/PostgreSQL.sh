@@ -1,6 +1,6 @@
 psql -c 'create database cache;' -U postgres
 
-if [ ! -d /etc/hhvm ]
+if [[ "$TRAVIS_PHP_VERSION" != "hhvm" ]]
 then
     echo 'extension="pgsql.so"' >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
 else
@@ -47,6 +47,4 @@ else
 
     echo "hhvm.dynamic_extension_path=/hhvm-extensions" >> /etc/hhvm/php.ini
     echo "hhvm.dynamic_extensions[pgsql]=pgsql.so" >> /etc/hhvm/php.ini
-
-    sh .travis.hhvm.sh || echo 'extension="pgsql.so"' >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
 fi

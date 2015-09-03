@@ -1,4 +1,4 @@
-if [ ! -d /etc/hhvm ]
+if [[ "$TRAVIS_PHP_VERSION" != "hhvm" ]]
 then
     echo 'extension="redis.so"' >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
 else
