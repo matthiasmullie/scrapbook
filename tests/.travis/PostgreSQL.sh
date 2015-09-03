@@ -27,13 +27,13 @@ else
     rm libjemalloc-dev_3.6.0-2_amd64.deb
 
     # version.h
-    sudo wget -O /usr/include/hphp/runtime/version.h https://gist.githubusercontent.com/digitalkaoz/dee32e5e82fc776925cf/raw/1b432ba7d4c477e9cc3f88b5bf408713bae3b6e5/version.h
+    sudo wget -O /usr/include/hphp/runtime/version.h https://gist.githubusercontent.com/digitalkaoz/dee32e5e82fc776925cf/raw/d4c52e7841685275e105f26e6cfe27aa3662e85e/version.h
 
     # pgsql
     cd /tmp
-    sudo wget https://github.com/PocketRent/hhvm-pgsql/archive/master.tar.gz
-    tar xzf master.tar.gz
-    cd hhvm-pgsql-master
+    sudo wget https://github.com/PocketRent/hhvm-pgsql/archive/9d937c90ed43f649791fb91323e72015f3e5c915.tar.gz
+    tar xzf 9d937c90ed43f649791fb91323e72015f3e5c915.tar.gz
+    cd hhvm-pgsql-9d937c90ed43f649791fb91323e72015f3e5c915
     hphpize
     cmake .
     make

@@ -43,5 +43,7 @@ matrix:
       env: ADAPTER=Couchbase
     - php: hhvm
       env: ADAPTER=Couchbase
+    - php: hhvm
+      env: ADAPTER=PostgreSQL
 
 sudo: required
