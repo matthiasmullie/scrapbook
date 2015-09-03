@@ -34,3 +34,5 @@ matrix:
   exclude:
     - php: hhvm
       env: Couchbase
+
+sudo: required
