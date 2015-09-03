@@ -34,5 +34,11 @@ matrix:
   exclude:
     - php: hhvm
       env: Couchbase
+    - php: 7.0
+      env: Memcached
+    - php: 7.0
+      env: Redis
+    - php: 7.0
+      env: Couchbase
 
 sudo: required
