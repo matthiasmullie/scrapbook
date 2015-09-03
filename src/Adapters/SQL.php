@@ -302,6 +302,8 @@ abstract class SQL implements KeyValueStore
     {
         $expire = $this->expire($expire);
 
+        $this->clearExpired();
+
         $statement = $this->client->prepare(
             "UPDATE $this->table
             SET e = :expire
