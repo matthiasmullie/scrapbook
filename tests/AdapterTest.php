@@ -84,11 +84,11 @@ class AdapterTest extends AdapterProviderTestCase
         // test if we can add to, but not replace or touch an expired value; it
         // should be treated as if the value doesn't exist)
         $return = $cache->replace('key', 'value');
-        $this->assertEquals($return, false);
+        $this->assertEquals(false, $return);
         $return = $cache->touch('key', time() + 2);
-        $this->assertEquals($return, false);
+        $this->assertEquals(false, $return);
         $return = $cache->add('key', 'value');
-        $this->assertEquals($return, true);
+        $this->assertEquals(true, $return);
     }
 
     /**
