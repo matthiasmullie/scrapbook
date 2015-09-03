@@ -263,16 +263,20 @@ class Couchbase implements KeyValueStore
     public function flush()
     {
         // depending on config & client version, flush may not be available
-        if (!method_exists($this->client, 'flush')) {
-            return false;
-        }
-
         try {
-            $this->client->flush();
+            // ext-couchbase < 2.0.6
+            if (method_exists($this->client, 'flush')) {
+                $this->client->flush();
+                return true;
+            // ext-couchbase >= 2.0.6
+            } elseif (method_exists($this->client->manager(), 'manager')) {
+                $this->client->manager()->flush();
+                return true;
+            } else {
+                return false;
+            }
         } catch (\CouchbaseException $e) {
             return false;
         }
-
-        return true;
     }
 }
