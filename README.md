@@ -19,8 +19,15 @@ data is lost as soon as your application terminates. This is an ideal cache to
 test your implementation against, as it doesn't require you to install any
 server or dependencies and always starts from a pristine state.
 
-Other adapters: APC, Memcached, Redis, Couchbase, MySQL, SQLite, PostgreSQL
-and filesystem.
+Other adapters:
+* APC
+* Memcached
+* Redis
+* Couchbase
+* MySQL
+* SQLite
+* PostgreSQL
+* Filesystem
 
 
 ## Example usage
