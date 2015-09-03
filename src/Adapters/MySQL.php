@@ -31,7 +31,8 @@ class MySQL extends SQL
             ':expire' => $expire,
         ));
 
-        return $statement->rowCount() === 1;
+        // 1 = insert; 2 = update
+        return $statement->rowCount() === 1 || $statement->rowCount() === 2;
     }
 
     /**
@@ -69,8 +70,10 @@ class MySQL extends SQL
          * wrong (if item exists or not, REPLACE INTO will work either way),
          * except for connection problems, in which case all or none will be
          * stored.
+         * Can't compare with count($items) because rowCount could be 1 or 2,
+         * depending on if REPLACE was an INSERT or UPDATE.
          */
-        $success = $statement->rowCount() === count($items);
+        $success = $statement->rowCount() > 0;
 
         return array_fill_keys(array_keys($items), $success);
     }
