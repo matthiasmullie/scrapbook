@@ -13,4 +13,5 @@ sudo dpkg -i couchbase-server-enterprise_x86_64_2.0.1.deb
 sudo service couchbase-server start
 /opt/couchbase/bin/couchbase-cli cluster-init -c 127.0.0.1:8091 -u Administrator -p password --cluster-init-ramsize=1024
 /opt/couchbase/bin/couchbase-cli bucket-create -c 127.0.0.1:8091 -u Administrator -p password --bucket=default --bucket-password= --bucket-type=memcached --bucket-port=11211 --bucket-ramsize=100 --bucket-replica=0 #--enable-flush=1
-pecl install couchbase
+# install older ext-couchbase version - flush() in newer fails
+pecl install couchbase-2.0.5
