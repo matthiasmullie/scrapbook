@@ -360,7 +360,9 @@ class Redis implements KeyValueStore
             return false;
         }
 
-        if ($initial === 0 && $expire === 0) {
+        // INCRBY initializes (at 0) & immediately increments, whereas we
+        // only do initialization if the value does not yet exist
+        if ($initial + $offset === 0 && $expire === 0) {
             return $this->client->incrBy($key, $offset);
         }
 
@@ -376,9 +378,9 @@ class Redis implements KeyValueStore
             return false;
         }
 
-        if ($initial === 0 && $expire === 0) {
-            return $this->client->decrBy($key, $offset);
-        }
+        // DECRBY can't be used. Not even if we don't need an initial
+        // value (it auto-initialized at 0) or expire. Problem is it
+        // will decrement below 0, which is something we don't support.
 
         return $this->doIncrement($key, -$offset, $initial, $expire);
     }

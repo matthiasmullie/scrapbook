@@ -341,6 +341,11 @@ class AdapterTest extends AdapterProviderTestCase
         $this->assertEquals(1, $return);
         $this->assertEquals(1, $cache->get('key'));
 
+        $return = $cache->increment('key2', 1, 0);
+
+        $this->assertEquals(0, $return);
+        $this->assertEquals(0, $cache->get('key2'));
+
         // increment
         $return = $cache->increment('key', 1, 1);
 
@@ -397,6 +402,11 @@ class AdapterTest extends AdapterProviderTestCase
 
         $this->assertEquals(1, $return);
         $this->assertEquals(1, $cache->get('key'));
+
+        $return = $cache->decrement('key2', 1, 0);
+
+        $this->assertEquals(0, $return);
+        $this->assertEquals(0, $cache->get('key2'));
 
         // decrement
         $return = $cache->decrement('key', 1, 1);
