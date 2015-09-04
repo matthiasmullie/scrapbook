@@ -5,15 +5,14 @@ description: PostgreSQL has a proven architecture that has earned it a strong re
 weight: 6
 image: postgresql.jpg
 homepage: http://www.postgresql.org
-project: scrapbook/sql
-class: Scrapbook\Adapters\PostgreSQL
+class: MatthiasMullie\Scrapbook\Adapters\PostgreSQL
 ---
 
 ```php
 // create \PDO object pointing to your PostgreSQL server
 $client = new PDO('pgsql:user=postgres dbname=cache password=');
 // create Scrapbook cache object
-$cache = new \Scrapbook\Adapters\PostgreSQL($client);
+$cache = new \MatthiasMullie\Scrapbook\Adapters\PostgreSQL($client);
 
 // set a value
 $cache->set('key', 'value'); // returns true

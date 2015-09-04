@@ -4,19 +4,18 @@ title: Transactional cache
 description: TransactionalStore is similar to (and extends from) BufferedStore. It also buffers all cache reads, but also provides transactional capabilities, making it possible to defer writes to a later point in time.
 weight: 3
 icon: ss-index
-project: scrapbook/buffered-cache
-class: Scrapbook\Buffered\TransactionalStore
+class: MatthiasMullie\Scrapbook\Buffered\TransactionalStore
 ---
 
 ```php
-// create \Memcached object pointing to your Memcached server
+// boilerplate code example with Memcached, but any
+// MatthiasMullie\Scrapbook\KeyValueStore adapter will work
 $client = new \Memcached();
 $client->addServer('localhost', 11211);
-// create Scrapbook cache object
-$cache = new \Scrapbook\Adapters\Memcached($client);
+$cache = new \MatthiasMullie\Scrapbook\Adapters\Memcached($client);
 
 // create transactional cache layer over our real cache
-$buffered = new \Scrapbook\Buffered\TransactionalStore($cache);
+$buffered = new \MatthiasMullie\Scrapbook\Buffered\TransactionalStore($cache);
 
 // begin a transaction
 $cache->begin();

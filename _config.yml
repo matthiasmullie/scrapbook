@@ -7,7 +7,7 @@ permalink:        pretty
 
 # Setup
 title:            Scrapbook
-description:      'Scrapbook is a caching environment for PHP, with adapters for e.g. Memcached, Redis, APC, SQL and additional tools built on top of that.'
+description:      'Scrapbook is a caching environment for PHP, with adapters for e.g. Memcached, Redis, Couchbase, APC, SQL and additional capabilities (e.g. transactions) built on top.'
 url:              http://www.scrapbook.cash
 baseurl:          /
 image:            public/logo.png
@@ -25,7 +25,7 @@ paginate:         5
 version:          1.0.0
 
 github:
-  repo:           https://github.com/scrapbook/scrapbook.github.io
+  repo:           https://github.com/matthiasmullie/scrapbook
 
 permalink:        /:title
 

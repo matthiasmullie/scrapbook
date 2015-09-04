@@ -5,8 +5,7 @@ description: Memcached is an in-memory key-value store for small chunks of arbit
 weight: 0
 image: memcached.jpg
 homepage: http://memcached.org
-project: scrapbook/memcached
-class: Scrapbook\Adapters\Memcached
+class: MatthiasMullie\Scrapbook\Adapters\Memcached
 ---
 
 ```php
@@ -14,7 +13,7 @@ class: Scrapbook\Adapters\Memcached
 $client = new \Memcached();
 $client->addServer('localhost', 11211);
 // create Scrapbook cache object
-$cache = new \Scrapbook\Adapters\Memcached($client);
+$cache = new \MatthiasMullie\Scrapbook\Adapters\Memcached($client);
 
 // set a value
 $cache->set('key', 'value'); // returns true

@@ -5,13 +5,12 @@ description: APC is a free and open opcode cache for PHP. Its goal is to provide
 weight: 3
 image: apc.jpg
 homepage: http://php.net/manual/en/book.apc.php
-project: scrapbook/apc
-class: Scrapbook\Adapters\Apc
+class: MatthiasMullie\Scrapbook\Adapters\Apc
 ---
 
 ```php
 // create Scrapbook cache object
-$cache = new \Scrapbook\Adapters\Apc();
+$cache = new \MatthiasMullie\Scrapbook\Adapters\Apc();
 
 // set a value
 $cache->set('key', 'value'); // returns true

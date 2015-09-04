@@ -6,14 +6,14 @@ weight: 5
 image: sqlite.jpg
 homepage: http://www.sqlite.org
 project: scrapbook/sql
-class: Scrapbook\Adapters\SQLite
+class: MatthiasMullie\Scrapbook\Adapters\SQLite
 ---
 
 ```php
 // create \PDO object pointing to your SQLite server
 $client = new PDO('sqlite:cache.db');
 // create Scrapbook cache object
-$cache = new \Scrapbook\Adapters\SQLite($client);
+$cache = new \MatthiasMullie\Scrapbook\Adapters\SQLite($client);
 
 // set a value
 $cache->set('key', 'value'); // returns true

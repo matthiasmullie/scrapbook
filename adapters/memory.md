@@ -5,13 +5,12 @@ description: PHP can keep data in memory, too! PHP arrays as storage are particu
 weight: 8
 image: memory.jpg
 homepage:
-project: scrapbook/key-value-store
-class: Scrapbook\Adapters\MemoryStore
+class: MatthiasMullie\Scrapbook\Adapters\MemoryStore
 ---
 
 ```php
 // create Scrapbook cache object
-$cache = new \Scrapbook\Adapters\MemoryStore();
+$cache = new \MatthiasMullie\Scrapbook\Adapters\MemoryStore();
 
 // set a value
 $cache->set('key', 'value'); // returns true

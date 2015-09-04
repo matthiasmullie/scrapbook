@@ -4,19 +4,18 @@ title: Buffered cache
 description: BufferedStore helps reduce requests to your real cache. If you need the request the same value more than once (from various places in your code), it can be a pain to keep that value around. Requesting it again from cache would be easier, but then you get some latency from the connection to the cache server.
 weight: 2
 icon: fa fa-rocket
-project: scrapbook/buffered-cache
-class: Scrapbook\Buffered\BufferedStore
+class: MatthiasMullie\Scrapbook\Buffered\BufferedStore
 ---
 
 ```php
-// create \Memcached object pointing to your Memcached server
+// boilerplate code example with Memcached, but any
+// MatthiasMullie\Scrapbook\KeyValueStore adapter will work
 $client = new \Memcached();
 $client->addServer('localhost', 11211);
-// create Scrapbook cache object
-$cache = new \Scrapbook\Adapters\Memcached($client);
+$cache = new \MatthiasMullie\Scrapbook\Adapters\Memcached($client);
 
 // create buffered cache layer over our real cache
-$buffered = new \Scrapbook\Buffered\BufferedStore($cache);
+$buffered = new \MatthiasMullie\Scrapbook\Buffered\BufferedStore($cache);
 
 // set a value
 $buffered->set('key', 'value'); // returns true
