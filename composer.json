@@ -1,7 +1,7 @@
 {
   "name": "matthiasmullie/scrapbook",
   "type": "library",
-  "description": "A standard cache interface with adapters for a lot of key-value stores, along with some transactional capabilities.",
+  "description": "Scrapbook is a caching environment for PHP, with adapters for e.g. Memcached, Redis, Couchbase, APC, SQL and additional capabilities (e.g. transactions) built on top.",
   "keywords": [
     "cache", "caching",
     "key", "value", "store",
