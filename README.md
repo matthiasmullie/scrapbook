@@ -282,7 +282,7 @@ Returns the key for the current cache item.
 
 ### get(): mixed
 
-Retrieves the value of the item from the cache associated with this objects key.
+Retrieves the value of the item from the cache associated with this object's key.
 
 ### set($value): static
 
@@ -296,9 +296,13 @@ Confirms if the cache item lookup resulted in a cache hit.
 
 Confirms if the cache item exists in the cache.
 
-### setExpiration($ttl = null): static
+### expiresAt($expiration): static
 
-Sets the expiration for this cache item.
+Sets the expiration time for this cache item.
+
+### expiresAfter($expiration): static
+
+Sets the expiration time for this cache item.
 
 ### getExpiration(): DateTime
 
