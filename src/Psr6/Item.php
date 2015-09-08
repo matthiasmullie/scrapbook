@@ -37,7 +37,7 @@ class Item implements CacheItemInterface
     protected $value;
 
     /**
-     * @var DateTimeInterface|null
+     * @var DateTimeInterface|DateTime|null
      */
     protected $expire;
 
@@ -135,7 +135,8 @@ class Item implements CacheItemInterface
      */
     public function expiresAt($expiration)
     {
-        if ($expiration instanceof DateTimeInterface) {
+        // DateTimeInterface only exists since PHP>=5.5, also accept DateTime
+        if ($expiration instanceof DateTimeInterface || $expiration instanceof DateTime) {
             $this->expire = $expiration;
         } else {
             $this->expire = null;

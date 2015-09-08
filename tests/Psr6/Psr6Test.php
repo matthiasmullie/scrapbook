@@ -2,7 +2,6 @@
 
 namespace MatthiasMullie\Scrapbook\Tests\Psr6;
 
-use DateTime;
 use MatthiasMullie\Scrapbook\Tests\AdapterProviderTestCase;
 use ReflectionObject;
 use MatthiasMullie\Scrapbook\KeyValueStore;
@@ -343,7 +342,7 @@ class Psr6Test extends AdapterProviderTestCase
         $item = $pool->getItem('key');
 
         // DateTime object
-        $item->expiresAt(new DateTime('tomorrow'));
+        $item->expiresAt(new \DateTime('tomorrow'));
         $this->assertEquals(new \DateTime('tomorrow'), $item->getExpiration());
 
         // permanent
@@ -364,7 +363,7 @@ class Psr6Test extends AdapterProviderTestCase
         $item = $pool->getItem('key');
 
         // DateTime object
-        $item->expiresAt(new DateTime('tomorrow'));
+        $item->expiresAt(new \DateTime('tomorrow'));
         $this->assertEquals(new \DateTime('tomorrow'), $item->getExpiration());
 
         // permanent
@@ -380,7 +379,7 @@ class Psr6Test extends AdapterProviderTestCase
         $item = $pool->getItem('key');
 
         // DateTime object
-        $item->expiresAt(new DateTime('tomorrow'));
+        $item->expiresAt(new \DateTime('tomorrow'));
         $this->assertEquals(new \DateTime('tomorrow'), $item->getExpiration());
 
         // permanent
@@ -399,9 +398,9 @@ class Psr6Test extends AdapterProviderTestCase
 
         // relative time, both small and large
         $item->expiresAfter(5);
-        $this->assertEquals(new DateTime('+5 seconds'), $item->getExpiration());
+        $this->assertEquals(new \DateTime('+5 seconds'), $item->getExpiration());
         $item->expiresAfter(50 * 24 * 60 * 60);
-        $this->assertEquals(new DateTime('+50 days'), $item->getExpiration());
+        $this->assertEquals(new \DateTime('+50 days'), $item->getExpiration());
 
         // DateInterval object
         $item->expiresAfter(new \DateInterval('PT5S'));
@@ -424,9 +423,9 @@ class Psr6Test extends AdapterProviderTestCase
 
         // relative time, both small and large
         $item->expiresAfter(5);
-        $this->assertEquals(new DateTime('+5 seconds'), $item->getExpiration());
+        $this->assertEquals(new \DateTime('+5 seconds'), $item->getExpiration());
         $item->expiresAfter(50 * 24 * 60 * 60);
-        $this->assertEquals(new DateTime('+50 days'), $item->getExpiration());
+        $this->assertEquals(new \DateTime('+50 days'), $item->getExpiration());
 
         // DateInterval object
         $item->expiresAfter(new \DateInterval('PT5S'));
@@ -444,9 +443,9 @@ class Psr6Test extends AdapterProviderTestCase
 
         // relative time, both small and large
         $item->expiresAfter(5);
-        $this->assertEquals(new DateTime('+5 seconds'), $item->getExpiration());
+        $this->assertEquals(new \DateTime('+5 seconds'), $item->getExpiration());
         $item->expiresAfter(50 * 24 * 60 * 60);
-        $this->assertEquals(new DateTime('+50 days'), $item->getExpiration());
+        $this->assertEquals(new \DateTime('+50 days'), $item->getExpiration());
 
         // DateInterval object
         $item->expiresAfter(new \DateInterval('PT5S'));
