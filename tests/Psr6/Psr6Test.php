@@ -336,31 +336,84 @@ class Psr6Test extends AdapterProviderTestCase
     /**
      * @dataProvider adapterProvider
      */
-    public function testItemSetExpirationExisting(KeyValueStore $cache, Pool $pool)
+    public function testItemExpiresAtExisting(KeyValueStore $cache, Pool $pool)
     {
         $cache->set('key', 'value');
 
         $item = $pool->getItem('key');
 
-        // relative time, both small and large
-        $item->setExpiration(5);
-        $this->assertEquals(new DateTime('+5 seconds'), $item->getExpiration());
-        $item->setExpiration(50 * 24 * 60 * 60);
-        $this->assertEquals(new DateTime('+50 days'), $item->getExpiration());
-
         // DateTime object
-        $item->setExpiration(new DateTime('tomorrow'));
+        $item->expiresAt(new DateTime('tomorrow'));
         $this->assertEquals(new \DateTime('tomorrow'), $item->getExpiration());
 
         // permanent
-        $item->setExpiration(null);
+        $item->expiresAt(null);
         $this->assertInstanceOf('\\MatthiasMullie\Scrapbook\\Psr6\\InfinityDateTime', $item->getExpiration());
     }
 
     /**
      * @dataProvider adapterProvider
      */
-    public function testItemSetExpirationExistingSetViaPool(KeyValueStore $cache, Pool $pool)
+    public function testItemExpiresAtExistingSetViaPool(KeyValueStore $cache, Pool $pool)
+    {
+        $item = $pool->getItem('key');
+        $item->set('value');
+        $pool->saveDeferred($item);
+        $pool->commit();
+
+        $item = $pool->getItem('key');
+
+        // DateTime object
+        $item->expiresAt(new DateTime('tomorrow'));
+        $this->assertEquals(new \DateTime('tomorrow'), $item->getExpiration());
+
+        // permanent
+        $item->expiresAt(null);
+        $this->assertInstanceOf('\\MatthiasMullie\Scrapbook\\Psr6\\InfinityDateTime', $item->getExpiration());
+    }
+
+    /**
+     * @dataProvider adapterProvider
+     */
+    public function testItemExpiresAtNonExisting(KeyValueStore $cache, Pool $pool)
+    {
+        $item = $pool->getItem('key');
+
+        // DateTime object
+        $item->expiresAt(new DateTime('tomorrow'));
+        $this->assertEquals(new \DateTime('tomorrow'), $item->getExpiration());
+
+        // permanent
+        $item->expiresAt(null);
+        $this->assertInstanceOf('\\MatthiasMullie\Scrapbook\\Psr6\\InfinityDateTime', $item->getExpiration());
+    }
+
+    /**
+     * @dataProvider adapterProvider
+     */
+    public function testItemExpiresAfterExisting(KeyValueStore $cache, Pool $pool)
+    {
+        $cache->set('key', 'value');
+
+        $item = $pool->getItem('key');
+
+        // relative time, both small and large
+        $item->expiresAfter(5);
+        $this->assertEquals(new DateTime('+5 seconds'), $item->getExpiration());
+        $item->expiresAfter(50 * 24 * 60 * 60);
+        $this->assertEquals(new DateTime('+50 days'), $item->getExpiration());
+
+        // DateInterval object
+        $item->expiresAfter(new \DateInterval('PT5S'));
+        $this->assertEquals(new \DateTime('+5 seconds'), $item->getExpiration());
+        $item->expiresAfter(new \DateInterval('P50D'));
+        $this->assertEquals(new \DateTime('+50 days'), $item->getExpiration());
+    }
+
+    /**
+     * @dataProvider adapterProvider
+     */
+    public function testItemExpiresAfterExistingSetViaPool(KeyValueStore $cache, Pool $pool)
     {
         $item = $pool->getItem('key');
         $item->set('value');
@@ -370,40 +423,36 @@ class Psr6Test extends AdapterProviderTestCase
         $item = $pool->getItem('key');
 
         // relative time, both small and large
-        $item->setExpiration(5);
+        $item->expiresAfter(5);
         $this->assertEquals(new DateTime('+5 seconds'), $item->getExpiration());
-        $item->setExpiration(50 * 24 * 60 * 60);
+        $item->expiresAfter(50 * 24 * 60 * 60);
         $this->assertEquals(new DateTime('+50 days'), $item->getExpiration());
 
-        // DateTime object
-        $item->setExpiration(new DateTime('tomorrow'));
-        $this->assertEquals(new \DateTime('tomorrow'), $item->getExpiration());
-
-        // permanent
-        $item->setExpiration(null);
-        $this->assertInstanceOf('\\MatthiasMullie\Scrapbook\\Psr6\\InfinityDateTime', $item->getExpiration());
+        // DateInterval object
+        $item->expiresAfter(new \DateInterval('PT5S'));
+        $this->assertEquals(new \DateTime('+5 seconds'), $item->getExpiration());
+        $item->expiresAfter(new \DateInterval('P50D'));
+        $this->assertEquals(new \DateTime('+50 days'), $item->getExpiration());
     }
 
     /**
      * @dataProvider adapterProvider
      */
-    public function testItemSetExpirationNonExisting(KeyValueStore $cache, Pool $pool)
+    public function testItemExpiresAfterNonExisting(KeyValueStore $cache, Pool $pool)
     {
         $item = $pool->getItem('key');
 
         // relative time, both small and large
-        $item->setExpiration(5);
+        $item->expiresAfter(5);
         $this->assertEquals(new DateTime('+5 seconds'), $item->getExpiration());
-        $item->setExpiration(50 * 24 * 60 * 60);
+        $item->expiresAfter(50 * 24 * 60 * 60);
         $this->assertEquals(new DateTime('+50 days'), $item->getExpiration());
 
-        // DateTime object
-        $item->setExpiration(new DateTime('tomorrow'));
-        $this->assertEquals(new \DateTime('tomorrow'), $item->getExpiration());
-
-        // permanent
-        $item->setExpiration(null);
-        $this->assertInstanceOf('\\MatthiasMullie\Scrapbook\\Psr6\\InfinityDateTime', $item->getExpiration());
+        // DateInterval object
+        $item->expiresAfter(new \DateInterval('PT5S'));
+        $this->assertEquals(new \DateTime('+5 seconds'), $item->getExpiration());
+        $item->expiresAfter(new \DateInterval('P50D'));
+        $this->assertEquals(new \DateTime('+50 days'), $item->getExpiration());
     }
 
     /**

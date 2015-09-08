@@ -10,7 +10,7 @@ interface CacheItemPoolInterface
     /**
      * Returns a Cache Item representing the specified key.
      *
-     * This method must always return an ItemInterface object, even in case of
+     * This method must always return a CacheItemInterface object, even in case of
      * a cache miss. It MUST NOT return null.
      *
      * @param string $key

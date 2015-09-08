@@ -2,7 +2,9 @@
 
 namespace MatthiasMullie\Scrapbook\Psr6;
 
+use DateInterval;
 use DateTime;
+use DateTimeInterface;
 use Psr\Cache\CacheItemInterface;
 
 /**
@@ -35,7 +37,7 @@ class Item implements CacheItemInterface
     protected $value;
 
     /**
-     * @var DateTime|null
+     * @var DateTimeInterface|null
      */
     protected $expire;
 
@@ -131,14 +133,32 @@ class Item implements CacheItemInterface
     /**
      * {@inheritdoc}
      */
-    public function setExpiration($ttl = null)
+    public function expiresAt($expiration)
     {
-        if ($ttl instanceof DateTime) {
-            $this->expire = $ttl;
-        } elseif (is_int($ttl)) {
-            $this->expire = new DateTime("+$ttl seconds");
+        if ($expiration instanceof DateTimeInterface) {
+            $this->expire = $expiration;
         } else {
             $this->expire = null;
+        }
+
+        return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function expiresAfter($time)
+    {
+        if ($time instanceof DateInterval) {
+            $this->expire = new DateTime();
+            $this->expire->add($time);
+        } elseif (is_int($time)) {
+            $this->expire = new DateTime("+$time seconds");
+        } else {
+            throw new InvalidArgumentException(
+                'Invalid time: '.serialize($time).'. Must be integer or '.
+                'instance of DateInterval.'
+            );
         }
 
         return $this;
