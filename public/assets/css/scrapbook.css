@@ -161,8 +161,9 @@ a:hover {
  * Default margin below parallex-inner (the title band thingy) is 60 - just a
  * bit too much, for my taste.
  */
-.parallex-inner {
+#parallex-inner {
 	margin-bottom: 40px;
+	background-size: 100%;
 }
 
 /*
