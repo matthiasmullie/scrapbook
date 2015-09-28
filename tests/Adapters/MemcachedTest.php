@@ -2,7 +2,7 @@
 
 namespace MatthiasMullie\Scrapbook\Tests\Adapters;
 
-class Memcached implements AdapterInterface
+class MemcachedTest implements AdapterInterface
 {
     public function get()
     {

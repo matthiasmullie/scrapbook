@@ -28,7 +28,7 @@ abstract class AdapterProviderTestCase extends PHPUnit_Framework_TestCase
 
         $failures = array();
         foreach ($adapters as $class) {
-            $fqcn = "\\MatthiasMullie\\Scrapbook\\Tests\\Adapters\\$class";
+            $fqcn = "\\MatthiasMullie\\Scrapbook\\Tests\\Adapters\\{$class}Test";
 
             /** @var AdapterInterface $adapter */
             $adapter = new $fqcn();

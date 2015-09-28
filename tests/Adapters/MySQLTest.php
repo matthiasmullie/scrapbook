@@ -2,7 +2,7 @@
 
 namespace MatthiasMullie\Scrapbook\Tests\Adapters;
 
-class MySQL implements AdapterInterface
+class MySQLTest implements AdapterInterface
 {
     public function get()
     {

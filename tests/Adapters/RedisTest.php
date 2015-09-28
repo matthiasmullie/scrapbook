@@ -2,7 +2,7 @@
 
 namespace MatthiasMullie\Scrapbook\Tests\Adapters;
 
-class Redis implements AdapterInterface
+class RedisTest implements AdapterInterface
 {
     public function get()
     {

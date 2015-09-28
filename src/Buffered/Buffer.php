@@ -25,6 +25,31 @@ use MatthiasMullie\Scrapbook\Adapters\MemoryStore;
 class Buffer extends MemoryStore
 {
     /**
+     * Checks if a value exists in cache and is not yet expired.
+     *
+     * @param string $key
+     *
+     * @return bool
+     */
+    protected function exists($key)
+    {
+        if (!array_key_exists($key, $this->items)) {
+            // key not in cache
+            return false;
+        }
+
+        $expire = $this->items[$key][1];
+        if ($expire !== 0 && $expire < time()) {
+            // not permanent & already expired
+            return false;
+        }
+
+        $this->lru($key);
+
+        return true;
+    }
+
+    /**
      * Check if a key existed in local storage, but is now expired.
      *
      * Because our local buffer is also just a real cache, expired items will

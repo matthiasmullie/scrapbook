@@ -2,7 +2,7 @@
 
 namespace MatthiasMullie\Scrapbook\Tests\Adapters;
 
-class PostgreSQL implements AdapterInterface
+class PostgreSQLTest implements AdapterInterface
 {
     public function get()
     {

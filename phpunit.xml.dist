@@ -2,6 +2,17 @@
 <phpunit colors="true" bootstrap="tests/bootstrap.php">
 	<testsuites>
 		<testsuite name="Test suite">
+			<!--
+				Adapters/* construct test instances for AdapterTest (via
+				AdapterProviderTestCase), but can also have their own
+				adapter-specific tests.
+				PHPUnit seems to require-once files, so if
+				AdapterProviderTestCase has already autoloaded them,
+				they wouldn't be included again to run adapter-specific
+				tests.
+				I'm including them first to ensure those tests are also run.
+			-->
+			<directory suffix="Test.php">tests/Adapters</directory>
 			<directory suffix="Test.php">tests</directory>
 		</testsuite>
 	</testsuites>

@@ -2,7 +2,7 @@
 
 namespace MatthiasMullie\Scrapbook\Tests\Adapters;
 
-class Couchbase implements AdapterInterface
+class CouchbaseTest implements AdapterInterface
 {
     public function get()
     {

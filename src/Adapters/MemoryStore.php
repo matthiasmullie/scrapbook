@@ -12,11 +12,6 @@ use MatthiasMullie\Scrapbook\KeyValueStore;
  * This is mainly useful for testing purposes, where this class can let you test
  * application logic against cache, without having to run a cache server.
  *
- * This could be part of scrapbook/key-value-adapters, but it makes more sense
- * to bundle this along with the interface, so 3rd parties implementing against
- * this interface have something to (write) test(s) against, without actually
- * having to set up a cache server & bring in an adapter.
- *
  * @author Matthias Mullie <scrapbook@mullie.eu>
  * @copyright Copyright (c) 2014, Matthias Mullie. All rights reserved.
  * @license MIT License
@@ -27,6 +22,28 @@ class MemoryStore implements KeyValueStore
      * @var array
      */
     protected $items = array();
+
+    /**
+     * @var int
+     */
+    protected $limit = 0;
+
+    /**
+     * @var int
+     */
+    protected $size = 0;
+
+    /**
+     * @param int $limit Memory limit in bytes (defaults to 10% of memory_limit)
+     */
+    public function __construct($limit = null)
+    {
+        if ($limit === null) {
+            // if no limit is given, allow 10% of the available memory to be filled
+            $limit = $this->shorthandToBytes(ini_get('memory_limit')) / 10;
+        }
+        $this->limit = $limit;
+    }
 
     /**
      * {@inheritdoc}
@@ -74,6 +91,10 @@ class MemoryStore implements KeyValueStore
         $expire = $this->normalizeTime($expire);
         $this->items[$key] = array($value, $expire);
 
+        $this->size += strlen($value);
+        $this->lru($key);
+        $this->evict();
+
         return true;
     }
 
@@ -97,7 +118,10 @@ class MemoryStore implements KeyValueStore
     {
         $exists = $this->exists($key);
 
-        unset($this->items[$key]);
+        if ($exists) {
+            $this->size -= strlen($this->items[$key][0]);
+            unset($this->items[$key]);
+        }
 
         return $exists;
     }
@@ -201,6 +225,8 @@ class MemoryStore implements KeyValueStore
     {
         $this->items = array();
 
+        $this->size = 0;
+
         return true;
     }
 
@@ -221,8 +247,13 @@ class MemoryStore implements KeyValueStore
         $expire = $this->items[$key][1];
         if ($expire !== 0 && $expire < time()) {
             // not permanent & already expired
+            $this->size -= strlen($this->items[$key][0]);
+            unset($this->items[$key]);
+
             return false;
         }
+
+        $this->lru($key);
 
         return true;
     }
@@ -286,5 +317,48 @@ class MemoryStore implements KeyValueStore
         }
 
         return $time;
+    }
+
+    /**
+     * This cache uses least recently used algorithm. This is to be called
+     * with the key to be marked as just used.
+     */
+    protected function lru($key)
+    {
+        // move key that has just been used to last position in the array
+        $value = $this->items[$key];
+        unset($this->items[$key]);
+        $this->items[$key] = $value;
+    }
+
+    /**
+     * Least recently used cache values will be evicted from cache should
+     * it fill up too much.
+     */
+    protected function evict()
+    {
+        while ($this->size > $this->limit && !empty($this->items)) {
+            $item = array_shift($this->items);
+            $this->size -= strlen($item[0]);
+        }
+    }
+
+    /**
+     * Understands shorthand byte values (as used in e.g. memory_limit ini
+     * setting) and converts them into bytes.
+     *
+     * @see http://php.net/manual/en/faq.using.php#faq.using.shorthandbytes
+     *
+     * @param string $shorthand
+     *
+     * @return string
+     */
+    protected function shorthandToBytes($shorthand)
+    {
+        $units = array('B' => 1024, 'M' => pow(1024, 2), 'G' => pow(1024, 3));
+
+        return preg_replace_callback('/^([0-9]+)('.implode(array_keys($units), '|').')$/', function ($match) use ($units) {
+            return $match[1] * $units[$match[2]];
+        }, $shorthand);
     }
 }

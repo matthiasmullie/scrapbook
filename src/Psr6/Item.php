@@ -98,7 +98,7 @@ class Item implements CacheItemInterface
 
         // sanity check
         if (!$this->isHit()) {
-            return null;
+            return;
         }
 
         return $this->repository->get($this->hash);

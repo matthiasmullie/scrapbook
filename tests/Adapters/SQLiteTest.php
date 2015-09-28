@@ -2,7 +2,7 @@
 
 namespace MatthiasMullie\Scrapbook\Tests\Adapters;
 
-class SQLite implements AdapterInterface
+class SQLiteTest implements AdapterInterface
 {
     public function get()
     {

@@ -2,7 +2,7 @@
 
 namespace MatthiasMullie\Scrapbook\Tests\Adapters;
 
-class Apc implements AdapterInterface
+class ApcTest implements AdapterInterface
 {
     public function get()
     {

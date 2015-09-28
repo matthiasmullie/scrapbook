@@ -2,7 +2,7 @@
 
 namespace MatthiasMullie\Scrapbook\Tests\Adapters;
 
-class Filesystem implements AdapterInterface
+class FilesystemTest implements AdapterInterface
 {
     public function get()
     {

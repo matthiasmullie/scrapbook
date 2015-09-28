@@ -24,6 +24,7 @@ class Couchbase implements KeyValueStore
 
     /**
      * @param \CouchbaseBucket $client
+     *
      * @throws ServerUnhealthy
      */
     public function __construct(\CouchbaseBucket $client)
@@ -277,10 +278,12 @@ class Couchbase implements KeyValueStore
             if (method_exists($manager, 'flush')) {
                 // ext-couchbase >= 2.0.6
                 $manager->flush();
+
                 return true;
             } elseif (method_exists($this->client, 'flush')) {
                 // ext-couchbase < 2.0.6
                 $this->client->flush();
+
                 return true;
             } else {
                 return false;
