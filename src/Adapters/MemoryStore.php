@@ -42,7 +42,7 @@ class MemoryStore implements KeyValueStore
             // if no limit is given, allow 10% of the available memory to be filled
             $limit = $this->shorthandToBytes(ini_get('memory_limit')) / 10;
         }
-        $this->limit = $limit;
+        $this->limit = $this->shorthandToBytes($limit);
     }
 
     /**
