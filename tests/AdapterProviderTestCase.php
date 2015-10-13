@@ -61,8 +61,9 @@ abstract class AdapterProviderTestCase extends PHPUnit_Framework_TestCase
         $files = array_values($files);
 
         // since we're PSR-4, just stripping .php from the filename = classnames
+        // also strip "Test" suffix, which will again be appended later
         $adapters = array_map(function ($file) {
-            return preg_replace('/\.php$/', '', $file);
+            return preg_replace('/\Test.php$/', '', $file);
         }, $files);
 
         return $adapters;
