@@ -2,12 +2,15 @@
 
 namespace MatthiasMullie\Scrapbook\Buffered;
 
+use MatthiasMullie\Scrapbook\Exception\UnbegunTransaction;
+use MatthiasMullie\Scrapbook\KeyValueStore;
+
 /**
  * In addition to buffering cache data in memory (see BufferedStore), this class
  * will add transactional capabilities. Writes can be deferred by starting a
  * transaction & all of them will only go out when you commit them.
  * This makes it possible to defer cache updates until we can guarantee it's
- * safe (e.g. until we successfully committed everything to persistent storage)
+ * safe (e.g. until we successfully committed everything to persistent storage).
  *
  * There will be some trickery to make sure that, after we've made changes to
  * cache (but not yet committed), we don't read from the real cache anymore, but
@@ -18,46 +21,38 @@ namespace MatthiasMullie\Scrapbook\Buffered;
  * data stays behind.
  *
  * @author Matthias Mullie <scrapbook@mullie.eu>
- *
  * @copyright Copyright (c) 2014, Matthias Mullie. All rights reserved.
  * @license MIT License
  */
-class TransactionalStore extends BufferedStore
+class TransactionalStore implements KeyValueStore
 {
     /**
-     * Deferred updates to be committed to real cache.
+     * Array of KeyValueStore objects. Every cache action will be executed
+     * on the last item in this array, so transactions can be nested.
      *
-     * @see defer()
-     * @var array
+     * @var KeyValueStore[]
      */
-    protected $buffer = array();
+    protected $transactions = array();
 
     /**
-     * Whether or not to defer updates.
-     *
-     * @var bool
+     * @param KeyValueStore $cache The real cache we'll buffer for.
      */
-    protected $transaction = false;
+    public function __construct(KeyValueStore $cache)
+    {
+        $this->transactions[] = $cache;
+    }
 
     /**
-     * Array of keys we've written to. They'll briefly be stored here after
-     * being committed, until all other writes in the transaction have been
-     * committed. This way, if a later write fails, we can invalidate previous
-     * updates based on those keys we wrote to.
-     *
-     * @see commit()
-     * @var string[]
+     * Roll back uncommitted transactions.
      */
-    protected $committed = array();
-
-    /**
-     * Suspend reads from real cache. This is used when a flush is issued but it
-     * has not yet been committed. In that case, we don't want to fall back to
-     * real cache values, because they're about to be flushed.
-     *
-     * @var bool
-     */
-    protected $suspend = false;
+    public function __destruct()
+    {
+        while (count($this->transactions) > 1) {
+            /** @var Transaction $transaction */
+            $transaction = array_pop($this->transactions);
+            $transaction->rollback();
+        }
+    }
 
     /**
      * Initiate a transaction: this will defer all writes to real cache until
@@ -65,7 +60,15 @@ class TransactionalStore extends BufferedStore
      */
     public function begin()
     {
-        $this->transaction = true;
+        // we'll rely on buffer to respond data that has not yet committed, so
+        // it must never evict from cache - I'd even rather see the app crash
+        $buffer = new Buffer(ini_get('memory_limit'));
+
+        // transactions can be nested: the previous transaction will serve as
+        // cache backend for the new cache (so when committing a nested
+        // transaction, it will commit to the parent transaction)
+        $cache = end($this->transactions);
+        $this->transactions[] = new Transaction($buffer, $cache);
     }
 
     /**
@@ -74,130 +77,167 @@ class TransactionalStore extends BufferedStore
      * that had already been written to will be deleted.
      *
      * @return bool
+     *
+     * @throws UnbegunTransaction
      */
     public function commit()
     {
-        foreach ($this->buffer as $update) {
-            $success = call_user_func_array($update[0], $update[1]);
-
-            // store keys that data has been written to (so we can rollback)
-            $this->committed += array_flip($update[2]);
-
-            // if we failed to commit data at any point, roll back
-            if ($success === false) {
-                $this->rollback();
-
-                return false;
-            }
+        if (count($this->transactions) <= 1) {
+            throw new UnbegunTransaction('Attempted to commit without having begun a transaction.');
         }
 
-        $this->clearLocal();
-        $this->transaction = false;
-        $this->suspend = false;
+        /** @var Transaction $transaction */
+        $transaction = array_pop($this->transactions);
 
-        return true;
+        return $transaction->commit();
     }
 
     /**
      * Roll back all scheduled changes.
+     *
+     * @return bool
+     *
+     * @throws UnbegunTransaction
      */
     public function rollback()
     {
-        // delete all those keys from cache, they may be corrupt
-        foreach ($this->committed as $key => $nop) {
-            $this->cache->delete($key);
+        if (count($this->transactions) <= 1) {
+            throw new UnbegunTransaction('Attempted to rollback without having begun a transaction.');
         }
 
-        // always clear local cache values when something went wrong
-        $this->clearLocal();
-        $this->transaction = false;
-        $this->suspend = false;
+        /** @var Transaction $transaction */
+        $transaction = array_pop($this->transactions);
+
+        return $transaction->rollback();
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function get($key, &$token = null)
     {
-        // short-circuit reading from real cache if we have an uncommitted flush
-        if ($this->suspend) {
-            $value = $this->local->get($key);
-            if ($value === false) {
-                // flush hasn't been committed yet, don't read from real cache!
-                return false;
-            }
-        }
+        $cache = end($this->transactions);
 
-        // at this point, we're certain that what parent (who needs to take care
-        // of token etc) will only read from local cache, or we're not in
-        // suspend mode
-        return parent::get($key, $token);
+        return $cache->get($key, $token);
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function getMulti(array $keys, array &$tokens = null)
     {
-        if (!$this->suspend) {
-            return parent::getMulti($keys, $tokens);
-        }
+        $cache = end($this->transactions);
 
-        // short-circuit reading from real cache if we have an uncommitted flush
-
-        // figure out which missing key we need to get from real cache
-        $values = $this->local->getMulti($keys);
-        $missing = array_diff($keys, array_keys($values));
-
-        // temporarily mark them as expired, so parent::getMulti will not reach
-        // out to real cache for them
-        $this->local->setMulti(array_fill_keys($missing, ''), -1);
-
-        $values = parent::getMulti($keys, $tokens);
-
-        // clean up local cache again now
-        $this->local->deleteMulti($missing);
-
-        return $values;
+        return $cache->getMulti($keys, $tokens);
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
+     */
+    public function set($key, $value, $expire = 0)
+    {
+        $cache = end($this->transactions);
+
+        return $cache->set($key, $value, $expire);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setMulti(array $items, $expire = 0)
+    {
+        $cache = end($this->transactions);
+
+        return $cache->setMulti($items, $expire);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function delete($key)
+    {
+        $cache = end($this->transactions);
+
+        return $cache->delete($key);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function deleteMulti(array $keys)
+    {
+        $cache = end($this->transactions);
+
+        return $cache->deleteMulti($keys);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function add($key, $value, $expire = 0)
+    {
+        $cache = end($this->transactions);
+
+        return $cache->add($key, $value, $expire);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function replace($key, $value, $expire = 0)
+    {
+        $cache = end($this->transactions);
+
+        return $cache->replace($key, $value, $expire);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function cas($token, $key, $value, $expire = 0)
+    {
+        $cache = end($this->transactions);
+
+        return $cache->cas($token, $key, $value, $expire);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function increment($key, $offset = 1, $initial = 0, $expire = 0)
+    {
+        $cache = end($this->transactions);
+
+        return $cache->increment($key, $offset, $initial, $expire);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function decrement($key, $offset = 1, $initial = 0, $expire = 0)
+    {
+        $cache = end($this->transactions);
+
+        return $cache->decrement($key, $offset, $initial, $expire);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function touch($key, $expire)
+    {
+        $cache = end($this->transactions);
+
+        return $cache->touch($key, $expire);
+    }
+
+    /**
+     * {@inheritdoc}
      */
     public function flush()
     {
-        // make sure that reads, from now on until commit, don't read from cache
-        $this->suspend = true;
+        $cache = end($this->transactions);
 
-        return parent::flush();
-    }
-
-    /**
-     * {@inheritDoc)
-     */
-    protected function defer($callback, $arguments, $key)
-    {
-        // keys can be either 1 single string or array of multiple keys
-        $keys = (array) $key;
-
-        $this->buffer[] = array($callback, $arguments, $keys);
-
-        // persist to real cache immediately, if we're not in a "transaction"
-        if (!$this->transaction) {
-            return $this->commit();
-        }
-
-        return true;
-    }
-
-    /**
-     * Clears all data stored in memory.
-     */
-    protected function clearLocal()
-    {
-        $this->local->flush();
-        $this->buffer = array();
-        $this->committed = array();
-        $this->tokens = array();
+        return $cache->flush();
     }
 }
