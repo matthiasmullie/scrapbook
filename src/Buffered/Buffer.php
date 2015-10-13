@@ -26,6 +26,9 @@ class Buffer extends MemoryStore
 {
     /**
      * Checks if a value exists in cache and is not yet expired.
+     * Contrary to default MemoryStore, expired items must *not* be deleted
+     * from memory: we need to remember that they were expired, so we don't
+     * reach out to real cache (only to get nothing, since it's expired...).
      *
      * @param string $key
      *
