@@ -88,6 +88,8 @@ class MemoryStore implements KeyValueStore
      */
     public function set($key, $value, $expire = 0)
     {
+        $this->size -= isset($this->items[$key]) ? strlen($this->items[$key][0]) : 0;
+
         $value = serialize($value);
         $expire = $this->normalizeTime($expire);
         $this->items[$key] = array($value, $expire);
