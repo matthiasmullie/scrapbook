@@ -34,7 +34,7 @@ class MemoryStore implements KeyValueStore
     protected $size = 0;
 
     /**
-     * @param int $limit Memory limit in bytes (defaults to 10% of memory_limit)
+     * @param int|string $limit Memory limit in bytes (defaults to 10% of memory_limit)
      */
     public function __construct($limit = null)
     {
@@ -349,16 +349,16 @@ class MemoryStore implements KeyValueStore
      *
      * @see http://php.net/manual/en/faq.using.php#faq.using.shorthandbytes
      *
-     * @param string $shorthand
+     * @param string|int $shorthand Amount of bytes (int) or shorthand value (e.g. 512M)
      *
-     * @return string
+     * @return int
      */
     protected function shorthandToBytes($shorthand)
     {
         $units = array('B' => 1024, 'M' => pow(1024, 2), 'G' => pow(1024, 3));
 
-        return preg_replace_callback('/^([0-9]+)('.implode(array_keys($units), '|').')$/', function ($match) use ($units) {
+        return (int) preg_replace_callback('/^([0-9]+)('.implode(array_keys($units), '|').')$/', function ($match) use ($units) {
             return $match[1] * $units[$match[2]];
-        }, $shorthand);
+        }, (string) $shorthand);
     }
 }
