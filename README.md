@@ -200,9 +200,16 @@ It too is a KeyValueStore, but adds 3 methods:
 Initiate a transaction: this will defer all writes to real cache until
 commit() is called.
 
+Transactions can be nested. A new transaction can be begin while another is
+already in progress. Committing the nested transaction will apply the changes
+to the one that was already in progress. Changes will only be committed to
+cache once the original transaction is committed.
+Rolling back a nested transaction will only roll back those changes and leave
+changes in the parent transaction alone.
+
 ### commit(): bool
 
-Commits all deferred updates to real cache.
+Commits the deferred updates to real cache.
 If the any write fails, all subsequent writes will be aborted & all keys
 that had already been written to will be deleted.
 
