@@ -600,7 +600,7 @@ class Transaction implements KeyValueStore
     {
         // delete all those keys from cache, they may be corrupt
         $keys = array_keys($this->committed);
-        if ($keys) {
+        if (!empty($keys)) {
             $this->cache->deleteMulti($keys);
         }
 
