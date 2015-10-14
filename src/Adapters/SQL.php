@@ -166,6 +166,10 @@ abstract class SQL implements KeyValueStore
      */
     public function deleteMulti(array $keys)
     {
+        if (empty($keys)) {
+            return array();
+        }
+
         // we'll need these to figure out which could not be deleted...
         $items = $this->getMulti($keys);
 
