@@ -379,7 +379,7 @@ class Redis implements KeyValueStore
         }
 
         // DECRBY can't be used. Not even if we don't need an initial
-        // value (it auto-initialized at 0) or expire. Problem is it
+        // value (it auto-initializes at 0) or expire. Problem is it
         // will decrement below 0, which is something we don't support.
 
         return $this->doIncrement($key, -$offset, $initial, $expire);
