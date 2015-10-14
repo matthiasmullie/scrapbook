@@ -41,6 +41,7 @@ class MemoryStore implements KeyValueStore
         if ($limit === null) {
             // if no limit is given, allow 10% of the available memory to be filled
             $limit = $this->shorthandToBytes(ini_get('memory_limit')) / 10;
+            $limit = (int) $limit;
         }
         $this->limit = $this->shorthandToBytes($limit);
     }
@@ -355,13 +356,16 @@ class MemoryStore implements KeyValueStore
      */
     protected function shorthandToBytes($shorthand)
     {
-var_dump($shorthand);
+        if (is_numeric($shorthand)) {
+            // make sure that when float(1.234E17) is passed in, it doesn't get
+            // cast to string('1.234E17'), then to int(1)
+            return $shorthand;
+        }
+
         $units = array('B' => 1024, 'M' => pow(1024, 2), 'G' => pow(1024, 3));
 
-        $done = (int) preg_replace_callback('/^([0-9]+)('.implode(array_keys($units), '|').')$/', function ($match) use ($units) {
+        return (int) preg_replace_callback('/^([0-9]+)('.implode(array_keys($units), '|').')$/', function ($match) use ($units) {
             return $match[1] * $units[$match[2]];
-        }, (string) $shorthand);
-var_dump($done);
-        return $done;
+        }, $shorthand);
     }
 }
