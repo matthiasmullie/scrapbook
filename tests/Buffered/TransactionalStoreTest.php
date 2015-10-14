@@ -520,4 +520,89 @@ class TransactionalStoreTest extends AdapterProviderTestCase
         $this->assertEquals(false, $cache->get('key'));
         $this->assertEquals(false, $cache->get('key2'));
     }
+
+    /**
+     * @dataProvider adapterProvider
+     */
+    public function testNestedTransactionCommit(TransactionalStore $transactionalCache, KeyValueStore $cache)
+    {
+        // transaction has already been started in adapterProvider,
+        // let's write to it
+        $transactionalCache->set('key', 'value');
+
+        // verify that the value has not yet been committed to real cache, but
+        // can be read from the transactional layer
+        $this->assertEquals('value', $transactionalCache->get('key'));
+        $this->assertEquals(false, $cache->get('key'));
+
+        // start a nested transaction & store another value
+        $transactionalCache->begin();
+        $transactionalCache->set('key2', 'value');
+
+        // verify that none of the values have not yet been committed to real
+        // cache, but both can be read from the transactional layer
+        $this->assertEquals('value', $transactionalCache->get('key'));
+        $this->assertEquals(false, $cache->get('key'));
+        $this->assertEquals('value', $transactionalCache->get('key2'));
+        $this->assertEquals(false, $cache->get('key2'));
+
+        // commit nested transaction
+        $transactionalCache->commit();
+
+        // verify that none of the values have not yet been committed to real
+        // cache, but both can be read from the transactional layer
+        $this->assertEquals('value', $transactionalCache->get('key'));
+        $this->assertEquals(false, $cache->get('key'));
+        $this->assertEquals('value', $transactionalCache->get('key2'));
+        $this->assertEquals(false, $cache->get('key2'));
+
+        // commit parent transaction
+        $transactionalCache->commit();
+
+        // verify that all values have persisted to real & can still be read
+        // from the transactional layer
+        $this->assertEquals('value', $transactionalCache->get('key'));
+        $this->assertEquals('value', $cache->get('key'));
+        $this->assertEquals('value', $transactionalCache->get('key2'));
+        $this->assertEquals('value', $cache->get('key2'));
+    }
+
+    /**
+     * @dataProvider adapterProvider
+     */
+    public function testNestedTransactionRollback(TransactionalStore $transactionalCache, KeyValueStore $cache)
+    {
+        // transaction has already been started in adapterProvider,
+        // let's write to it
+        $transactionalCache->set('key', 'value');
+
+        // start a nested transaction & store another value
+        $transactionalCache->begin();
+        $transactionalCache->set('key2', 'value');
+
+        // we don't need to test values up to this point
+        // this has already been tested in testNestedTransactionCommit
+
+        // roll back nested transaction
+        $transactionalCache->rollback();
+
+        // verify that the value stored in parent transaction still exists
+        // (but hasn't yet been committed to real cache), but that the value
+        // in the rolled back transaction is gone)
+        $this->assertEquals('value', $transactionalCache->get('key'));
+        $this->assertEquals(false, $cache->get('key'));
+        $this->assertEquals(false, $transactionalCache->get('key2'));
+        $this->assertEquals(false, $cache->get('key2'));
+
+        // commit parent transaction
+        $transactionalCache->commit();
+
+        // verify that the value stored in parent transaction has persisted
+        // to real cache, but that the value in the rolled back transaction
+        // is gone
+        $this->assertEquals('value', $transactionalCache->get('key'));
+        $this->assertEquals('value', $cache->get('key'));
+        $this->assertEquals(false, $transactionalCache->get('key2'));
+        $this->assertEquals(false, $cache->get('key2'));
+    }
 }
