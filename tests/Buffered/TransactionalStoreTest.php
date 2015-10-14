@@ -456,7 +456,7 @@ class TransactionalStoreTest extends AdapterProviderTestCase
         $cache->set('key2', 'value2');
 
         $transactionalCache->touch('key', time() + 2);
-        $transactionalCache->touch('key2', time() - 1);
+        $transactionalCache->touch('key2', time() - 2);
 
         // expiration times are set on local, but not yet on real cache
         $this->assertEquals('value', $transactionalCache->get('key'));

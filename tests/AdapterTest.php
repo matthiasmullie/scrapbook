@@ -77,7 +77,7 @@ class AdapterTest extends AdapterProviderTestCase
      */
     public function testSetExpired(KeyValueStore $cache)
     {
-        $return = $cache->set('key', 'value', time() - 1);
+        $return = $cache->set('key', 'value', time() - 2);
         $this->assertEquals(true, $return);
         $this->assertEquals(false, $cache->get('key'));
 
@@ -119,7 +119,7 @@ class AdapterTest extends AdapterProviderTestCase
             'key2' => 'value2',
         );
 
-        $return = $cache->setMulti($items, time() - 1);
+        $return = $cache->setMulti($items, time() - 2);
 
         $expect = array_fill_keys(array_keys($items), true);
         $this->assertEquals($expect, $return);
@@ -211,7 +211,7 @@ class AdapterTest extends AdapterProviderTestCase
      */
     public function testAddExpired(KeyValueStore $cache)
     {
-        $return = $cache->add('key', 'value', time() - 1);
+        $return = $cache->add('key', 'value', time() - 2);
 
         $this->assertEquals(true, $return);
         $this->assertEquals(false, $cache->get('key'));
@@ -246,7 +246,7 @@ class AdapterTest extends AdapterProviderTestCase
     public function testReplaceExpired(KeyValueStore $cache)
     {
         $cache->set('key', 'value');
-        $return = $cache->replace('key', 'value', time() - 1);
+        $return = $cache->replace('key', 'value', time() - 2);
 
         $this->assertEquals(true, $return);
         $this->assertEquals(false, $cache->get('key'));
@@ -324,7 +324,7 @@ class AdapterTest extends AdapterProviderTestCase
 
         // token via get()
         $cache->get('key', $token);
-        $return = $cache->cas($token, 'key', 'updated-value', time() - 1);
+        $return = $cache->cas($token, 'key', 'updated-value', time() - 2);
 
         $this->assertEquals(true, $return);
         $this->assertEquals(false, $cache->get('key'));
@@ -379,14 +379,14 @@ class AdapterTest extends AdapterProviderTestCase
     public function testIncrementExpired(KeyValueStore $cache)
     {
         // set initial value
-        $return = $cache->increment('key', 1, 1, time() - 1);
+        $return = $cache->increment('key', 1, 1, time() - 2);
 
         $this->assertEquals(1, $return);
         $this->assertEquals(false, $cache->get('key'));
 
         // set initial value (not expired) & increment (expired)
         $cache->increment('key', 1, 1);
-        $return = $cache->increment('key', 1, 1, time() - 1);
+        $return = $cache->increment('key', 1, 1, time() - 2);
 
         $this->assertEquals(2, $return);
         $this->assertEquals(false, $cache->get('key'));
@@ -447,14 +447,14 @@ class AdapterTest extends AdapterProviderTestCase
     public function testDecrementExpired(KeyValueStore $cache)
     {
         // set initial value
-        $return = $cache->decrement('key', 1, 1, time() - 1);
+        $return = $cache->decrement('key', 1, 1, time() - 2);
 
         $this->assertEquals(1, $return);
         $this->assertEquals(false, $cache->get('key'));
 
         // set initial value (not expired) & increment (expired)
         $cache->decrement('key', 1, 1);
-        $return = $cache->decrement('key', 1, 1, time() - 1);
+        $return = $cache->decrement('key', 1, 1, time() - 2);
 
         $this->assertEquals(0, $return);
         $this->assertEquals(false, $cache->get('key'));
@@ -480,7 +480,7 @@ class AdapterTest extends AdapterProviderTestCase
         $cache->set('key', 'value');
 
         // expired
-        $cache->touch('key', time() - 1);
+        $cache->touch('key', time() - 2);
         $this->assertEquals(false, $cache->get('key'));
     }
 
