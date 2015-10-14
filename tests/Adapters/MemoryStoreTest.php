@@ -31,4 +31,20 @@ class MemoryStoreTest extends PHPUnit_Framework_TestCase implements AdapterInter
         $this->assertEquals(false, $cache->get('key2'));
         $this->assertEquals('value3', $cache->get('key3'));
     }
+
+    public function testLRUNoDoubleCount()
+    {
+        // all of the below 'valueX' have a (serialized) size of 13b
+        $limit = strlen(serialize('value1')) + strlen(serialize('value2'));
+        // cache should be able to handle only 2 of the below values at once
+        $cache = new \MatthiasMullie\Scrapbook\Adapters\MemoryStore($limit);
+
+        // writing to same key more than once should not double-count it
+        $cache->set('key1', 'value1');
+        $cache->set('key1', 'value2');
+        $cache->set('key2', 'value3');
+
+        $this->assertEquals('value2', $cache->get('key1'));
+        $this->assertEquals('value3', $cache->get('key2'));
+    }
 }
