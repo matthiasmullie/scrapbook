@@ -24,7 +24,7 @@ class BufferedStore implements KeyValueStore
      * as buffer for follow-up requests.
      * All we'll need to add is also buffering non-write results.
      *
-     * @var KeyValueStore
+     * @var Transaction
      */
     protected $transaction;
 
