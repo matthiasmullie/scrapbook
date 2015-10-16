@@ -1,8 +1,7 @@
 <?php
 
-namespace MatthiasMullie\Scrapbook\Buffered;
+namespace MatthiasMullie\Scrapbook\Buffered\Utils;
 
-use MatthiasMullie\Scrapbook\Exception\UncommittedTransaction;
 use MatthiasMullie\Scrapbook\KeyValueStore;
 
 /**
@@ -13,10 +12,10 @@ use MatthiasMullie\Scrapbook\KeyValueStore;
  * Buffer instance (to read data from as long as it hasn't been committed)
  *
  * Every write action will first store the data in the Buffer instance, and
- * then store the update to be performed in $deferred.
- * Once commit() is called, all those $deferred updates are executed against
- * the real cache. All deferred writes that fail to apply will cause that cache
- * key to be deleted, to ensure cache consistency.
+ * then pas update along to $defer.
+ * Once commit() is called, $defer will execute all these updates against the
+ * real cache. All deferred writes that fail to apply will cause that cache key
+ * to be deleted, to ensure cache consistency.
  * Until commit() is called, all data is read from the temporary Buffer instance.
  *
  * @author Matthias Mullie <scrapbook@mullie.eu>
@@ -49,23 +48,9 @@ class Transaction implements KeyValueStore
     /**
      * Deferred updates to be committed to real cache.
      *
-     * @see defer()
-     *
-     * @var array
+     * @var Defer
      */
-    protected $deferred = array();
-
-    /**
-     * Array of keys we've written to. They'll briefly be stored here after
-     * being committed, until all other writes in the transaction have been
-     * committed. This way, if a later write fails, we can invalidate previous
-     * updates based on those keys we wrote to.
-     *
-     * @see commit()
-     *
-     * @var string[]
-     */
-    protected $committed = array();
+    protected $defer;
 
     /**
      * Suspend reads from real cache. This is used when a flush is issued but it
@@ -87,19 +72,8 @@ class Transaction implements KeyValueStore
         // (uncommitted) writes must never be evicted (even if that means
         // crashing because we run out of memory)
         $this->local = $local;
-    }
 
-    /**
-     * @throws UncommittedTransaction
-     */
-    public function __destruct()
-    {
-        if (!empty($this->deferred)) {
-            throw new UncommittedTransaction(
-                'Transaction is about to be destroyed without having been '.
-                'committed or rolled back.'
-            );
-        }
+        $this->defer = new Defer($this->cache);
     }
 
     /**
@@ -194,7 +168,7 @@ class Transaction implements KeyValueStore
             return false;
         }
 
-        $this->defer(array($this->cache, __FUNCTION__), func_get_args(), $key);
+        $this->defer->set($key, $value, $expire);
 
         return true;
     }
@@ -204,26 +178,6 @@ class Transaction implements KeyValueStore
      */
     public function setMulti(array $items, $expire = 0)
     {
-        $cache = $this->cache;
-
-        /*
-         * We'll use the return value of all buffered writes to check if they
-         * should be "rolled back" (which means deleting the keys to prevent
-         * corruption).
-         *
-         * Always return 1 single true: commit() expects a single bool, not a
-         * per-key array of success bools
-         *
-         * @param mixed[] $items
-         * @param int $expire
-         * @return bool
-         */
-        $setMulti = function ($items, $expire = 0) use ($cache) {
-            $success = $cache->setMulti($items, $expire);
-
-            return !in_array(false, $success);
-        };
-
         // store the values in memory, so that when we ask for it again later in
         // this same request, we get the value we just set
         $success = $this->local->setMulti($items, $expire);
@@ -231,7 +185,7 @@ class Transaction implements KeyValueStore
         // only attempt to store those that we've set successfully to local
         $successful = array_intersect_key($items, $success);
         if (!empty($successful)) {
-            $this->defer($setMulti, array($successful, $expire), array_keys($successful));
+            $this->defer->setMulti($successful, $expire);
         }
 
         return $success;
@@ -242,27 +196,6 @@ class Transaction implements KeyValueStore
      */
     public function delete($key)
     {
-        $cache = $this->cache;
-
-        /*
-         * We'll use the return value of all buffered writes to check if they
-         * should be "rolled back" (which means deleting the keys to prevent
-         * corruption).
-         *
-         * delete() can return false if the delete was issued on a non-existing
-         * key. That is no corruption of data, though (the requested action
-         * actually succeeded: the key is gone). Instead, make this callback
-         * always return true, regardless of whether or not the key existed.
-         *
-         * @param string $key
-         * @return bool
-         */
-        $delete = function ($key) use ($cache) {
-            $cache->delete($key);
-
-            return true;
-        };
-
         // check the current value to see if it currently exists, so we can
         // properly return true/false as would be expected from KeyValueStore
         $value = $this->get($key);
@@ -278,7 +211,8 @@ class Transaction implements KeyValueStore
          * might not yet be committed)
          */
         $this->local->set($key, $value, -1);
-        $this->defer($delete, func_get_args(), $key);
+
+        $this->defer->delete($key);
 
         return true;
     }
@@ -288,26 +222,6 @@ class Transaction implements KeyValueStore
      */
     public function deleteMulti(array $keys)
     {
-        $cache = $this->cache;
-
-        /*
-         * We'll use the return value of all buffered writes to check if they
-         * should be "rolled back" (which means deleting the keys to prevent
-         * corruption).
-         *
-         * Always return 1 single true: commit() expects a single bool, not a
-         * per-key array of success bools (+ see comment in delete() about there
-         * not being any data corruption)
-         *
-         * @param string[] $keys
-         * @return bool
-         */
-        $deleteMulti = function ($keys) use ($cache) {
-            $cache->deleteMulti($keys);
-
-            return true;
-        };
-
         // check the current values to see if they currently exists, so we can
         // properly return true/false as would be expected from KeyValueStore
         $items = $this->getMulti($keys);
@@ -325,7 +239,7 @@ class Transaction implements KeyValueStore
         // mark all as expired in local cache (see comment in delete())
         $this->local->setMulti($values, -1);
 
-        $this->defer($deleteMulti, array(array_keys($values)), array_keys($values));
+        $this->defer->deleteMulti(array_keys($values));
 
         return $success;
     }
@@ -348,7 +262,7 @@ class Transaction implements KeyValueStore
             return false;
         }
 
-        $this->defer(array($this->cache, __FUNCTION__), func_get_args(), $key);
+        $this->defer->add($key, $value, $expire);
 
         return true;
     }
@@ -371,7 +285,7 @@ class Transaction implements KeyValueStore
             return false;
         }
 
-        $this->defer(array($this->cache, __FUNCTION__), func_get_args(), $key);
+        $this->defer->replace($key, $value, $expire);
 
         return true;
     }
@@ -398,41 +312,11 @@ class Transaction implements KeyValueStore
      * checks out, we can safely resume the CAS with the real token we just
      * received.
      *
-     * Should a deferred CAS fail, however, we'll delete the key in cache
-     * since it's no longer reliable.
-     *
      * {@inheritdoc}
      */
     public function cas($token, $key, $value, $expire = 0)
     {
-        $cache = $this->cache;
         $originalValue = isset($this->tokens[$token]) ? $this->tokens[$token] : null;
-
-        /*
-         * @param mixed $token
-         * @param string $key
-         * @param mixed $value
-         * @param int $expire
-         * @return bool
-         */
-        $cas = function ($token, $key, $value, $expire = 0) use ($cache, $originalValue) {
-            // check if given (local) CAS token was known
-            if ($originalValue === null) {
-                return false;
-            }
-
-            // fetch data from real cache, getting new valid CAS token
-            $current = $cache->get($key, $token);
-
-            // check if the value we just read from real cache is still the same
-            // as the one we saved when doing the original fetch
-            if (serialize($current) === $originalValue) {
-                // everything still checked out, CAS the value for real now
-                return $cache->cas($token, $key, $value, $expire);
-            }
-
-            return false;
-        };
 
         // value is no longer the same as what we used for token
         if (serialize($this->get($key)) !== $originalValue) {
@@ -447,7 +331,7 @@ class Transaction implements KeyValueStore
 
         // only schedule the CAS to be performed on real cache if it was OK on
         // local cache
-        $this->defer($cas, func_get_args(), $key);
+        $this->defer->cas($originalValue, $key, $value, $expire);
 
         return true;
     }
@@ -481,7 +365,7 @@ class Transaction implements KeyValueStore
             return false;
         }
 
-        $this->defer(array($this->cache, __FUNCTION__), func_get_args(), $key);
+        $this->defer->increment($key, $offset, $initial, $expire);
 
         return $value;
     }
@@ -515,7 +399,7 @@ class Transaction implements KeyValueStore
             return false;
         }
 
-        $this->defer(array($this->cache, __FUNCTION__), func_get_args(), $key);
+        $this->defer->decrement($key, $offset, $initial, $expire);
 
         return $value;
     }
@@ -537,7 +421,7 @@ class Transaction implements KeyValueStore
             return false;
         }
 
-        $this->defer(array($this->cache, __FUNCTION__), func_get_args(), $key);
+        $this->defer->touch($key, $expire);
 
         return true;
     }
@@ -558,37 +442,22 @@ class Transaction implements KeyValueStore
         // make sure that reads, from now on until commit, don't read from cache
         $this->suspend = true;
 
-        $this->defer(array($this->cache, __FUNCTION__), func_get_args(), array());
+        $this->defer->flush();
 
         return true;
     }
 
     /**
      * Commits all deferred updates to real cache.
-     * If the any write fails, all subsequent writes will be aborted & all keys
      * that had already been written to will be deleted.
      *
      * @return bool
      */
     public function commit()
     {
-        foreach ($this->deferred as $update) {
-            $success = call_user_func_array($update[0], $update[1]);
-
-            // store keys that data has been written to (so we can rollback)
-            $this->committed += array_flip($update[2]);
-
-            // if we failed to commit data at any point, roll back
-            if ($success === false) {
-                $this->rollback();
-
-                return false;
-            }
-        }
-
         $this->clear();
 
-        return true;
+        return $this->defer->commit();
     }
 
     /**
@@ -598,28 +467,10 @@ class Transaction implements KeyValueStore
      */
     public function rollback()
     {
-        // delete all those keys from cache, they may be corrupt
-        $keys = array_keys($this->committed);
-        if (!empty($keys)) {
-            $this->cache->deleteMulti($keys);
-        }
-
         $this->clear();
+        $this->defer->clear();
 
         return true;
-    }
-
-    /**
-     * @param callable        $callback
-     * @param array           $arguments
-     * @param string|string[] $key       Key(s) being written to
-     */
-    protected function defer($callback, $arguments, $key)
-    {
-        // keys can be either 1 single string or array of multiple keys
-        $keys = (array) $key;
-
-        $this->deferred[] = array($callback, $arguments, $keys);
     }
 
     /**
@@ -627,8 +478,6 @@ class Transaction implements KeyValueStore
      */
     protected function clear()
     {
-        $this->deferred = array();
-        $this->committed = array();
         $this->tokens = array();
         $this->suspend = false;
     }

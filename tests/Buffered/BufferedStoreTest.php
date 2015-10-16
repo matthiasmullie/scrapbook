@@ -2,7 +2,8 @@
 
 namespace MatthiasMullie\Scrapbook\Tests\Buffered;
 
-use MatthiasMullie\Scrapbook\Adapters\MemoryStore;use MatthiasMullie\Scrapbook\Buffered\BufferedStore;
+use MatthiasMullie\Scrapbook\Adapters\MemoryStore;
+use MatthiasMullie\Scrapbook\Buffered\BufferedStore;
 use MatthiasMullie\Scrapbook\KeyValueStore;
 use MatthiasMullie\Scrapbook\Tests\AdapterTest;
 

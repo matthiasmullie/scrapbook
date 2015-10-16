@@ -102,7 +102,7 @@ interface KeyValueStore
      * Return value will be an associative array in [key => status] form, where
      * status is a boolean true for success, or false for failure.
      *
-     * @param array $keys
+     * @param string[] $keys
      *
      * @return bool[]
      */

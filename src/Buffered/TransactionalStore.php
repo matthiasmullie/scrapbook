@@ -2,6 +2,8 @@
 
 namespace MatthiasMullie\Scrapbook\Buffered;
 
+use MatthiasMullie\Scrapbook\Buffered\Utils\Buffer;
+use MatthiasMullie\Scrapbook\Buffered\Utils\Transaction;
 use MatthiasMullie\Scrapbook\Exception\UnbegunTransaction;
 use MatthiasMullie\Scrapbook\KeyValueStore;
 

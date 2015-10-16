@@ -1,6 +1,6 @@
 <?php
 
-namespace MatthiasMullie\Scrapbook\Buffered;
+namespace MatthiasMullie\Scrapbook\Buffered\Utils;
 
 use MatthiasMullie\Scrapbook\Adapters\MemoryStore;
 
