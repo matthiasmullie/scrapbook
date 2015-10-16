@@ -246,7 +246,24 @@ abstract class SQL implements KeyValueStore
             ':expire' => $expire,
         ));
 
-        return $statement->rowCount() === 1;
+        if ($statement->rowCount() === 1) {
+            return true;
+        }
+
+        // if the value we've just replaced was the same as the replacement, as
+        // well as the same expiration time, rowCount will have been 0, but the
+        // operation was still a success
+        $statement = $this->client->prepare(
+            "SELECT e
+            FROM $this->table
+            WHERE k = :key AND v = :value"
+        );
+        $statement->execute(array(
+            ':key' => $key,
+            ':value' => $value,
+        ));
+
+        return $statement->fetchColumn(0) === $expire;
     }
 
     /**
@@ -272,7 +289,25 @@ abstract class SQL implements KeyValueStore
             ':token' => $token,
         ));
 
-        return $statement->rowCount() === 1;
+        if ($statement->rowCount() === 1) {
+            return true;
+        }
+
+        // if the value we've just cas'ed was the same as the replacement, as
+        // well as the same expiration time, rowCount will have been 0, but the
+        // operation was still a success
+        $statement = $this->client->prepare(
+            "SELECT e
+            FROM $this->table
+            WHERE k = :key AND v = :value AND v = :token"
+        );
+        $statement->execute(array(
+            ':key' => $key,
+            ':value' => $value,
+            ':token' => $token,
+        ));
+
+        return $statement->fetchColumn(0) === $expire;
     }
 
     /**

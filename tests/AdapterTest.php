@@ -495,4 +495,27 @@ class AdapterTest extends AdapterProviderTestCase
         $this->assertEquals(true, $return);
         $this->assertEquals(false, $cache->get('key'));
     }
+
+    /**
+     * @dataProvider adapterProvider
+     */
+    public function testReplaceSameValue(KeyValueStore $cache)
+    {
+        $cache->set('key', 'value');
+        $return = $cache->replace('key', 'value');
+
+        $this->assertEquals(true, $return);
+    }
+
+    /**
+     * @dataProvider adapterProvider
+     */
+    public function testCasSameValue(KeyValueStore $cache)
+    {
+        $cache->set('key', 'value');
+        $cache->get('key', $token);
+        $return = $cache->cas($token, 'key', 'value');
+
+        $this->assertEquals(true, $return);
+    }
 }
