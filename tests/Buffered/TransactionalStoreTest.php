@@ -543,7 +543,7 @@ class TransactionalStoreTest extends AdapterProviderTestCase
         $this->assertFalse($success);
 
         // both changes should have been "rolled back" and both keys should've
-        // been cleared, in both buffered & real cache
+        // remained unaltered
         $this->assertEquals('value', $transactionalCache->get('key'));
         $this->assertEquals('value', $transactionalCache->get('key2'));
         $this->assertEquals('value', $cache->get('key'));
