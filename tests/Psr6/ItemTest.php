@@ -166,7 +166,7 @@ class ItemTest extends Psr6TestCase
 
         // DateTime object
         $item->expiresAt(new \DateTime('tomorrow'));
-        $this->assertEquals(new \DateTime('tomorrow'), $item->getExpiration());
+        $this->assertEquals(strtotime('tomorrow'), $item->getExpiration()->getTimestamp(), '', 1);
 
         // permanent
         $item->expiresAt(null);
@@ -187,7 +187,7 @@ class ItemTest extends Psr6TestCase
 
         // DateTime object
         $item->expiresAt(new \DateTime('tomorrow'));
-        $this->assertEquals(new \DateTime('tomorrow'), $item->getExpiration());
+        $this->assertEquals(strtotime('tomorrow'), $item->getExpiration()->getTimestamp(), '', 1);
 
         // permanent
         $item->expiresAt(null);
@@ -203,7 +203,7 @@ class ItemTest extends Psr6TestCase
 
         // DateTime object
         $item->expiresAt(new \DateTime('tomorrow'));
-        $this->assertEquals(new \DateTime('tomorrow'), $item->getExpiration());
+        $this->assertEquals(strtotime('tomorrow'), $item->getExpiration()->getTimestamp(), '', 1);
 
         // permanent
         $item->expiresAt(null);
@@ -221,15 +221,15 @@ class ItemTest extends Psr6TestCase
 
         // relative time, both small and large
         $item->expiresAfter(5);
-        $this->assertEquals(new \DateTime('+5 seconds'), $item->getExpiration());
+        $this->assertEquals(strtotime('+5 seconds'), $item->getExpiration()->getTimestamp(), '', 1);
         $item->expiresAfter(50 * 24 * 60 * 60);
-        $this->assertEquals(new \DateTime('+50 days'), $item->getExpiration());
+        $this->assertEquals(strtotime('+50 days'), $item->getExpiration()->getTimestamp(), '', 1);
 
         // DateInterval object
         $item->expiresAfter(new \DateInterval('PT5S'));
-        $this->assertEquals(new \DateTime('+5 seconds'), $item->getExpiration());
+        $this->assertEquals(strtotime('+5 seconds'), $item->getExpiration()->getTimestamp(), '', 1);
         $item->expiresAfter(new \DateInterval('P50D'));
-        $this->assertEquals(new \DateTime('+50 days'), $item->getExpiration());
+        $this->assertEquals(strtotime('+50 days'), $item->getExpiration()->getTimestamp(), '', 1);
     }
 
     /**
@@ -246,15 +246,15 @@ class ItemTest extends Psr6TestCase
 
         // relative time, both small and large
         $item->expiresAfter(5);
-        $this->assertEquals(new \DateTime('+5 seconds'), $item->getExpiration());
+        $this->assertEquals(strtotime('+5 seconds'), $item->getExpiration()->getTimestamp(), '', 1);
         $item->expiresAfter(50 * 24 * 60 * 60);
-        $this->assertEquals(new \DateTime('+50 days'), $item->getExpiration());
+        $this->assertEquals(strtotime('+50 days'), $item->getExpiration()->getTimestamp(), '', 1);
 
         // DateInterval object
         $item->expiresAfter(new \DateInterval('PT5S'));
-        $this->assertEquals(new \DateTime('+5 seconds'), $item->getExpiration());
+        $this->assertEquals(strtotime('+5 seconds'), $item->getExpiration()->getTimestamp(), '', 1);
         $item->expiresAfter(new \DateInterval('P50D'));
-        $this->assertEquals(new \DateTime('+50 days'), $item->getExpiration());
+        $this->assertEquals(strtotime('+50 days'), $item->getExpiration()->getTimestamp(), '', 1);
     }
 
     /**
@@ -266,15 +266,15 @@ class ItemTest extends Psr6TestCase
 
         // relative time, both small and large
         $item->expiresAfter(5);
-        $this->assertEquals(new \DateTime('+5 seconds'), $item->getExpiration());
+        $this->assertEquals(strtotime('+5 seconds'), $item->getExpiration()->getTimestamp(), '', 1);
         $item->expiresAfter(50 * 24 * 60 * 60);
-        $this->assertEquals(new \DateTime('+50 days'), $item->getExpiration());
+        $this->assertEquals(strtotime('+50 days'), $item->getExpiration()->getTimestamp(), '', 1);
 
         // DateInterval object
         $item->expiresAfter(new \DateInterval('PT5S'));
-        $this->assertEquals(new \DateTime('+5 seconds'), $item->getExpiration());
+        $this->assertEquals(strtotime('+5 seconds'), $item->getExpiration()->getTimestamp(), '', 1);
         $item->expiresAfter(new \DateInterval('P50D'));
-        $this->assertEquals(new \DateTime('+50 days'), $item->getExpiration());
+        $this->assertEquals(strtotime('+50 days'), $item->getExpiration()->getTimestamp(), '', 1);
     }
 
     /**
