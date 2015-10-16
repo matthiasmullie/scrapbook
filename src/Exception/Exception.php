@@ -7,6 +7,6 @@ namespace MatthiasMullie\Scrapbook\Exception;
  * @copyright Copyright (c) 2014, Matthias Mullie. All rights reserved.
  * @license MIT License
  */
-abstract class Exception extends \Exception
+class Exception extends \Exception
 {
 }
