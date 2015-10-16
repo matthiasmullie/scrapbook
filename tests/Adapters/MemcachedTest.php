@@ -6,8 +6,11 @@ class MemcachedTest implements AdapterInterface
 {
     public function get()
     {
-        $client = new \Memcached();
-        $client->addServer('localhost', 11211);
+        static $client = null;
+        if ($client === null) {
+            $client = new \Memcached();
+            $client->addServer('localhost', 11211);
+        }
 
         return new \MatthiasMullie\Scrapbook\Adapters\Memcached($client);
     }

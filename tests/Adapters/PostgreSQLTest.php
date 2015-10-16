@@ -6,7 +6,10 @@ class PostgreSQLTest implements AdapterInterface
 {
     public function get()
     {
-        $client = new \PDO('pgsql:user=postgres dbname=cache password=');
+        static $client = null;
+        if ($client === null) {
+            $client = new \PDO('pgsql:user=postgres dbname=cache password=');
+        }
 
         return new \MatthiasMullie\Scrapbook\Adapters\PostgreSQL($client);
     }
