@@ -211,7 +211,7 @@ changes in the parent transaction alone.
 
 Commits the deferred updates to real cache.
 If the any write fails, all subsequent writes will be aborted & all keys
-that had already been written to will be deleted.
+that had already been written to will be restored to their original value.
 
 ### rollback()
 
