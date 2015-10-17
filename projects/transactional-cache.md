@@ -34,9 +34,9 @@ $cache->get('key'); // returns 'value'
 $cache->commit();
 ```
 
-TransactionalStore is similar to (and extends from) BufferedStore. It also
-buffers all cache reads, but also provides transactional capabilities, making it
-possible to defer writes to a later point in time.
+TransactionalStore is similar to BufferedStore. It wraps around any
+KeyValueStore, but provides that one with transactional capabilities. It makes
+it possible to defer writes to a later point in time.
 
 You may want to process code throughout your codebase, but not commit it any
 changes until everything has successfully been validated & written to permanent
@@ -57,17 +57,23 @@ It too is a KeyValueStore, but adds 3 methods:
 Initiate a transaction: this will defer all writes to real cache until
 commit() is called.
 
+Transactions can be nested. A new transaction can be begin while another is
+already in progress. Committing the nested transaction will apply the changes
+to the one that was already in progress. Changes will only be committed to
+cache once the original transaction is committed.
+Rolling back a nested transaction will only roll back those changes and leave
+changes in the parent transaction alone.
+
 <h3 class="headline">commit(): bool</h3>
 <span class="brd-headling"></span>
 <div class="clearfix"></div>
 
-Commits all deferred updates to real cache.
+Commits the deferred updates to real cache.
 If the any write fails, all subsequent writes will be aborted & all keys
-that had already been written to will be deleted.
+that had already been written to will be restored to their original value.
 
 <h3 class="headline">rollback()</h3>
 <span class="brd-headling"></span>
 <div class="clearfix"></div>
 
 Roll back all scheduled changes.
-
