@@ -11,7 +11,7 @@ class FilesystemTest implements AdapterInterface
         $path = '/tmp/cache';
 
         if (!is_writable($path)) {
-            throw new Exception('ext-pdo is not installed.');
+            throw new Exception($path.' is not writable.');
         }
 
         return new \MatthiasMullie\Scrapbook\Adapters\Filesystem($path);
