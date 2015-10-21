@@ -18,6 +18,7 @@ env:
   - ADAPTER=SQLite
   - ADAPTER=PostgreSQL
   - ADAPTER=Filesystem
+  - ADAPTER=Flysystem
 
 services:
   - memcached
