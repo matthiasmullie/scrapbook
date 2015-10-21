@@ -204,9 +204,12 @@
 				"$cache = new \\MatthiasMullie\\Scrapbook\\Adapters\\PostgreSQL($client);\n",
 		},
 
-		filesystem: {
-			src: "// create Scrapbook cache object\n" +
-				"$cache = new \\MatthiasMullie\\Scrapbook\\Adapters\\Filesystem('/path/to/cache');\n",
+		flysystem: {
+			src: "// create Flysystem object\n" +
+				"$adapter = new \\League\\Flysystem\\Adapter\\Local('/path/to/cache', LOCK_EX);\n" +
+				"$filesystem = new \\League\\Flysystem\\Filesystem($adapter);\n" +
+				"// create Scrapbook cache object\n" +
+				"$cache = new \\MatthiasMullie\\Scrapbook\\Adapters\\Flysystem($filesystem);\n",
 		},
 
 		memory: {
