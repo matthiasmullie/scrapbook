@@ -17,7 +17,7 @@ use MatthiasMullie\Scrapbook\KeyValueStore;
  */
 class Filesystem implements KeyValueStore
 {
-     /**
+    /**
      * @var Flysystem
      */
     protected $flysystem;

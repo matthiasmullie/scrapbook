@@ -42,16 +42,13 @@ class Flysystem implements KeyValueStore
             return false;
         }
 
-        $path = $this->path($key);
-        try {
-            $data = $this->filesystem->read($path);
-        } catch (FileNotFoundException $e) {
-            // unlikely given previous 'exists' check, but let's play safe...
-            // (outside process may have removed it since)
+        $data = $this->read($key);
+        if ($data === false) {
             return false;
         }
 
-        list($value, $token, $expire) = $this->unwrap($data);
+        $value = unserialize($data[1]);
+        $token = $data[1];
 
         return $value;
     }
@@ -352,16 +349,15 @@ class Flysystem implements KeyValueStore
      */
     protected function exists($key)
     {
-        $path = $this->path($key);
-        try {
-            $data = $this->filesystem->read($path);
-        } catch (FileNotFoundException $e) {
+        $data = $this->read($key);
+        if ($data === false) {
             return false;
         }
 
-        list($value, $token, $expire) = $this->unwrap($data);
+        $expire = $data[0];
         if ($expire !== 0 && $expire < time()) {
             // expired, don't keep it around
+            $path = $this->path($key);
             $this->filesystem->delete($path);
 
             return false;
@@ -459,22 +455,34 @@ class Flysystem implements KeyValueStore
     }
 
     /**
-     * Extracts value, token & expiration time from content stored in cache
-     * file.
+     * Fetch stored data from cache file.
      *
-     * @param string $data
+     * @param string $key
      *
-     * @return array [value, token, expire]
+     * @return bool|array
      */
-    protected function unwrap($data)
+    protected function read($key)
     {
+        $path = $this->path($key);
+        try {
+            $data = $this->filesystem->read($path);
+        } catch (FileNotFoundException $e) {
+            // unlikely given previous 'exists' check, but let's play safe...
+            // (outside process may have removed it since)
+            return false;
+        }
+
+        if ($data === false) {
+            // in theory, a file could still be deleted between Flysystem's
+            // assertPresent & the time it actually fetched the content
+            // extremely unlikely though
+            return false;
+        }
+
         $data = explode("\n", $data, 2);
+        $data[0] = (int) $data[0];
 
-        $value = unserialize($data[1]);
-        $token = $data[1];
-        $expire = (int) $data[0];
-
-        return array($value, $token, $expire);
+        return $data;
     }
 
     /**
