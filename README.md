@@ -27,7 +27,7 @@ Other adapters:
 * MySQL
 * SQLite
 * PostgreSQL
-* Filesystem
+* Flysystem
 
 
 ## Example usage
