@@ -10,8 +10,7 @@
     "redis",
     "couchbase",
     "sql", "mysql", "sqlite", "postgresql",
-    "filesystem",
-    "flysystem",
+    "filesystem", "flysystem",
     "buffer", "buffered",
     "transaction", "transactional", "commit", "rollback",
     "psr6", "psr-6", "psr-cache"
@@ -30,7 +29,6 @@
     "php": ">=5.3.0"
   },
   "require-dev": {
-    "league/flysystem": "~1.0",
     "phpunit/phpunit": "4.3.*",
     "satooshi/php-coveralls": "dev-master"
   },

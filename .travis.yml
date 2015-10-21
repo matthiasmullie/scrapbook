@@ -46,5 +46,8 @@ matrix:
       env: ADAPTER=Couchbase
     - php: hhvm
       env: ADAPTER=PostgreSQL
+  exclude:
+    - php: 5.3
+      env: ADAPTER=Flysystem
 
 sudo: required
