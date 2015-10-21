@@ -48,6 +48,8 @@ matrix:
       env: ADAPTER=PostgreSQL
   exclude:
     - php: 5.3
+      env: ADAPTER=Filesystem
+    - php: 5.3
       env: ADAPTER=Flysystem
 
 sudo: required
