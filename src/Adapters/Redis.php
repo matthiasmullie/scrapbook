@@ -44,6 +44,11 @@ class Redis implements KeyValueStore
     {
         $value = $this->client->get($key);
 
+        // no value = quit early, don't generate a useless token
+        if ($value === false) {
+            return false;
+        }
+
         // serializing to make sure we don't pass objects (by-reference) ;)
         $token = serialize($value);
 

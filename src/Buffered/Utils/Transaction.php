@@ -105,6 +105,11 @@ class Transaction implements KeyValueStore
             $value = $this->cache->get($key, $token);
         }
 
+        // no value = quit early, don't generate a useless token
+        if ($value === false) {
+            return false;
+        }
+
         /*
          * $token will be unreliable to the deferred updates so generate
          * a custom one and keep the associated value around.
@@ -126,6 +131,7 @@ class Transaction implements KeyValueStore
     {
         // retrieve all that we can from local cache
         $values = $this->local->getMulti($keys);
+        $tokens = array();
 
         // short-circuit reading from real cache if we have an uncommitted flush
         if (!$this->suspend) {

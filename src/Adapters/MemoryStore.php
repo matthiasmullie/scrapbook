@@ -69,6 +69,7 @@ class MemoryStore implements KeyValueStore
     public function getMulti(array $keys, array &$tokens = null)
     {
         $items = array();
+        $tokens = array();
 
         foreach ($keys as $key) {
             if (!$this->exists($key)) {
