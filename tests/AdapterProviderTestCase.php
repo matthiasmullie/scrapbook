@@ -42,7 +42,9 @@ abstract class AdapterProviderTestCase extends PHPUnit_Framework_TestCase
             }
         }
 
-        if (!$this->adapters) {
+        // unless the environment was specified, let's just ignore those that
+        // fail to init, so we don't need to setup every single adapter
+        if (!$this->adapters && !$env) {
             $this->markTestSkipped('Failed to initialize '.implode($failures));
         }
 
