@@ -2,7 +2,6 @@
 
 namespace MatthiasMullie\Scrapbook\Psr6;
 
-use DateTime;
 use Psr\Cache\CacheItemInterface;
 use Psr\Cache\CacheItemPoolInterface;
 use MatthiasMullie\Scrapbook\KeyValueStore;
@@ -98,11 +97,29 @@ class Pool implements CacheItemPoolInterface
     /**
      * {@inheritdoc}
      */
+    public function hasItem($key)
+    {
+        $item = $this->getItem($key);
+
+        return $item->isHit();
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function clear()
     {
         $this->deferred = array();
 
         return $this->store->flush();
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function deleteItem($key)
+    {
+        return $this->store->delete($key);
     }
 
     /**
@@ -114,9 +131,9 @@ class Pool implements CacheItemPoolInterface
             unset($this->deferred[$key]);
         }
 
-        $this->store->deleteMulti($keys);
+        $success = $this->store->deleteMulti($keys);
 
-        return $this;
+        return !in_array(false, $success);
     }
 
     /**
@@ -124,15 +141,20 @@ class Pool implements CacheItemPoolInterface
      */
     public function save(CacheItemInterface $item)
     {
-        $expire = $this->convertExpiration($item->getExpiration());
+        if (!$item instanceof Item) {
+            throw new InvalidArgumentException(
+                'MatthiasMullie\Scrapbook\Psr6\Pool can only save
+                MatthiasMullie\Scrapbook\Psr6\Item objects'
+            );
+        }
+
+        $expire = $item->getExpiration();
         if ($expire !== 0 && $expire < time()) {
             // already expired: don't even save it
             return $this;
         }
 
-        $this->store->set($item->getKey(), $item->get(), $expire);
-
-        return $this;
+        return $this->store->set($item->getKey(), $item->get(), $expire);
     }
 
     /**
@@ -140,9 +162,16 @@ class Pool implements CacheItemPoolInterface
      */
     public function saveDeferred(CacheItemInterface $item)
     {
+        if (!$item instanceof Item) {
+            throw new InvalidArgumentException(
+                'MatthiasMullie\Scrapbook\Psr6\Pool can only save
+                MatthiasMullie\Scrapbook\Psr6\Item objects'
+            );
+        }
+
         $this->deferred[$item->getKey()] = $item;
 
-        return $this;
+        return true;
     }
 
     /**
@@ -152,7 +181,7 @@ class Pool implements CacheItemPoolInterface
     {
         $deferred = array();
         foreach ($this->deferred as $key => $item) {
-            $expire = $this->convertExpiration($item->getExpiration());
+            $expire = $item->getExpiration();
 
             if ($expire !== 0 && $expire < time()) {
                 // already expired: don't even save it
@@ -174,24 +203,5 @@ class Pool implements CacheItemPoolInterface
         }
 
         return (bool) $success;
-    }
-
-    /**
-     * Converts DateTime-based expiration date to integer-based expiry required
-     * for KeyValueStore.
-     *
-     * @param DateTime $expire
-     *
-     * @return int|bool false is already expired
-     */
-    protected function convertExpiration(DateTime $expire)
-    {
-        if ($expire instanceof InfinityDateTime) {
-            // permanent
-            return 0;
-        }
-
-        // convert datetime to unix timestamp
-        return (int) $expire->format('U');
     }
 }

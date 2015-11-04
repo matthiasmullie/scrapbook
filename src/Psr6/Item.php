@@ -37,9 +37,9 @@ class Item implements CacheItemInterface
     protected $value;
 
     /**
-     * @var DateTimeInterface|DateTime|null
+     * @var int
      */
-    protected $expire;
+    protected $expire = 0;
 
     /**
      * @param string     $key
@@ -98,7 +98,7 @@ class Item implements CacheItemInterface
 
         // sanity check
         if (!$this->isHit()) {
-            return;
+            return null;
         }
 
         return $this->repository->get($this->hash);
@@ -125,21 +125,14 @@ class Item implements CacheItemInterface
     /**
      * {@inheritdoc}
      */
-    public function exists()
-    {
-        return $this->isHit();
-    }
-
-    /**
-     * {@inheritdoc}
-     */
     public function expiresAt($expiration)
     {
         // DateTimeInterface only exists since PHP>=5.5, also accept DateTime
         if ($expiration instanceof DateTimeInterface || $expiration instanceof DateTime) {
-            $this->expire = $expiration;
+            // convert datetime to unix timestamp
+            $this->expire = (int) $expiration->format('U');
         } else {
-            $this->expire = null;
+            $this->expire = 0;
         }
 
         return $this;
@@ -151,10 +144,12 @@ class Item implements CacheItemInterface
     public function expiresAfter($time)
     {
         if ($time instanceof DateInterval) {
-            $this->expire = new DateTime();
-            $this->expire->add($time);
+            $expire = new DateTime();
+            $expire->add($time);
+            // convert datetime to unix timestamp
+            $this->expire = (int) $expire->format('U');
         } elseif (is_int($time)) {
-            $this->expire = new DateTime("+$time seconds");
+            $this->expire = time() + $time;
         } else {
             throw new InvalidArgumentException(
                 'Invalid time: '.serialize($time).'. Must be integer or '.
@@ -166,20 +161,13 @@ class Item implements CacheItemInterface
     }
 
     /**
-     * {@inheritdoc}
+     * Returns the set expiration time in integer form (as it's what
+     * KeyValueStore expects)
+     *
+     * @return int
      */
     public function getExpiration()
     {
-        if (!$this->expire) {
-            /*
-             * Since it's impossible to represent "infinity" in DateTime (for
-             * permanent cache storage), I'm using a stub class to represent it.
-             * Meanwhile, the real value it holds will be 100 billion dollars,
-             * eh years! Long enough to not cause confusion ;)
-             */
-            return new InfinityDateTime('+100000000000 years');
-        }
-
         return $this->expire;
     }
 }

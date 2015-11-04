@@ -72,11 +72,42 @@ class PoolTest extends Psr6TestCase
     /**
      * @dataProvider adapterProvider
      */
+    public function testPoolHasItem(KeyValueStore $cache, Pool $pool)
+    {
+        $cache->set('key', 'value');
+
+        // has existing item
+        $this->assertEquals(true, $pool->hasItem('key'));
+
+        // has non-existent item
+        $this->assertEquals(false, $pool->hasItem('key2'));
+    }
+
+    /**
+     * @dataProvider adapterProvider
+     */
+    public function testPoolHasItemSetViaPool(KeyValueStore $cache, Pool $pool)
+    {
+        $item = $pool->getItem('key');
+        $item->set('value');
+        $pool->save($item);
+
+        // has existing item
+        $this->assertEquals(true, $pool->hasItem('key'));
+
+        // has non-existent item
+        $this->assertEquals(false, $pool->hasItem('key2'));
+    }
+
+    /**
+     * @dataProvider adapterProvider
+     */
     public function testPoolClear(KeyValueStore $cache, Pool $pool)
     {
         $cache->set('key', 'value');
 
         $return = $pool->clear();
+
         $this->assertEquals(true, $return);
         $this->assertEquals(false, $cache->get('key'));
         $this->assertEquals(null, $pool->getItem('key')->get());
@@ -92,6 +123,35 @@ class PoolTest extends Psr6TestCase
         $pool->save($item);
 
         $return = $pool->clear();
+
+        $this->assertEquals(true, $return);
+        $this->assertEquals(false, $cache->get('key'));
+        $this->assertEquals(null, $pool->getItem('key')->get());
+    }
+
+    /**
+     * @dataProvider adapterProvider
+     */
+    public function testPoolDeleteItem(KeyValueStore $cache, Pool $pool)
+    {
+        $cache->set('key', 'value');
+
+        $return = $pool->deleteItem('key');
+        $this->assertEquals(true, $return);
+        $this->assertEquals(false, $cache->get('key'));
+        $this->assertEquals(null, $pool->getItem('key')->get());
+    }
+
+    /**
+     * @dataProvider adapterProvider
+     */
+    public function testPoolDeleteItemSetViaPool(KeyValueStore $cache, Pool $pool)
+    {
+        $item = $pool->getItem('key');
+        $item->set('value');
+        $pool->save($item);
+
+        $return = $pool->deleteItem('key');
         $this->assertEquals(true, $return);
         $this->assertEquals(false, $cache->get('key'));
         $this->assertEquals(null, $pool->getItem('key')->get());
@@ -104,7 +164,8 @@ class PoolTest extends Psr6TestCase
     {
         $cache->set('key', 'value');
 
-        $pool->deleteItems(array('key'));
+        $return = $pool->deleteItems(array('key'));
+        $this->assertEquals(true, $return);
         $this->assertEquals(false, $cache->get('key'));
         $this->assertEquals(null, $pool->getItem('key')->get());
     }
@@ -118,7 +179,8 @@ class PoolTest extends Psr6TestCase
         $item->set('value');
         $pool->save($item);
 
-        $pool->deleteItems(array('key'));
+        $return = $pool->deleteItems(array('key'));
+        $this->assertEquals(true, $return);
         $this->assertEquals(false, $cache->get('key'));
         $this->assertEquals(null, $pool->getItem('key')->get());
     }
@@ -130,8 +192,9 @@ class PoolTest extends Psr6TestCase
     {
         $item = $pool->getItem('key');
         $item->set('value');
-        $pool->save($item);
+        $return = $pool->save($item);
 
+        $this->assertEquals(true, $return);
         $this->assertEquals('value', $cache->get('key'));
         $this->assertEquals('value', $pool->getItem('key')->get());
     }
@@ -143,8 +206,9 @@ class PoolTest extends Psr6TestCase
     {
         $item = $pool->getItem('key');
         $item->set('value');
-        $pool->saveDeferred($item);
+        $return = $pool->saveDeferred($item);
 
+        $this->assertEquals(true, $return);
         $this->assertEquals(false, $cache->get('key'));
         $this->assertEquals('value', $pool->getItem('key')->get());
     }
@@ -157,8 +221,9 @@ class PoolTest extends Psr6TestCase
         $item = $pool->getItem('key');
         $item->set('value');
         $pool->saveDeferred($item);
-        $pool->commit();
+        $return = $pool->commit();
 
+        $this->assertEquals(true, $return);
         $this->assertEquals('value', $cache->get('key'));
         $this->assertEquals('value', $pool->getItem('key')->get());
     }

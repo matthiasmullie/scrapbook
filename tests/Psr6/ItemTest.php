@@ -124,40 +124,6 @@ class ItemTest extends Psr6TestCase
     /**
      * @dataProvider adapterProvider
      */
-    public function testItemExistsExisting(KeyValueStore $cache, Pool $pool)
-    {
-        $cache->set('key', 'value');
-
-        $item = $pool->getItem('key');
-        $this->assertEquals(true, $item->exists());
-    }
-
-    /**
-     * @dataProvider adapterProvider
-     */
-    public function testItemExistsExistingSetViaPool(KeyValueStore $cache, Pool $pool)
-    {
-        $item = $pool->getItem('key');
-        $item->set('value');
-        $pool->saveDeferred($item);
-        $pool->commit();
-
-        $item = $pool->getItem('key');
-        $this->assertEquals(true, $item->exists());
-    }
-
-    /**
-     * @dataProvider adapterProvider
-     */
-    public function testItemExistsNonExisting(KeyValueStore $cache, Pool $pool)
-    {
-        $item = $pool->getItem('key');
-        $this->assertEquals(false, $item->exists());
-    }
-
-    /**
-     * @dataProvider adapterProvider
-     */
     public function testItemExpiresAtExisting(KeyValueStore $cache, Pool $pool)
     {
         $cache->set('key', 'value');
@@ -166,11 +132,11 @@ class ItemTest extends Psr6TestCase
 
         // DateTime object
         $item->expiresAt(new \DateTime('tomorrow'));
-        $this->assertEquals(strtotime('tomorrow'), $item->getExpiration()->getTimestamp(), '', 1);
+        $this->assertEquals(strtotime('tomorrow'), $item->getExpiration(), '', 1);
 
         // permanent
         $item->expiresAt(null);
-        $this->assertInstanceOf('\\MatthiasMullie\Scrapbook\\Psr6\\InfinityDateTime', $item->getExpiration());
+        $this->assertEquals(0, $item->getExpiration());
     }
 
     /**
@@ -187,11 +153,11 @@ class ItemTest extends Psr6TestCase
 
         // DateTime object
         $item->expiresAt(new \DateTime('tomorrow'));
-        $this->assertEquals(strtotime('tomorrow'), $item->getExpiration()->getTimestamp(), '', 1);
+        $this->assertEquals(strtotime('tomorrow'), $item->getExpiration(), '', 1);
 
         // permanent
         $item->expiresAt(null);
-        $this->assertInstanceOf('\\MatthiasMullie\Scrapbook\\Psr6\\InfinityDateTime', $item->getExpiration());
+        $this->assertEquals(0, $item->getExpiration());
     }
 
     /**
@@ -203,11 +169,11 @@ class ItemTest extends Psr6TestCase
 
         // DateTime object
         $item->expiresAt(new \DateTime('tomorrow'));
-        $this->assertEquals(strtotime('tomorrow'), $item->getExpiration()->getTimestamp(), '', 1);
+        $this->assertEquals(strtotime('tomorrow'), $item->getExpiration(), '', 1);
 
         // permanent
         $item->expiresAt(null);
-        $this->assertInstanceOf('\\MatthiasMullie\Scrapbook\\Psr6\\InfinityDateTime', $item->getExpiration());
+        $this->assertEquals(0, $item->getExpiration());
     }
 
     /**
@@ -221,15 +187,15 @@ class ItemTest extends Psr6TestCase
 
         // relative time, both small and large
         $item->expiresAfter(5);
-        $this->assertEquals(strtotime('+5 seconds'), $item->getExpiration()->getTimestamp(), '', 1);
+        $this->assertEquals(strtotime('+5 seconds'), $item->getExpiration(), '', 1);
         $item->expiresAfter(50 * 24 * 60 * 60);
-        $this->assertEquals(strtotime('+50 days'), $item->getExpiration()->getTimestamp(), '', 1);
+        $this->assertEquals(strtotime('+50 days'), $item->getExpiration(), '', 1);
 
         // DateInterval object
         $item->expiresAfter(new \DateInterval('PT5S'));
-        $this->assertEquals(strtotime('+5 seconds'), $item->getExpiration()->getTimestamp(), '', 1);
+        $this->assertEquals(strtotime('+5 seconds'), $item->getExpiration(), '', 1);
         $item->expiresAfter(new \DateInterval('P50D'));
-        $this->assertEquals(strtotime('+50 days'), $item->getExpiration()->getTimestamp(), '', 1);
+        $this->assertEquals(strtotime('+50 days'), $item->getExpiration(), '', 1);
     }
 
     /**
@@ -246,15 +212,15 @@ class ItemTest extends Psr6TestCase
 
         // relative time, both small and large
         $item->expiresAfter(5);
-        $this->assertEquals(strtotime('+5 seconds'), $item->getExpiration()->getTimestamp(), '', 1);
+        $this->assertEquals(strtotime('+5 seconds'), $item->getExpiration(), '', 1);
         $item->expiresAfter(50 * 24 * 60 * 60);
-        $this->assertEquals(strtotime('+50 days'), $item->getExpiration()->getTimestamp(), '', 1);
+        $this->assertEquals(strtotime('+50 days'), $item->getExpiration(), '', 1);
 
         // DateInterval object
         $item->expiresAfter(new \DateInterval('PT5S'));
-        $this->assertEquals(strtotime('+5 seconds'), $item->getExpiration()->getTimestamp(), '', 1);
+        $this->assertEquals(strtotime('+5 seconds'), $item->getExpiration(), '', 1);
         $item->expiresAfter(new \DateInterval('P50D'));
-        $this->assertEquals(strtotime('+50 days'), $item->getExpiration()->getTimestamp(), '', 1);
+        $this->assertEquals(strtotime('+50 days'), $item->getExpiration(), '', 1);
     }
 
     /**
@@ -266,15 +232,15 @@ class ItemTest extends Psr6TestCase
 
         // relative time, both small and large
         $item->expiresAfter(5);
-        $this->assertEquals(strtotime('+5 seconds'), $item->getExpiration()->getTimestamp(), '', 1);
+        $this->assertEquals(strtotime('+5 seconds'), $item->getExpiration(), '', 1);
         $item->expiresAfter(50 * 24 * 60 * 60);
-        $this->assertEquals(strtotime('+50 days'), $item->getExpiration()->getTimestamp(), '', 1);
+        $this->assertEquals(strtotime('+50 days'), $item->getExpiration(), '', 1);
 
         // DateInterval object
         $item->expiresAfter(new \DateInterval('PT5S'));
-        $this->assertEquals(strtotime('+5 seconds'), $item->getExpiration()->getTimestamp(), '', 1);
+        $this->assertEquals(strtotime('+5 seconds'), $item->getExpiration(), '', 1);
         $item->expiresAfter(new \DateInterval('P50D'));
-        $this->assertEquals(strtotime('+50 days'), $item->getExpiration()->getTimestamp(), '', 1);
+        $this->assertEquals(strtotime('+50 days'), $item->getExpiration(), '', 1);
     }
 
     /**
