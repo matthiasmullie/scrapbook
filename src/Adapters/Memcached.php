@@ -63,6 +63,7 @@ class Memcached implements KeyValueStore
 
         // HHVMs getMulti() returns null instead of empty array for no results,
         // so normalize that
+        $tokens = $tokens ?: array();
         return $return ?: array();
     }
 
