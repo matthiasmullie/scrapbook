@@ -151,7 +151,7 @@ class Pool implements CacheItemPoolInterface
         $expire = $item->getExpiration();
         if ($expire !== 0 && $expire < time()) {
             // already expired: don't even save it
-            return $this;
+            return true;
         }
 
         return $this->store->set($item->getKey(), $item->get(), $expire);
