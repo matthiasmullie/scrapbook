@@ -40,7 +40,12 @@ layout: page
 		<h3>Documentation</h3>
 		<nav class="categories">
 			<ul>
-				<li><a href="http://docs.scrapbook.cash/class-{{ page.class | replace:'\','.' }}.html" title="{{ page.class }}">{{ page.class }}</a></li>
+				{% if page.class %}
+					<li><a href="http://docs.scrapbook.cash/class-{{ page.class | replace:'\','.' }}.html" title="{{ page.class }}">{{ page.class }}</a></li>
+				{% endif %}
+				{% if page.namespace %}
+					<li><a href="http://docs.scrapbook.cash/namespace-{{ page.namespace | replace:'\','.' }}.html" title="{{ page.namespace }}">{{ page.namespace }}</a></li>
+				{% endif %}
 			</ul>
 		</nav>
 
