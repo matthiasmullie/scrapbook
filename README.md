@@ -260,19 +260,27 @@ Returns a Cache Item representing the specified key.
 
 Returns a traversable set of cache items.
 
+### hasItem($key): bool
+
+Confirms if the cache contains specified cache item.
+
 ### clear(): bool
 
 Deletes all items in the pool.
 
-### deleteItems(array $keys): static
+### deleteItem($key): bool
+
+Removes the item from the pool.
+
+### deleteItems(array $keys): bool
 
 Removes multiple items from the pool.
 
-### save(CacheItemInterface $item): static
+### save(CacheItemInterface $item): bool
 
 Persists a cache item immediately.
 
-### saveDeferred(CacheItemInterface $item): static
+### saveDeferred(CacheItemInterface $item): bool
 
 Sets a cache item to be persisted later.
 
@@ -291,17 +299,13 @@ Returns the key for the current cache item.
 
 Retrieves the value of the item from the cache associated with this object's key.
 
-### set($value): static
-
-Sets the value represented by this cache item.
-
 ### isHit(): bool
 
 Confirms if the cache item lookup resulted in a cache hit.
 
-### exists(): bool
+### set($value): static
 
-Confirms if the cache item exists in the cache.
+Sets the value represented by this cache item.
 
 ### expiresAt($expiration): static
 
@@ -310,10 +314,6 @@ Sets the expiration time for this cache item.
 ### expiresAfter($expiration): static
 
 Sets the expiration time for this cache item.
-
-### getExpiration(): DateTime
-
-Returns the expiration time of a not-yet-expired cache item.
 
 
 ## Installation
