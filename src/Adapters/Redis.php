@@ -61,6 +61,9 @@ class Redis implements KeyValueStore
     public function getMulti(array $keys, array &$tokens = null)
     {
         $values = $this->client->mget($keys);
+        if ($values === false ) {
+            $values = array_fill_keys($keys, false);
+        }
         $values = array_combine($keys, $values);
 
         $tokens = array();
@@ -220,7 +223,7 @@ class Redis implements KeyValueStore
         $this->client->expire($key, $ttl);
 
         /** @var bool[] $return */
-        $return = $this->client->exec();
+        $return = (array) $this->client->exec();
 
         return !in_array(false, $return);
     }
@@ -304,7 +307,7 @@ class Redis implements KeyValueStore
         $this->client->set($key, $value, $ttl);
 
         /** @var bool[] $return */
-        $return = $this->client->exec();
+        $return = (array) $this->client->exec();
 
         return !in_array(false, $return);
     }
@@ -351,7 +354,7 @@ class Redis implements KeyValueStore
         }
 
         /** @var bool[] $return */
-        $return = $this->client->exec();
+        $return = (array) $this->client->exec();
 
         return !in_array(false, $return);
     }
@@ -465,7 +468,7 @@ class Redis implements KeyValueStore
             $this->client->set($key, $initial, $ttl);
 
             /** @var bool[] $return */
-            $return = $this->client->exec();
+            $return = (array) $this->client->exec();
 
             return !in_array(false, $return) ? $initial : false;
         }
@@ -504,7 +507,7 @@ class Redis implements KeyValueStore
         }
 
         /** @var bool[] $return */
-        $return = $this->client->exec();
+        $return = (array) $this->client->exec();
 
         return !in_array(false, $return) ? $value : false;
     }
