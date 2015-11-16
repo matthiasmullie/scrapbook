@@ -2,7 +2,9 @@
 
 namespace MatthiasMullie\Scrapbook\Tests\Scale;
 
-use MatthiasMullie\Scrapbook\Adapters\Couchbase;use MatthiasMullie\Scrapbook\Adapters\Memcached;
+use MatthiasMullie\Scrapbook\Adapters\Apc;
+use MatthiasMullie\Scrapbook\Adapters\Couchbase;
+use MatthiasMullie\Scrapbook\Adapters\Memcached;
 use MatthiasMullie\Scrapbook\Adapters\MemoryStore;
 use MatthiasMullie\Scrapbook\Adapters\Redis;
 use MatthiasMullie\Scrapbook\Adapters\SQL;
@@ -261,6 +263,12 @@ class StampedeProtectorTest extends AdapterProviderTestCase
         // http://php.net/manual/en/function.pcntl-fork.php#70721
         // https://bugs.php.net/bug.php?id=62571
         if ($cache instanceof SQL) {
+            return false;
+        }
+
+        // Looks like Apc, threading & HHVM are not the greatest combo either...
+        // https://travis-ci.org/matthiasmullie/scrapbook/jobs/91360815
+        if ($cache instanceof Apc && defined('HHVM_VERSION')) {
             return false;
         }
 
