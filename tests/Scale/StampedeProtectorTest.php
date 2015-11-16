@@ -2,7 +2,8 @@
 
 namespace MatthiasMullie\Scrapbook\Tests\Scale;
 
-use MatthiasMullie\Scrapbook\Adapters\Memcached;
+use MatthiasMullie\Scrapbook\Adapters\Couchbase;use MatthiasMullie\Scrapbook\Adapters\Memcached;
+use MatthiasMullie\Scrapbook\Adapters\MemoryStore;
 use MatthiasMullie\Scrapbook\Adapters\Redis;
 use MatthiasMullie\Scrapbook\Adapters\SQL;
 use MatthiasMullie\Scrapbook\KeyValueStore;
@@ -21,10 +22,10 @@ class StampedeProtectorTest extends AdapterProviderTestCase
     {
         parent::adapterProvider();
 
-        // make BufferedStore objects for all adapters & run
-        // the regular test suite again
-        return array_map(function (KeyValueStore $adapter) {
-            return array(new StampedeProtectorStub($adapter, static::SLA), $adapter);
+        // can't access "static" inside closure in PHP < 5.4
+        $sla = static::SLA;
+        return array_map(function (KeyValueStore $adapter) use ($sla) {
+            return array(new StampedeProtectorStub($adapter, $sla), $adapter);
         }, $this->adapters);
     }
 
@@ -231,9 +232,22 @@ class StampedeProtectorTest extends AdapterProviderTestCase
             return false;
         }
 
+        // MemoryStore can't share it's "cache" (which is a PHP array) across
+        // processes. Not only does stampede protection make no sense here, we
+        // can't even properly test it.
+        if ($cache instanceof MemoryStore) {
+            return false;
+        }
+
         // Memcached may become unreliable when forked
         // https://gist.github.com/matthiasmullie/e5e856b27ddb68d7cf80
         if ($cache instanceof Memcached) {
+            return false;
+        }
+
+        // Couchbase, or at least in the config we're using it for tests, is
+        // just like Memcached...
+        if ($cache instanceof Couchbase) {
             return false;
         }
 
