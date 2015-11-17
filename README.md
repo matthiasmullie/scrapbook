@@ -225,7 +225,7 @@ Roll back all scheduled changes.
 A cache stampede happens when there are a lot of requests for data that is not
 currently in cache. Examples could be:
 * cache expires for something that is often under very heavy load
-* sudden unexpected high load on something that is likely yo not be in cache
+* sudden unexpected high load on something that is likely to not be in cache
 In those cases, this huge amount of requests for data that is not at that time
 in cache, causes that expensive operation to be executed a lot of times, all at
 once.
