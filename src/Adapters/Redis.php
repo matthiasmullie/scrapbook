@@ -61,7 +61,7 @@ class Redis implements KeyValueStore
     public function getMulti(array $keys, array &$tokens = null)
     {
         $values = $this->client->mget($keys);
-        if ($values === false ) {
+        if ($values === false) {
             $values = array_fill_keys($keys, false);
         }
         $values = array_combine($keys, $values);
