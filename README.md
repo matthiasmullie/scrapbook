@@ -234,7 +234,7 @@ StampedeProtector is designed counteract that. If a value can't be found in
 cache, something will be stored to another key to indicate it was requested but
 didn't exist. Every follow-up request for a short period of time will find that
 indication and know another process is already generating that result, so those
-will just wait until it becomes available, instead of cripling the servers.
+will just wait until it becomes available, instead of crippling the servers.
 
 
 # PSR-6
