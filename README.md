@@ -218,6 +218,25 @@ that had already been written to will be restored to their original value.
 Roll back all scheduled changes.
 
 
+# Scale
+
+## StampedeProtector
+
+A cache stampede happens when there are a lot of requests for data that is not
+currently in cache. Examples could be:
+* cache expires for something that is often under very heavy load
+* sudden unexpected high load on something that is likely yo not be in cache
+In those cases, this huge amount of requests for data that is not at that time
+in cache, causes that expensive operation to be executed a lot of times, all at
+once.
+
+StampedeProtector is designed counteract that. If a value can't be found in
+cache, something will be stored to another key to indicate it was requested but
+didn't exist. Every follow-up request for a short period of time will find that
+indication and know another process is already generating that result, so those
+will just wait until it becomes available, instead of cripling the servers.
+
+
 # PSR-6
 
 Adds a PSR-6 layer so that any KeyValueStore-compatible adapter (or
