@@ -158,7 +158,7 @@
 				"$client = new \\Memcached();\n" +
 				"$client->addServer('localhost', 11211);\n" +
 				"// create Scrapbook cache object\n" +
-				"$cache = new \\MatthiasMullie\\Scrapbook\\Adapters\\Memcached($client);\n",
+				"$cache = new \\MatthiasMullie\\Scrapbook\\Adapters\\Memcached($client);\n"
 		},
 
 		redis: {
@@ -166,7 +166,7 @@
 				"$client = new \\Redis();\n" +
 				"$client->connect('127.0.0.1');\n" +
 				"// create Scrapbook cache object\n" +
-				"$cache = new \\MatthiasMullie\\Scrapbook\\Adapters\\Redis($client);\n",
+				"$cache = new \\MatthiasMullie\\Scrapbook\\Adapters\\Redis($client);\n"
 		},
 
 		couchbase: {
@@ -174,19 +174,19 @@
 				"$cluster = new \\CouchbaseCluster('couchbase://localhost');\n" +
 				"$bucket = $cluster->openBucket('default');\n" +
 				"// create Scrapbook cache object\n" +
-				"$cache = new \\MatthiasMullie\\Scrapbook\\Adapters\\Couchbase($bucket);\n",
+				"$cache = new \\MatthiasMullie\\Scrapbook\\Adapters\\Couchbase($bucket);\n"
 		},
 
 		apc: {
 			src: "// create Scrapbook cache object\n" +
-				"$cache = new \\MatthiasMullie\\Scrapbook\\Adapters\\Apc();\n",
+				"$cache = new \\MatthiasMullie\\Scrapbook\\Adapters\\Apc();\n"
 		},
 
 		mysql: {
 			src: "// create \\PDO object pointing to your MySQL server\n" +
 				"$client = new \\PDO('mysql:dbname=cache;host=127.0.0.1', 'root', '');\n" +
 				"// create Scrapbook cache object\n" +
-				"$cache = new \\MatthiasMullie\\Scrapbook\\Adapters\\MySQL($client);\n",
+				"$cache = new \\MatthiasMullie\\Scrapbook\\Adapters\\MySQL($client);\n"
 		},
 
 
@@ -194,14 +194,14 @@
 			src: "// create \\PDO object pointing to your SQLite database\n" +
 				"$client = new \\PDO('sqlite:cache.db');\n" +
 				"// create Scrapbook cache object\n" +
-				"$cache = new \\MatthiasMullie\\Scrapbook\\Adapters\\SQLite($client);\n",
+				"$cache = new \\MatthiasMullie\\Scrapbook\\Adapters\\SQLite($client);\n"
 		},
 
 		pgsql: {
 			src: "// create \\PDO object pointing to your PostgreSQL database\n" +
 				"$client = new \\PDO('pgsql:user=postgres dbname=cache password=');\n" +
 				"// create Scrapbook cache object\n" +
-				"$cache = new \\MatthiasMullie\\Scrapbook\\Adapters\\PostgreSQL($client);\n",
+				"$cache = new \\MatthiasMullie\\Scrapbook\\Adapters\\PostgreSQL($client);\n"
 		},
 
 		flysystem: {
@@ -209,12 +209,12 @@
 				"$adapter = new \\League\\Flysystem\\Adapter\\Local('/path/to/cache', LOCK_EX);\n" +
 				"$filesystem = new \\League\\Flysystem\\Filesystem($adapter);\n" +
 				"// create Scrapbook cache object\n" +
-				"$cache = new \\MatthiasMullie\\Scrapbook\\Adapters\\Flysystem($filesystem);\n",
+				"$cache = new \\MatthiasMullie\\Scrapbook\\Adapters\\Flysystem($filesystem);\n"
 		},
 
 		memory: {
 			src: "// create Scrapbook cache object\n" +
-				"$cache = new \\MatthiasMullie\\Scrapbook\\Adapters\\MemoryStore();\n",
+				"$cache = new \\MatthiasMullie\\Scrapbook\\Adapters\\MemoryStore();\n"
 		}
 	},
 
@@ -224,7 +224,7 @@
 				"$cache->set('key', 'value'); // returns true\n" +
 				"\n" +
 				"// get a value\n" +
-				"$cache->get('key'); // returns 'value'\n",
+				"$cache->get('key'); // returns 'value'\n"
 		},
 
 		psr6: {
@@ -239,7 +239,7 @@
 				"\n" +
 				"// ... or change the value & store it to cache\n" +
 				"$item->set('updated-value');\n" +
-				"$pool->save($item);\n",
+				"$pool->save($item);\n"
 		}
 	},
 
@@ -247,7 +247,7 @@
 		buffered: {
 			'src-begin': "// create buffered cache layer over our real cache\n" +
 						"$cache = new \\MatthiasMullie\\Scrapbook\\Buffered\\BufferedStore($cache);\n",
-			'src-end': "",
+			'src-end': ""
 		},
 
 		transactional: {
@@ -257,7 +257,13 @@
 						"// begin a transaction\n" +
 						"$cache->begin();\n",
 			'src-end': "// now commit all write operations\n" +
-						"$cache->commit();\n",
+						"$cache->commit();\n"
+		},
+
+		stampede: {
+			'src-begin': "// create stampede protector layer over our real cache\n" +
+						"$cache = new \\MatthiasMullie\\Scrapbook\\Scale\\StampedeProtector($cache);\n",
+			'src-end': ""
 		}
 	},
 

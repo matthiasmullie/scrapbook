@@ -1,7 +1,7 @@
 ---
 layout: project
 title: Transactional cache
-description: TransactionalStore is similar to (and extends from) BufferedStore. It also buffers all cache reads, but also provides transactional capabilities, making it possible to defer writes to a later point in time.
+description: TransactionalStore makes it possible to defer writes to a later point in time. Similar to transactions in databases, all deferred writes can be rolled back or committed all at once to ensure the data that is stored is reliable and complete. All of it will be stored, or nothing at all.
 weight: 3
 icon: ss-index
 class: MatthiasMullie\Scrapbook\Buffered\TransactionalStore
