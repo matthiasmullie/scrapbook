@@ -239,6 +239,12 @@ class StampedeProtector implements KeyValueStore
 
         $success = array();
         foreach ($keys as $key) {
+            /*
+             * Key is add()ed because there may be multiple concurrent processes
+             * that are both in the process of protecting - first one to add()
+             * wins (and those are returned by the function, so those that are
+             * failed to protect can be considered protected)
+             */
             $success[$key] = $this->cache->add($this->stampedeKey($key), '', $this->sla);
         }
 
