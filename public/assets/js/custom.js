@@ -244,6 +244,12 @@
 	},
 
 	extras = {
+		stampede: {
+			'src-begin': "// create stampede protector layer over our real cache\n" +
+						"$cache = new \\MatthiasMullie\\Scrapbook\\Scale\\StampedeProtector($cache);\n",
+			'src-end': ""
+		},
+
 		buffered: {
 			'src-begin': "// create buffered cache layer over our real cache\n" +
 						"$cache = new \\MatthiasMullie\\Scrapbook\\Buffered\\BufferedStore($cache);\n",
@@ -258,12 +264,6 @@
 						"$cache->begin();\n",
 			'src-end': "// now commit all write operations\n" +
 						"$cache->commit();\n"
-		},
-
-		stampede: {
-			'src-begin': "// create stampede protector layer over our real cache\n" +
-						"$cache = new \\MatthiasMullie\\Scrapbook\\Scale\\StampedeProtector($cache);\n",
-			'src-end': ""
 		}
 	},
 
