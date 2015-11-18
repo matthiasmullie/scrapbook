@@ -15,12 +15,12 @@ $client->addServer('localhost', 11211);
 $cache = new \MatthiasMullie\Scrapbook\Adapters\Memcached($client);
 
 // create stampede protector layer over our real cache
-$buffered = new \MatthiasMullie\Scrapbook\Scale\StampedeProtector($cache);
+$protector = new \MatthiasMullie\Scrapbook\Scale\StampedeProtector($cache);
 
 // get a value
 // if it's stampede-protected, it'll just take a little longer to return,
 // otherwise there won't be any difference
-$buffered->get('key'); // returns 'value'
+$protector->get('key'); // returns 'value'
 ```
 
 
@@ -40,7 +40,7 @@ didn't exist. Every follow-up request for a short period of time will find that
 indication and know another process is already generating that result, so those
 will just wait until it becomes available, instead of crippling the servers.
 
-BufferedStore just wraps around any KeyValueStore and is itself a KeyValueStore.
-Just use it like you would call any cache, but enjoy the stampede protection!
-Just make sure to always store data to the caches you read from when they turn
-up empty.
+StampedeProtector just wraps around any KeyValueStore and is itself a
+KeyValueStore. Just use it like you would call any cache, but enjoy the stampede
+protection! Just make sure to always store data to the caches you read from when
+they turn up empty.
