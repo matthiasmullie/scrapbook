@@ -1,7 +1,7 @@
 {
   "name": "matthiasmullie/scrapbook",
   "type": "library",
-  "description": "Scrapbook is a caching environment for PHP, with adapters for e.g. Memcached, Redis, Couchbase, APC, SQL and additional capabilities (e.g. transactions) built on top.",
+  "description": "Scrapbook is a caching environment for PHP, with adapters for e.g. Memcached, Redis, Couchbase, APC, SQL and additional capabilities (e.g. transactions, stampede protection) built on top.",
   "keywords": [
     "cache", "caching",
     "key", "value", "store",
@@ -13,6 +13,7 @@
     "filesystem", "flysystem",
     "buffer", "buffered",
     "transaction", "transactional", "commit", "rollback",
+    "stampede", "protection", "mitigation",
     "psr6", "psr-6", "psr-cache"
   ],
   "homepage": "http://scrapbook.cash",
