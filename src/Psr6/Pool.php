@@ -52,14 +52,7 @@ class Pool implements CacheItemPoolInterface
      */
     public function getItem($key)
     {
-        // valid key according to PSR-6 rules
-        $invalid = preg_quote(static::KEY_INVALID_CHARACTERS, '/');
-        if (preg_match('/['.$invalid.']/', $key)) {
-            throw new InvalidArgumentException(
-                'Invalid key: '.$key.'. Contains (a) character(s) reserved '.
-                'for future extension: '.static::KEY_INVALID_CHARACTERS
-            );
-        }
+        $this->assertValidKey($key);
 
         if (array_key_exists($key, $this->deferred)) {
             /*
@@ -88,6 +81,8 @@ class Pool implements CacheItemPoolInterface
     {
         $items = array();
         foreach ($keys as $key) {
+            $this->assertValidKey($key);
+
             $items[$key] = $this->getItem($key);
         }
 
@@ -99,6 +94,8 @@ class Pool implements CacheItemPoolInterface
      */
     public function hasItem($key)
     {
+        $this->assertValidKey($key);
+
         $item = $this->getItem($key);
 
         return $item->isHit();
@@ -119,6 +116,8 @@ class Pool implements CacheItemPoolInterface
      */
     public function deleteItem($key)
     {
+        $this->assertValidKey($key);
+
         return $this->store->delete($key);
     }
 
@@ -128,6 +127,8 @@ class Pool implements CacheItemPoolInterface
     public function deleteItems(array $keys)
     {
         foreach ($keys as $key) {
+            $this->assertValidKey($key);
+
             unset($this->deferred[$key]);
         }
 
@@ -203,5 +204,23 @@ class Pool implements CacheItemPoolInterface
         }
 
         return (bool) $success;
+    }
+
+    /**
+     * Throws an exception if $key is invalid.
+     *
+     * @param string $key
+     * @throws InvalidArgumentException
+     */
+    protected function assertValidKey($key)
+    {
+        // valid key according to PSR-6 rules
+        $invalid = preg_quote(static::KEY_INVALID_CHARACTERS, '/');
+        if (preg_match('/['.$invalid.']/', $key)) {
+            throw new InvalidArgumentException(
+                'Invalid key: '.$key.'. Contains (a) character(s) reserved '.
+                'for future extension: '.static::KEY_INVALID_CHARACTERS
+            );
+        }
     }
 }
