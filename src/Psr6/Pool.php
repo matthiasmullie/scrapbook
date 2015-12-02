@@ -210,6 +210,7 @@ class Pool implements CacheItemPoolInterface
      * Throws an exception if $key is invalid.
      *
      * @param string $key
+     *
      * @throws InvalidArgumentException
      */
     protected function assertValidKey($key)

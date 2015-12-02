@@ -26,6 +26,7 @@ class StampedeProtectorTest extends AdapterProviderTestCase
 
         // can't access "static" inside closure in PHP < 5.4
         $sla = static::SLA;
+
         return array_map(function (KeyValueStore $adapter) use ($sla) {
             return array(new StampedeProtectorStub($adapter, $sla), $adapter);
         }, $this->adapters);

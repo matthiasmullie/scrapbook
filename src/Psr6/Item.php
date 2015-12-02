@@ -98,7 +98,7 @@ class Item implements CacheItemInterface
 
         // sanity check
         if (!$this->isHit()) {
-            return null;
+            return;
         }
 
         return $this->repository->get($this->hash);
@@ -162,7 +162,7 @@ class Item implements CacheItemInterface
 
     /**
      * Returns the set expiration time in integer form (as it's what
-     * KeyValueStore expects)
+     * KeyValueStore expects).
      *
      * @return int
      */
