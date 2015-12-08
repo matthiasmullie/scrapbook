@@ -10,12 +10,10 @@ class Psr6TestCase extends AdapterProviderTestCase
 {
     public function adapterProvider()
     {
-        parent::adapterProvider();
-
         return array_map(function (KeyValueStore $adapter) {
             $pool = new Pool($adapter);
 
             return array($adapter, $pool);
-        }, $this->adapters);
+        }, $this->getAdapters());
     }
 }

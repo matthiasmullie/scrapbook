@@ -12,15 +12,19 @@ abstract class AdapterProviderTestCase extends PHPUnit_Framework_TestCase
     /**
      * @var KeyValueStore[]
      */
-    protected $adapters = array();
+    protected static $adapters = array();
 
     /**
      * @return KeyValueStore[]
      */
     protected function getAdapters()
     {
-        if ($this->adapters) {
-            return $this->adapters;
+        static::$adapters = array();
+
+        // re-use adapters across tests - if we keep initializing clients, they
+        // may fail because of too much connections (and it's just overhead...)
+        if (static::$adapters) {
+            return static::$adapters;
         }
 
         $env = getenv('ADAPTER');
@@ -28,13 +32,8 @@ abstract class AdapterProviderTestCase extends PHPUnit_Framework_TestCase
 
         $failures = array();
         foreach ($adapters as $class) {
-            $fqcn = "\\MatthiasMullie\\Scrapbook\\Tests\\Adapters\\{$class}Test";
-
-            /** @var AdapterInterface $adapter */
-            $adapter = new $fqcn();
-
             try {
-                $this->adapters[] = $adapter->get();
+                static::$adapters[] = $this->getAdapter($class);
             } catch (Exception $e) {
                 // ignore failures during setup (e.g. Couchbase may
                 // have an unhealthy server from time to time)
@@ -44,11 +43,28 @@ abstract class AdapterProviderTestCase extends PHPUnit_Framework_TestCase
 
         // unless the environment was specified, let's just ignore those that
         // fail to init, so we don't need to setup every single adapter
-        if (!$this->adapters && !$env) {
+        if (!static::$adapters && !$env) {
             $this->markTestSkipped('Failed to initialize '.implode($failures));
         }
 
-        return $this->adapters;
+        return static::$adapters;
+    }
+
+    /**
+     * @param string $class
+     *
+     * @return KeyValueStore
+     *
+     * @throws \Exception Any exception could be thrown, depending on client
+     */
+    protected function getAdapter($class)
+    {
+        $fqcn = "\\MatthiasMullie\\Scrapbook\\Tests\\Adapters\\{$class}Test";
+
+        /** @var AdapterInterface $adapter */
+        $adapter = new $fqcn();
+
+        return $adapter->get();
     }
 
     /**
@@ -71,9 +87,9 @@ abstract class AdapterProviderTestCase extends PHPUnit_Framework_TestCase
         return $adapters;
     }
 
-    protected function tearDown()
+    protected function setUp()
     {
-        parent::tearDown();
+        parent::setUp();
 
         foreach ($this->getAdapters() as $cache) {
             $cache->flush();

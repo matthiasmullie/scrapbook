@@ -12,13 +12,10 @@ class PostgreSQLTest implements AdapterInterface
             throw new Exception('ext-pdo is not installed.');
         }
 
-        static $client = null;
-        if ($client === null) {
-            try {
-                $client = new \PDO('pgsql:user=postgres dbname=cache password=');
-            } catch (\Exception $e) {
-                throw new Exception('Failed to connect to PostgreSQL client.');
-            }
+        try {
+            $client = new \PDO('pgsql:user=postgres dbname=cache password=');
+        } catch (\Exception $e) {
+            throw new Exception('Failed to connect to PostgreSQL client.');
         }
 
         return new \MatthiasMullie\Scrapbook\Adapters\PostgreSQL($client);

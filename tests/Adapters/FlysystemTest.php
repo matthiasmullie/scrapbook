@@ -16,6 +16,10 @@ class FlysystemTest implements AdapterInterface
             throw new Exception($path.' is not writable.');
         }
 
+        if (!class_exists('League\Flysystem\Filesystem')) {
+            throw new Exception('Flysystem is not available.');
+        }
+
         $adapter = new Local($path, LOCK_EX);
         $filesystem = new FlysystemFilesystem($adapter);
 

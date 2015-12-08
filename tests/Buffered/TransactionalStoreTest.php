@@ -10,14 +10,12 @@ class TransactionalStoreTest extends AdapterProviderTestCase
 {
     public function adapterProvider()
     {
-        parent::adapterProvider();
-
         return array_map(function (KeyValueStore $adapter) {
             $transactionalCache = new TransactionalStore($adapter);
             $transactionalCache->begin();
 
             return array($transactionalCache, $adapter);
-        }, $this->adapters);
+        }, $this->getAdapters());
     }
 
     /**

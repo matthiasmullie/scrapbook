@@ -12,11 +12,8 @@ class CouchbaseTest implements AdapterInterface
             throw new Exception('ext-couchbase is not installed.');
         }
 
-        static $bucket = null;
-        if ($bucket === null) {
-            $cluster = new \CouchbaseCluster('couchbase://localhost');
-            $bucket = $cluster->openBucket('default');
-        }
+        $cluster = new \CouchbaseCluster('couchbase://localhost?detailed_errcodes=1');
+        $bucket = $cluster->openBucket('default');
 
         return new \MatthiasMullie\Scrapbook\Adapters\Couchbase($bucket);
     }
