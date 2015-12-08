@@ -29,7 +29,7 @@ class StampedeProtectorTest extends AdapterProviderTestCase
 
         return array_map(function (KeyValueStore $adapter) use ($sla) {
             return array(new StampedeProtectorStub($adapter, $sla), $adapter);
-        }, $this->adapters);
+        }, $this->getAdapters());
     }
 
     /**
@@ -40,9 +40,8 @@ class StampedeProtectorTest extends AdapterProviderTestCase
         $cache->set('key', 'value');
 
         /*
-         * Verify that we WERE able to fetch the value, DIDN'T wait (less than
-         * a tenth of the SLA, the smallest "break" that will be waited if in
-         * stampede protection) & DIDN'T create a tmp "stampede" indicator file.
+         * Verify that we WERE able to fetch the value, DIDN'T wait & DIDN'T
+         * create a tmp "stampede" indicator file.
          */
         $this->assertEquals('value', $protector->get('key'));
         $this->assertEquals(0, $protector->count);
@@ -68,7 +67,7 @@ class StampedeProtectorTest extends AdapterProviderTestCase
      */
     public function testGetStampede(StampedeProtectorStub $protector, KeyValueStore $cache)
     {
-        if (!$this->forkable($cache)) {
+        if (!$this->forkable()) {
             $this->markTestSkipped("Can't test stampede without forking");
         }
 
@@ -104,6 +103,8 @@ class StampedeProtectorTest extends AdapterProviderTestCase
             // some time because we were in stampede protection
             $this->assertEquals('value', $protector->get('key'));
             $this->assertGreaterThan(0, $protector->count);
+
+            pcntl_wait($status);
         }
     }
 
@@ -176,7 +177,7 @@ class StampedeProtectorTest extends AdapterProviderTestCase
      */
     public function testGetMultiStampede(StampedeProtectorStub $protector, KeyValueStore $cache)
     {
-        if (!$this->forkable($cache)) {
+        if (!$this->forkable()) {
             $this->markTestSkipped("Can't test stampede without forking");
         }
 
@@ -217,6 +218,8 @@ class StampedeProtectorTest extends AdapterProviderTestCase
                 $protector->getMulti(array('key', 'key2'))
             );
             $this->assertGreaterThan(0, $protector->count);
+
+            pcntl_wait($status);
         }
     }
 
@@ -225,16 +228,35 @@ class StampedeProtectorTest extends AdapterProviderTestCase
      * concurrent requests. However, forking comes with its own set of problems,
      * so we may not want to do it in a bunch of cases.
      *
-     * @param KeyValueStore $cache
-     *
      * @return bool
      */
-    protected function forkable(KeyValueStore $cache)
+    protected function forkable()
     {
         if (!function_exists('pcntl_fork')) {
             return false;
         }
 
+        // Now we know $cache will be just fine when forked, but we may be
+        // running tests against multiple adapters & not all of them may be fine
+        foreach ($this->getAdapters() as $adapter) {
+            if (!$this->forkableAdapter($adapter)) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    /**
+     * Not all adapters (well, most actually) will handle forking well.
+     * E.g. connections will be terminated as soon as child ends, ...
+     *
+     * @param KeyValueStore $cache
+     *
+     * @return bool
+     */
+    protected function forkableAdapter(KeyValueStore $cache)
+    {
         // MemoryStore can't share it's "cache" (which is a PHP array) across
         // processes. Not only does stampede protection make no sense here, we
         // can't even properly test it.
