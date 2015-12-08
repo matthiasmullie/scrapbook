@@ -28,6 +28,9 @@ before_script:
   - tests/.travis/$ADAPTER.sh
   - composer self-update && composer install --dev
 
+script:
+  - ./vendor/bin/phpunit
+
 after_script:
   - php vendor/bin/coveralls
 
