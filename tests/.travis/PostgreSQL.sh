@@ -1,8 +1,11 @@
+INI_PATH=`php -r "echo php_ini_loaded_file();"`
+PHP_VERSION=`php -r "echo phpversion();"`
+
 psql -c 'create database cache;' -U postgres
 
-if [[ "$TRAVIS_PHP_VERSION" != "hhvm" ]]
+if [[ $PHP_VERSION != *"hhvm" ]]
 then
-    echo 'extension="pgsql.so"' >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
+    echo 'extension="pgsql.so"' >> $INI_PATH
 else
     # hhvm-dev, g++-4.8 libboost-dev, libpq-dev
     sudo add-apt-repository -y ppa:ubuntu-toolchain-r/test
@@ -46,6 +49,6 @@ else
     sudo mkdir /hhvm-extensions/
     sudo mv pgsql.so /hhvm-extensions
 
-    echo "hhvm.dynamic_extension_path=/hhvm-extensions" >> /etc/hhvm/php.ini
-    echo "hhvm.dynamic_extensions[pgsql]=pgsql.so" >> /etc/hhvm/php.ini
+    echo "hhvm.dynamic_extension_path=/hhvm-extensions" >> $INI_PATH
+    echo "hhvm.dynamic_extensions[pgsql]=pgsql.so" >> $INI_PATH
 fi
