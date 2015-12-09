@@ -14,7 +14,7 @@ class MemcachedTest implements AdapterInterface
 
         try {
             $client = new \Memcached();
-            $client->addServer('localhost', 11211);
+            $client->addServer('localhost', 11200);
         } catch (\Exception $e) {
             throw new Exception('Failed to connect to Memcached client.');
         }
