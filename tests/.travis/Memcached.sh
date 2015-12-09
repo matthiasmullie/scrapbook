@@ -1,6 +1,6 @@
 INI_PATH=`php -r "echo php_ini_loaded_file();"`
 
-docker run -d -p 11200:11211 memcached
+docker run -d -p 11211:11211 memcached
 
 # install ext-memcached requirements:
 # "error: memcached support requires ZLIB"
