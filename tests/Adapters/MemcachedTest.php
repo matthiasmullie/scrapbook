@@ -14,6 +14,9 @@ class MemcachedTest implements AdapterInterface
 
         try {
             $client = new \Memcached();
+            // container (docker) used in Travis
+            $client->addServer('localhost', 11210);
+            // default
             $client->addServer('localhost', 11211);
         } catch (\Exception $e) {
             throw new Exception('Failed to connect to Memcached client.');
