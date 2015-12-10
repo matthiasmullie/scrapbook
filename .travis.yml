@@ -7,6 +7,8 @@ php:
   - 5.4
   - hhvm
 
+sudo: required
+
 env:
   - ADAPTER=MemoryStore
   - ADAPTER=Apc
@@ -21,7 +23,6 @@ env:
 
 services:
   - docker
-  - redis
 
 before_script:
   - tests/.travis/$ADAPTER.sh
@@ -48,5 +49,3 @@ matrix:
       env: ADAPTER=Couchbase
     - php: hhvm
       env: ADAPTER=PostgreSQL
-
-sudo: required
