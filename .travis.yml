@@ -10,16 +10,7 @@ php:
 sudo: required
 
 env:
-  - ADAPTER=MemoryStore
-  - ADAPTER=Apc
-  - ADAPTER=Memcached
-  - ADAPTER=Redis
-  - ADAPTER=Couchbase
-  - ADAPTER=MySQL
-  - ADAPTER=SQLite
   - ADAPTER=PostgreSQL
-  - ADAPTER=Filesystem
-  - ADAPTER=Flysystem
 
 services:
   - docker

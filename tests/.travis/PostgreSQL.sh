@@ -1,12 +1,10 @@
 INI_PATH=`php -r "echo php_ini_loaded_file();"`
 PHP_VERSION=`php -r "echo phpversion();"`
 
-psql -c 'create database cache;' -U postgres
+docker run -d -p 5431:5432 -e POSTGRES_PASSWORD= -e POSTGRES_DB=cache postgres
 
-if [[ $PHP_VERSION != *"hhvm" ]]
+if [[ $PHP_VERSION == *"hhvm" ]]
 then
-    echo 'extension="pgsql.so"' >> $INI_PATH
-else
     # hhvm-dev, g++-4.8 libboost-dev, libpq-dev
     sudo add-apt-repository -y ppa:ubuntu-toolchain-r/test
     sudo apt-get update -qq

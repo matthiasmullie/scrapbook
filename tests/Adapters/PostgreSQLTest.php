@@ -13,7 +13,11 @@ class PostgreSQLTest implements AdapterInterface
         }
 
         try {
-            $client = new \PDO('pgsql:user=postgres dbname=cache password=');
+            // container (docker) used in Travis
+            $client = new \PDO('pgsql:host=127.0.0.1;port=5431;dbname=cache', 'postgres', '');
+        } catch (\Exception $e) {
+            // default
+            $client = new \PDO('pgsql:host=127.0.0.1;dbname=cache', 'postgres', '');
         } catch (\Exception $e) {
             throw new Exception('Failed to connect to PostgreSQL client.');
         }
