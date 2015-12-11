@@ -274,20 +274,44 @@ class Couchbase implements KeyValueStore
     {
         // depending on config & client version, flush may not be available
         try {
+            /*
+             * Flush wasn't always properly implemented[1] in the client, plus
+             * it depends on server config[2] to be enabled. Return status has
+             * been null in both success & failure cases.
+             * Flush is a very pervasive function that's likely not called
+             * lightly. Since it's probably more important to know whether or
+             * not it succeeded, than having it execute as fast as possible, I'm
+             * going to add some calls and test if flush succeeded.
+             *
+             * 1: https://forums.couchbase.com/t/php-flush-isnt-doing-anything/1886/8
+             * 2: http://docs.couchbase.com/admin/admin/CLI/CBcli/cbcli-bucket-flush.html
+             */
+            $this->client->upsert('cb-flush-tester', '');
+
             $manager = $this->client->manager();
             if (method_exists($manager, 'flush')) {
                 // ext-couchbase >= 2.0.6
-                $manager->flush();
+                $result = $manager->flush();
 
-                return true;
+                return $result !== null;
             } elseif (method_exists($this->client, 'flush')) {
                 // ext-couchbase < 2.0.6
-                $this->client->flush();
+                $result = $this->client->flush();
 
-                return true;
+                return $result !== null;
             } else {
                 return false;
             }
+
+            // check if flush went through (and cleanup if it didn't)
+            $result = $this->client->get('cb-flush-tester');
+            if ($result->error) {
+                $this->client->delete('cb-flush-tester');
+
+                return false;
+            }
+
+            return true;
         } catch (\CouchbaseException $e) {
             return false;
         }

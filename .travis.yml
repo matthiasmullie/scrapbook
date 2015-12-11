@@ -37,6 +37,7 @@ after_script:
 matrix:
   fast_finish: true
   allow_failures:
+    # Travis' 7.0 doesn't yet come with pecl...
     - php: 7.0
       env: ADAPTER=Apc
     - php: 7.0
@@ -45,7 +46,5 @@ matrix:
       env: ADAPTER=Redis
     - php: 7.0
       env: ADAPTER=Couchbase
+    # Travis currently fails to install HHVM
     - php: hhvm
-      env: ADAPTER=Couchbase
-    - php: hhvm
-      env: ADAPTER=PostgreSQL
