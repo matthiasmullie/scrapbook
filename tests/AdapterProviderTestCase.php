@@ -19,8 +19,6 @@ abstract class AdapterProviderTestCase extends PHPUnit_Framework_TestCase
      */
     protected function getAdapters()
     {
-        static::$adapters = array();
-
         // re-use adapters across tests - if we keep initializing clients, they
         // may fail because of too much connections (and it's just overhead...)
         if (static::$adapters) {
