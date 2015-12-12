@@ -1,7 +1,8 @@
 INI_PATH=`php -r "echo php_ini_loaded_file();"`
 
-docker run -d -p 6378:6379 redis
+sudo kill -9 `sudo lsof -t -i:6379` # kill listeners on required port
+docker run -d -p 6379:6379 redis
 
-printf "\n" | pecl install redis
+pecl install redis
 
 echo 'extension="redis.so"' >> $INI_PATH

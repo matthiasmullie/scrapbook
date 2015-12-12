@@ -13,11 +13,6 @@ class RedisTest implements AdapterInterface
         }
 
         try {
-            // container (docker) used in Travis
-            $client = new \Redis();
-            $client->connect('127.0.0.1', 6378);
-        } catch (\Exception $e) {
-            // default
             $client = new \Redis();
             $client->connect('127.0.0.1');
         } catch (\Exception $e) {

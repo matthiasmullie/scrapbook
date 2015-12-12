@@ -1,5 +1,6 @@
 INI_PATH=`php -r "echo php_ini_loaded_file();"`
 
+sudo kill -9 `sudo lsof -t -i:11211` # kill listeners on required port
 docker run -d -p 11211:11211 memcached
 
 # install ext-memcached requirements:
