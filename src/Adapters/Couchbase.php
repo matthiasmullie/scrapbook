@@ -291,14 +291,10 @@ class Couchbase implements KeyValueStore
             $manager = $this->client->manager();
             if (method_exists($manager, 'flush')) {
                 // ext-couchbase >= 2.0.6
-                $result = $manager->flush();
-
-                return $result !== null;
+                $manager->flush();
             } elseif (method_exists($this->client, 'flush')) {
                 // ext-couchbase < 2.0.6
-                $result = $this->client->flush();
-
-                return $result !== null;
+                $this->client->flush();
             } else {
                 return false;
             }
