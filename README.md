@@ -1,4 +1,4 @@
-![Scrapbook PHP cache](http://www.scrapbook.cash/public/logo_side.png)
+[![Scrapbook PHP cache](http://www.scrapbook.cash/public/logo_side.png)](http://www.scrapbook.cash)
 
 [![Build status](https://api.travis-ci.org/matthiasmullie/scrapbook.svg?branch=master)](https://travis-ci.org/matthiasmullie/scrapbook)
 [![Code coverage](http://img.shields.io/coveralls/matthiasmullie/scrapbook.svg)](https://coveralls.io/r/matthiasmullie/scrapbook)
@@ -7,27 +7,33 @@
 [![Downloads total](http://img.shields.io/packagist/dt/matthiasmullie/scrapbook.svg)](https://packagist.org/packages/matthiasmullie/scrapbook)
 [![License](http://img.shields.io/packagist/l/matthiasmullie/scrapbook.svg)](https://github.com/matthiasmullie/scrapbook/blob/master/LICENSE)
 
+Documentation: http://www.scrapbook.cash
+
+API reference: http://docs.scrapbook.cash
+
 
 # KeyValueStore adapters
 
-Scrapbook KeyValueStore defines an interface for 3rd parties to implement
-against, ensuring that multiple cache engines are supported without having to
-rewrite. Just pull the adapter of your preferred cache engine!
+Scrapbook [KeyValueStore](http://www.scrapbook.cash/projects/key-value-store.html)
+defines an interface for 3rd parties to implement against, ensuring that
+multiple cache engines are supported without having to rewrite. Just pull
+the adapter of your preferred cache engine!
 
-A default adapter (MemoryStore) is included: it's a no-cache cache where all
-data is lost as soon as your application terminates. This is an ideal cache to
-test your implementation against, as it doesn't require you to install any
-server or dependencies and always starts from a pristine state.
+A default adapter ([MemoryStore](http://www.scrapbook.cash/adapters/memory.html))
+is included: it's a no-cache cache where all data is lost as soon as your
+application terminates. This is an ideal cache to test your implementation
+against, as it doesn't require you to install any server or dependencies
+and always starts from a pristine state.
 
 Other adapters:
-* APC
-* Memcached
-* Redis
-* Couchbase
-* MySQL
-* SQLite
-* PostgreSQL
-* Flysystem
+* [APC](http://www.scrapbook.cash/adapters/apc.html)
+* [Memcached](http://www.scrapbook.cash/adapters/memcached.html)
+* [Redis](http://www.scrapbook.cash/adapters/redis.html)
+* [Couchbase](http://www.scrapbook.cash/adapters/couchbase.html)
+* [MySQL](http://www.scrapbook.cash/adapters/mysql.html)
+* [SQLite](http://www.scrapbook.cash/adapters/sqlite.html)
+* [PostgreSQL](http://www.scrapbook.cash/adapters/postgresql.html)
+* [Flysystem](http://www.scrapbook.cash/adapters/flysystem.html)
 
 
 ## Example usage
@@ -163,10 +169,11 @@ Clears the entire cache.
 
 ## BufferedStore
 
-BufferedStore helps reduce requests to your real cache. If you need the request
-the same value more than once (from various places in your code), it can be a
-pain to keep that value around. Requesting it again from cache would be easier,
-but then you get some latency from the connection to the cache server.
+[BufferedStore](http://www.scrapbook.cash/projects/buffered-cache.html) helps
+reduce requests to your real cache. If you need the request the same value more
+than once (from various places in your code), it can be a pain to keep that
+value around. Requesting it again from cache would be easier, but then you get
+some latency from the connection to the cache server.
 
 BufferedStore will keep known values (items that you've already requested or
 written yourself) in memory. Every time you need that value in the same request,
@@ -179,9 +186,10 @@ requesting the same date multiple times!
 
 ## TransactionalStore
 
-TransactionalStore is similar to BufferedStore. It wraps around any
-KeyValueStore, but provides that one with transactional capabilities. It makes
-it possible to defer writes to a later point in time.
+[TransactionalStore](http://www.scrapbook.cash/projects/transactional-cache.html)
+is similar to BufferedStore. It wraps around any KeyValueStore, but provides
+that one with transactional capabilities. It makes it possible to defer writes
+to a later point in time.
 
 You may want to process code throughout your codebase, but not commit it any
 changes until everything has successfully been validated & written to permanent
@@ -230,17 +238,19 @@ In those cases, this huge amount of requests for data that is not at that time
 in cache, causes that expensive operation to be executed a lot of times, all at
 once.
 
-StampedeProtector is designed counteract that. If a value can't be found in
-cache, something will be stored to another key to indicate it was requested but
-didn't exist. Every follow-up request for a short period of time will find that
-indication and know another process is already generating that result, so those
-will just wait until it becomes available, instead of crippling the servers.
+[StampedeProtector](http://www.scrapbook.cash/projects/stampede-protector.html)
+is designed counteract that. If a value can't be found in cache, something will
+be stored to another key to indicate it was requested but didn't exist. Every
+follow-up request for a short period of time will find that indication and know
+another process is already generating that result, so those will just wait until
+it becomes available, instead of crippling the servers.
 
 
 # PSR-6
 
-Adds a PSR-6 layer so that any KeyValueStore-compatible adapter (or
-buffered/transactional cache) can be accessed in a PSR-6 compatible manner.
+Adds a [PSR-6](http://www.scrapbook.cash/projects/psr-cache.html) layer so that
+any KeyValueStore-compatible adapter (or buffered/transactional cache) can be
+accessed in a PSR-6 compatible manner.
 
 PSR-6 has not yet been finalized - if it changes, so will this code in response.
 
