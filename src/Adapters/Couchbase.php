@@ -305,7 +305,7 @@ class Couchbase implements KeyValueStore
 
             // check if flush went through (and cleanup if it didn't)
             $result = $this->client->get('cb-flush-tester');
-            if ($result->error) {
+            if (!$result->error) {
                 $this->client->delete('cb-flush-tester');
 
                 return false;
