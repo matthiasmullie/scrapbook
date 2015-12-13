@@ -298,18 +298,18 @@ class Couchbase implements KeyValueStore
             } else {
                 return false;
             }
-
-            // check if flush went through (and cleanup if it didn't)
-            $result = $this->client->get('cb-flush-tester');
-            if (!$result->error) {
-                $this->client->delete('cb-flush-tester');
-
-                return false;
-            }
-
-            return true;
         } catch (\CouchbaseException $e) {
             return false;
+        }
+
+        try {
+            // cleanup in case flush didn't go through; but if it did, we won't
+            // be able to remove it and know flush succeeded
+            $result = $this->client->remove('cb-flush-tester');
+            return (bool) $result->error;
+        } catch (\CouchbaseException $e) {
+            // exception: "The key does not exist on the server"
+            return true;
         }
     }
 }
