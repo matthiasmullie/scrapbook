@@ -12,12 +12,8 @@ class MemcachedTest implements AdapterInterface
             throw new Exception('ext-memcached is not installed.');
         }
 
-        try {
-            $client = new \Memcached();
-            $client->addServer('localhost', 11211);
-        } catch (\Exception $e) {
-            throw new Exception('Failed to connect to Memcached client.');
-        }
+        $client = new \Memcached();
+        $client->addServer('localhost', 11211);
 
         return new \MatthiasMullie\Scrapbook\Adapters\Memcached($client);
     }

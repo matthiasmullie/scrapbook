@@ -12,11 +12,7 @@ class PostgreSQLTest implements AdapterInterface
             throw new Exception('ext-pdo is not installed.');
         }
 
-        try {
-            $client = new \PDO('pgsql:host=127.0.0.1;dbname=cache', 'postgres', '');
-        } catch (\Exception $e) {
-            throw new Exception('Failed to connect to PostgreSQL client.');
-        }
+        $client = new \PDO('pgsql:host=127.0.0.1;dbname=cache', 'postgres', '');
 
         return new \MatthiasMullie\Scrapbook\Adapters\PostgreSQL($client);
     }

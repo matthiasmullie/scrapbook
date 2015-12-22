@@ -12,11 +12,7 @@ class SQLiteTest implements AdapterInterface
             throw new Exception('ext-pdo is not installed.');
         }
 
-        try {
-            $client = new \PDO('sqlite::memory:');
-        } catch (\Exception $e) {
-            throw new Exception('Failed to connect to SQLite client.');
-        }
+        $client = new \PDO('sqlite::memory:');
 
         return new \MatthiasMullie\Scrapbook\Adapters\SQLite($client);
     }

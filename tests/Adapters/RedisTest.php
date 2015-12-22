@@ -12,12 +12,8 @@ class RedisTest implements AdapterInterface
             throw new Exception('ext-redis is not installed.');
         }
 
-        try {
-            $client = new \Redis();
-            $client->connect('127.0.0.1');
-        } catch (\Exception $e) {
-            throw new Exception('Failed to connect to Redis client.');
-        }
+        $client = new \Redis();
+        $client->connect('127.0.0.1');
 
         return new \MatthiasMullie\Scrapbook\Adapters\Redis($client);
     }
