@@ -71,6 +71,7 @@ abstract class SQL implements KeyValueStore
         $result = $statement->fetch(PDO::FETCH_ASSOC);
 
         if (!isset($result['v'])) {
+            $token = null;
             return false;
         }
 

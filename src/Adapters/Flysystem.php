@@ -37,6 +37,8 @@ class Flysystem implements KeyValueStore
      */
     public function get($key, &$token = null)
     {
+        $token = null;
+
         // let expired-but-not-yet-deleted files be deleted first
         if (!$this->exists($key)) {
             return false;

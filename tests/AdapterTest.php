@@ -104,6 +104,21 @@ class AdapterTest extends AdapterProviderTestCase
     /**
      * @dataProvider adapterProvider
      */
+    public function testGetCasTokensOverridesTokenValue(KeyValueStore $cache)
+    {
+        $token = 'some-value';
+        $tokens = array('some-value');
+
+        $this->assertEquals(false, $cache->get('key', $token));
+        $this->assertEquals(null, $token);
+
+        $this->assertEquals(array(), $cache->getMulti(array('key'), $tokens));
+        $this->assertEquals(array(), $tokens);
+    }
+
+    /**
+     * @dataProvider adapterProvider
+     */
     public function testSetExpired(KeyValueStore $cache)
     {
         $return = $cache->set('key', 'value', time() - 2);

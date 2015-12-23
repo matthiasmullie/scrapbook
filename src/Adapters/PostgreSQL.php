@@ -27,7 +27,7 @@ class PostgreSQL extends SQL
     {
         $return = parent::get($key, $token);
 
-        if ($return !== false) {
+        if ($token !== null) {
             // BYTEA data return streams - we actually need the data in
             // serialized format, not some silly stream
             $token = $this->serialize($return);

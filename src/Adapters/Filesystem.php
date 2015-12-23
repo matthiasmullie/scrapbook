@@ -40,6 +40,7 @@ class Filesystem implements KeyValueStore
      */
     public function get($key, &$token = null)
     {
+        $token = null;
         $path = $this->path($key);
         if (!file_exists($path)) {
             return false;

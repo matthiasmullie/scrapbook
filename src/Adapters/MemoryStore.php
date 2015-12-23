@@ -52,6 +52,7 @@ class MemoryStore implements KeyValueStore
     public function get($key, &$token = null)
     {
         if (!$this->exists($key)) {
+            $token = null;
             return false;
         }
 

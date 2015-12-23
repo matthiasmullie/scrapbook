@@ -22,6 +22,7 @@ class Apc implements KeyValueStore
     {
         $value = apc_fetch($key, $success);
         if ($success === false) {
+            $token = null;
             return false;
         }
 

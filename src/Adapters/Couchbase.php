@@ -44,9 +44,11 @@ class Couchbase implements KeyValueStore
      */
     public function get($key, &$token = null)
     {
+
         try {
             $result = $this->client->get($key);
         } catch (\CouchbaseException $e) {
+            $token = null;
             return false;
         }
 
@@ -63,7 +65,7 @@ class Couchbase implements KeyValueStore
         try {
             $results = $this->client->get($keys);
         } catch (\CouchbaseException $e) {
-            return false;
+            return array();
         }
 
         $tokens = array();
