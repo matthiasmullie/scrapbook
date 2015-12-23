@@ -1,6 +1,14 @@
 # Changelog
 
 
+## [1.0.7] - 2015-12-23
+### Added
+- Properly support PHPUnit's --filter to narrow down adapters
+
+### Fixed
+- Distinguish between `false` & no value in cache, where $token should be null
+
+
 ## [1.0.6] - 2015-12-14
 ### Added
 - composer.json now requires `psr/cache`
@@ -103,3 +111,4 @@
 [1.0.4]: https://github.com/matthiasmullie/scrapbook/compare/1.0.3...1.0.4
 [1.0.5]: https://github.com/matthiasmullie/scrapbook/compare/1.0.4...1.0.5
 [1.0.6]: https://github.com/matthiasmullie/scrapbook/compare/1.0.5...1.0.6
+[1.0.7]: https://github.com/matthiasmullie/scrapbook/compare/1.0.6...1.0.7
