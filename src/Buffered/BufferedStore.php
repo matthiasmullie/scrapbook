@@ -48,30 +48,37 @@ class BufferedStore implements KeyValueStore
     }
 
     /**
+     * In addition to all writes being stored to $local, we'll also
+     * keep get() values around ;)
+     *
      * {@inheritdoc}
      */
     public function get($key, &$token = null)
     {
         $value = $this->transaction->get($key, $token);
 
-        // in addition to all writes being stored to $local, we'll also
-        // keep get() values around ;)
-        if ($value !== false && $this->local->get($key) === false) {
-            $this->local->set($key, $value);
+        // only store if we managed to retrieve a value (valid token) and it's
+        // not already in cache (or we may mess up tokens)
+        if ($token !== false) {
+            $this->local->get($key, $localToken);
+            if ($localToken !== null) {
+                $this->local->set($key, $value);
+            }
         }
 
         return $value;
     }
 
     /**
+     * In addition to all writes being stored to $local, we'll also
+     * keep get() values around ;)
+     *
      * {@inheritdoc}
      */
     public function getMulti(array $keys, array &$tokens = null)
     {
         $values = $this->transaction->getMulti($keys, $tokens);
 
-        // in addition to all writes being stored to $local, we'll also
-        // keep getMulti() values around ;)
         $missing = array_diff_key($values, $this->local->getMulti($keys));
         if (!empty($missing)) {
             $this->local->setMulti($missing);

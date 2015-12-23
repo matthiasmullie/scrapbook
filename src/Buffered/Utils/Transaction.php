@@ -81,10 +81,10 @@ class Transaction implements KeyValueStore
      */
     public function get($key, &$token = null)
     {
-        $value = $this->local->get($key);
+        $value = $this->local->get($key, $token);
 
         // short-circuit reading from real cache if we have an uncommitted flush
-        if ($this->suspend && $value === false) {
+        if ($this->suspend && $token === null) {
             // flush hasn't been committed yet, don't read from real cache!
             return false;
         }

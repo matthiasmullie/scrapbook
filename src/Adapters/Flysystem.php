@@ -61,9 +61,10 @@ class Flysystem implements KeyValueStore
         $results = array();
         $tokens = array();
         foreach ($keys as $key) {
+            $token = null;
             $value = $this->get($key, $token);
 
-            if ($value !== false) {
+            if ($token !== null) {
                 $results[$key] = $value;
                 $tokens[$key] = $token;
             }

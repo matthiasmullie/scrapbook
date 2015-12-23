@@ -42,10 +42,18 @@ class Redis implements KeyValueStore
      */
     public function get($key, &$token = null)
     {
-        $value = $this->client->get($key);
+        $this->client->multi();
+
+        $this->client->get($key);
+        $this->client->exists($key);
+
+        /** @var array $return */
+        $return = $this->client->exec();
+        $value = $return[0];
+        $exists = $return[1];
 
         // no value = quit early, don't generate a useless token
-        if ($value === false) {
+        if (!$exists) {
             return false;
         }
 
@@ -60,16 +68,29 @@ class Redis implements KeyValueStore
      */
     public function getMulti(array $keys, array &$tokens = null)
     {
-        $values = $this->client->mget($keys);
+        $this->client->multi();
+
+        $this->client->mget($keys);
+        foreach ($keys as $key) {
+            $this->client->exists($key);
+        }
+
+        /** @var array $return */
+        $return = $this->client->exec();
+
+        $values = array_shift($return);
+        $exists = $return;
+
         if ($values === false) {
             $values = array_fill_keys($keys, false);
         }
         $values = array_combine($keys, $values);
+        $exists = array_combine($keys, $exists);
 
         $tokens = array();
         foreach ($values as $key => $value) {
-            // non-existing values return false, filter those out
-            if ($value === false) {
+            // filter out non-existing values
+            if ($exists[$key] === false) {
                 unset($values[$key]);
                 continue;
             }
