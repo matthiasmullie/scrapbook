@@ -51,7 +51,8 @@ class Item implements CacheItemInterface, TaggableItemInterface
      */
     public function __construct($key, Repository $repository)
     {
-        $this->key = $key;
+        $this->key = $this->getKeyFromTaggedKey($key);
+        $this->taggedKey = $key;
 
         /*
          * Register this key (tied to this particular object) to the value
@@ -85,7 +86,7 @@ class Item implements CacheItemInterface, TaggableItemInterface
     /**
      * {@inheritdoc}
      */
-    public function getTaggedKey()
+    public function getKey()
     {
         return $this->key;
     }

@@ -59,7 +59,7 @@ class Pool implements CacheItemPoolInterface, TaggablePoolInterface
         $this->assertValidKey($key);
         $taggedKey = $this->generateCacheKey($key, $tags);
 
-        return $this->getTagItem($taggedKey);
+        return $this->getItemWithoutGenerateCacheKey($taggedKey);
     }
 
     /**
