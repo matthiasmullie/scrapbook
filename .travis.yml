@@ -30,6 +30,7 @@ before_script:
 
 script:
   - ./vendor/bin/phpunit --filter "@${ADAPTER}"
+  - ./vendor/bin/phpunit --group "PSR6_Integration"
 
 after_script:
   - php vendor/bin/coveralls

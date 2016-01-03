@@ -2,6 +2,8 @@
 
 namespace MatthiasMullie\Scrapbook\Psr6;
 
+use Cache\Taggable\TaggableItemInterface;
+use Cache\Taggable\TaggableItemTrait;
 use DateInterval;
 use DateTime;
 use DateTimeInterface;
@@ -14,8 +16,10 @@ use Psr\Cache\CacheItemInterface;
  * @copyright Copyright (c) 2014, Matthias Mullie. All rights reserved.
  * @license MIT License
  */
-class Item implements CacheItemInterface
+class Item implements CacheItemInterface, TaggableItemInterface
 {
+    use TaggableItemTrait;
+
     /**
      * @var string
      */
@@ -47,7 +51,8 @@ class Item implements CacheItemInterface
      */
     public function __construct($key, Repository $repository)
     {
-        $this->key = $key;
+        $this->key = $this->getKeyFromTaggedKey($key);
+        $this->taggedKey = $key;
 
         /*
          * Register this key (tied to this particular object) to the value

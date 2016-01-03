@@ -2,6 +2,8 @@
 
 namespace MatthiasMullie\Scrapbook\Psr6;
 
+use Cache\Taggable\TaggablePoolInterface;
+use Cache\Taggable\TaggablePoolTrait;
 use Psr\Cache\CacheItemInterface;
 use Psr\Cache\CacheItemPoolInterface;
 use MatthiasMullie\Scrapbook\KeyValueStore;
@@ -14,8 +16,10 @@ use MatthiasMullie\Scrapbook\KeyValueStore;
  * @copyright Copyright (c) 2014, Matthias Mullie. All rights reserved.
  * @license MIT License
  */
-class Pool implements CacheItemPoolInterface
+class Pool implements CacheItemPoolInterface, TaggablePoolInterface
 {
+    use TaggablePoolTrait;
+
     /**
      * List of invalid (or reserved) key characters.
      *
@@ -50,10 +54,19 @@ class Pool implements CacheItemPoolInterface
     /**
      * {@inheritdoc}
      */
-    public function getItem($key)
+    public function getItem($key, array $tags = [])
     {
         $this->assertValidKey($key);
+        $taggedKey = $this->generateCacheKey($key, $tags);
 
+        return $this->getItemWithoutGenerateCacheKey($taggedKey);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function getItemWithoutGenerateCacheKey($key)
+    {
         if (array_key_exists($key, $this->deferred)) {
             /*
              * In theory, we could request & change a deferred value. In the
@@ -77,13 +90,11 @@ class Pool implements CacheItemPoolInterface
      *
      * @return Item[]
      */
-    public function getItems(array $keys = array())
+    public function getItems(array $keys = [], array $tags = [])
     {
-        $items = array();
+        $items = [];
         foreach ($keys as $key) {
-            $this->assertValidKey($key);
-
-            $items[$key] = $this->getItem($key);
+            $items[$key] = $this->getItem($key, $tags);
         }
 
         return $items;
@@ -92,21 +103,25 @@ class Pool implements CacheItemPoolInterface
     /**
      * {@inheritdoc}
      */
-    public function hasItem($key)
+    public function hasItem($key, array $tags = [])
     {
-        $this->assertValidKey($key);
-
-        $item = $this->getItem($key);
-
-        return $item->isHit();
+        return $this->getItem($key, $tags)->isHit();
     }
 
     /**
      * {@inheritdoc}
      */
-    public function clear()
+    public function clear(array $tags = [])
     {
-        $this->deferred = array();
+        $this->deferred = [];
+
+        if (!empty($tags)) {
+            foreach ($tags as $tag) {
+                $this->flushTag($tag);
+            }
+
+            return true;
+        }
 
         return $this->store->flush();
     }
@@ -114,25 +129,28 @@ class Pool implements CacheItemPoolInterface
     /**
      * {@inheritdoc}
      */
-    public function deleteItem($key)
+    public function deleteItem($key, array $tags = [])
     {
         $this->assertValidKey($key);
+        $taggedKey = $this->generateCacheKey($key, $tags);
 
-        return $this->store->delete($key);
+        return $this->store->delete($taggedKey);
     }
 
     /**
      * {@inheritdoc}
      */
-    public function deleteItems(array $keys)
+    public function deleteItems(array $keys, array $tags = [])
     {
+        $taggedKeys = [];
         foreach ($keys as $key) {
             $this->assertValidKey($key);
-
-            unset($this->deferred[$key]);
+            $taggedKey = $this->generateCacheKey($key, $tags);
+            $taggedKeys[] = $taggedKey;
+            unset($this->deferred[$taggedKey]);
         }
 
-        $success = $this->store->deleteMulti($keys);
+        $success = $this->store->deleteMulti($taggedKeys);
 
         return !in_array(false, $success);
     }
@@ -155,7 +173,7 @@ class Pool implements CacheItemPoolInterface
             return true;
         }
 
-        return $this->store->set($item->getKey(), $item->get(), $expire);
+        return $this->store->set($item->getTaggedKey(), $item->get(), $expire);
     }
 
     /**
@@ -170,7 +188,7 @@ class Pool implements CacheItemPoolInterface
             );
         }
 
-        $this->deferred[$item->getKey()] = $item;
+        $this->deferred[$item->getTaggedKey()] = $item;
 
         return true;
     }
@@ -180,7 +198,7 @@ class Pool implements CacheItemPoolInterface
      */
     public function commit()
     {
-        $deferred = array();
+        $deferred = [];
         foreach ($this->deferred as $key => $item) {
             $expire = $item->getExpiration();
 
@@ -191,7 +209,7 @@ class Pool implements CacheItemPoolInterface
 
             // setMulti doesn't allow to set expiration times on a per-item basis,
             // so we'll have to group our requests per expiration date
-            $deferred[$expire][$item->getKey()] = $item->get();
+            $deferred[$expire][$item->getTaggedKey()] = $item->get();
         }
 
         // setMulti doesn't allow to set expiration times on a per-item basis,
@@ -223,5 +241,10 @@ class Pool implements CacheItemPoolInterface
                 'for future extension: '.static::KEY_INVALID_CHARACTERS
             );
         }
+    }
+
+    protected function validateTagName($name)
+    {
+        $this->assertValidKey($name);
     }
 }
