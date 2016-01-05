@@ -158,7 +158,8 @@
 				"$client = new \\Memcached();\n" +
 				"$client->addServer('localhost', 11211);\n" +
 				"// create Scrapbook cache object\n" +
-				"$cache = new \\MatthiasMullie\\Scrapbook\\Adapters\\Memcached($client);\n"
+				"$cache = new \\MatthiasMullie\\Scrapbook\\Adapters\\Memcached($client);\n",
+			composer: ''
 		},
 
 		redis: {
@@ -166,7 +167,8 @@
 				"$client = new \\Redis();\n" +
 				"$client->connect('127.0.0.1');\n" +
 				"// create Scrapbook cache object\n" +
-				"$cache = new \\MatthiasMullie\\Scrapbook\\Adapters\\Redis($client);\n"
+				"$cache = new \\MatthiasMullie\\Scrapbook\\Adapters\\Redis($client);\n",
+			composer: ''
 		},
 
 		couchbase: {
@@ -174,19 +176,22 @@
 				"$cluster = new \\CouchbaseCluster('couchbase://localhost');\n" +
 				"$bucket = $cluster->openBucket('default');\n" +
 				"// create Scrapbook cache object\n" +
-				"$cache = new \\MatthiasMullie\\Scrapbook\\Adapters\\Couchbase($bucket);\n"
+				"$cache = new \\MatthiasMullie\\Scrapbook\\Adapters\\Couchbase($bucket);\n",
+			composer: ''
 		},
 
 		apc: {
 			src: "// create Scrapbook cache object\n" +
-				"$cache = new \\MatthiasMullie\\Scrapbook\\Adapters\\Apc();\n"
+				"$cache = new \\MatthiasMullie\\Scrapbook\\Adapters\\Apc();\n",
+			composer: ''
 		},
 
 		mysql: {
 			src: "// create \\PDO object pointing to your MySQL server\n" +
 				"$client = new \\PDO('mysql:dbname=cache;host=127.0.0.1', 'root', '');\n" +
 				"// create Scrapbook cache object\n" +
-				"$cache = new \\MatthiasMullie\\Scrapbook\\Adapters\\MySQL($client);\n"
+				"$cache = new \\MatthiasMullie\\Scrapbook\\Adapters\\MySQL($client);\n",
+			composer: ''
 		},
 
 
@@ -194,14 +199,16 @@
 			src: "// create \\PDO object pointing to your SQLite database\n" +
 				"$client = new \\PDO('sqlite:cache.db');\n" +
 				"// create Scrapbook cache object\n" +
-				"$cache = new \\MatthiasMullie\\Scrapbook\\Adapters\\SQLite($client);\n"
+				"$cache = new \\MatthiasMullie\\Scrapbook\\Adapters\\SQLite($client);\n",
+			composer: ''
 		},
 
 		pgsql: {
 			src: "// create \\PDO object pointing to your PostgreSQL database\n" +
 				"$client = new \\PDO('pgsql:user=postgres dbname=cache password=');\n" +
 				"// create Scrapbook cache object\n" +
-				"$cache = new \\MatthiasMullie\\Scrapbook\\Adapters\\PostgreSQL($client);\n"
+				"$cache = new \\MatthiasMullie\\Scrapbook\\Adapters\\PostgreSQL($client);\n",
+			composer: ''
 		},
 
 		flysystem: {
@@ -209,12 +216,14 @@
 				"$adapter = new \\League\\Flysystem\\Adapter\\Local('/path/to/cache', LOCK_EX);\n" +
 				"$filesystem = new \\League\\Flysystem\\Filesystem($adapter);\n" +
 				"// create Scrapbook cache object\n" +
-				"$cache = new \\MatthiasMullie\\Scrapbook\\Adapters\\Flysystem($filesystem);\n"
+				"$cache = new \\MatthiasMullie\\Scrapbook\\Adapters\\Flysystem($filesystem);\n",
+			composer: 'composer require league/flysystem'
 		},
 
 		memory: {
 			src: "// create Scrapbook cache object\n" +
-				"$cache = new \\MatthiasMullie\\Scrapbook\\Adapters\\MemoryStore();\n"
+				"$cache = new \\MatthiasMullie\\Scrapbook\\Adapters\\MemoryStore();\n",
+			composer: ''
 		}
 	},
 
@@ -224,7 +233,8 @@
 				"$cache->set('key', 'value'); // returns true\n" +
 				"\n" +
 				"// get a value\n" +
-				"$cache->get('key'); // returns 'value'\n"
+				"$cache->get('key'); // returns 'value'\n",
+			composer: ''
 		},
 
 		psr6: {
@@ -239,7 +249,8 @@
 				"\n" +
 				"// ... or change the value & store it to cache\n" +
 				"$item->set('updated-value');\n" +
-				"$pool->save($item);\n"
+				"$pool->save($item);\n",
+			composer: ''
 		}
 	},
 
@@ -247,13 +258,15 @@
 		stampede: {
 			'src-begin': "// create stampede protector layer over our real cache\n" +
 						"$cache = new \\MatthiasMullie\\Scrapbook\\Scale\\StampedeProtector($cache);\n",
-			'src-end': ""
+			'src-end': "",
+			composer: ''
 		},
 
 		buffered: {
 			'src-begin': "// create buffered cache layer over our real cache\n" +
 						"$cache = new \\MatthiasMullie\\Scrapbook\\Buffered\\BufferedStore($cache);\n",
-			'src-end': ""
+			'src-end': "",
+			composer: ''
 		},
 
 		transactional: {
@@ -263,7 +276,8 @@
 						"// begin a transaction\n" +
 						"$cache->begin();\n",
 			'src-end': "// now commit all write operations\n" +
-						"$cache->commit();\n"
+						"$cache->commit();\n",
+			composer: ''
 		}
 	},
 
@@ -271,19 +285,22 @@
 		var adapter = $('#features [name=adapter]:checked').val(),
 			type = $('#features [name=type]:checked').val(),
 			extra = [],
-			src, i;
+			composer = ['composer require matthiasmullie/scrapbook'], src, i;
 
 		// gather selected extras in array
 		$('#features [name=extra]:checked').each(function() {
 			extra.push($(this).val())
 		});
 
-		// build source, based on selected values
+		// build source & composer data, based on selected values
 		src = adapters[adapter].src + "\n";
+		composer.push(adapters[adapter].composer);
+		composer.push(types[type].composer);
 		for (i in extra) {
 			if (extras[extra[i]]['src-begin']) {
 				src += extras[extra[i]]['src-begin'] + "\n";
 			}
+			composer.push(extras[extra[i]].composer);
 		}
 		src += types[type].src + "\n";
 
@@ -294,7 +311,14 @@
 		}
 
 		$('#build_source').val(src.trim());
+
+		// only display unique and non-"" composer requirements
+		composer = $.grep(composer, function(v, k){
+			return $.inArray(v ,composer) === k && v !== "";
+		});
+		$('#build_composer').val(composer.join("\n"));
 	};
+
 /*
 	// transactional auto-selects buffered
 	$('#features #extra_transactional').on('change', function() {
