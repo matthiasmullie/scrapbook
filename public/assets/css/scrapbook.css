@@ -260,3 +260,12 @@ html, body, .jPanelMenu-panel {
 .rss:before {
 	content: "\f09e";
 }
+
+
+/*
+ * Lists should display as lists
+ */
+#content-wrapper ul, #content-wrapper ol {
+    list-style: outside none disc;
+    margin: 0 0 15px 15px;
+}
