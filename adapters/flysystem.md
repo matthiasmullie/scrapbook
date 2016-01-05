@@ -6,6 +6,7 @@ weight: 7
 image: flysystem.jpg
 homepage:
 class: MatthiasMullie\Scrapbook\Adapters\Flysystem
+composer: [ 'composer require league/flysystem' ]
 ---
 
 ```php

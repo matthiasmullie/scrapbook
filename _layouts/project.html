@@ -52,6 +52,7 @@ layout: page
 		<hr class="sep20">
 
 		<h3>Composer</h3>
-		<pre>composer require matthiasmullie/scrapbook</pre>
+		<pre>composer require matthiasmullie/scrapbook{% if page.composer %}{% for requirement in page.composer %}
+{{ requirement }}{% endfor %}{% endif %}</pre>
 	</div>
 </div>
