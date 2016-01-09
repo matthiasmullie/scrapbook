@@ -1,6 +1,6 @@
 <?php
 
-namespace MatthiasMullie\scrapbook\tests\Psr6;
+namespace MatthiasMullie\Scrapbook\Tests\Psr6;
 
 use Cache\IntegrationTests\CachePoolTest;
 

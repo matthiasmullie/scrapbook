@@ -1,6 +1,6 @@
 <?php
 
-namespace MatthiasMullie\scrapbook\tests\Psr6;
+namespace MatthiasMullie\Scrapbook\Tests\Psr6;
 
 use MatthiasMullie\Scrapbook\KeyValueStore;
 use MatthiasMullie\Scrapbook\Tests\Adapters\AdapterInterface;
