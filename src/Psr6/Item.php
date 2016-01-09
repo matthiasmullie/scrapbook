@@ -42,6 +42,11 @@ class Item implements CacheItemInterface
     protected $expire = 0;
 
     /**
+     * @var bool
+     */
+    protected $isHit = null;
+
+    /**
      * @param string     $key
      * @param Repository $repository
      */
@@ -119,6 +124,10 @@ class Item implements CacheItemInterface
      */
     public function isHit()
     {
+        if ($this->isHit !== null) {
+            return $this->isHit;
+        }
+
         return $this->repository->exists($this->hash);
     }
 
@@ -169,5 +178,16 @@ class Item implements CacheItemInterface
     public function getExpiration()
     {
         return $this->expire;
+    }
+
+    /**
+     * Allow isHit to be override, in case it's a value that is returned from
+     * memory, when a value is being saved deferred.
+     *
+     * @param bool $isHit
+     */
+    public function overrideIsHit($isHit)
+    {
+        $this->isHit = $isHit;
     }
 }

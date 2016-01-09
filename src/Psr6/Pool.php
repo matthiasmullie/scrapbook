@@ -53,7 +53,6 @@ class Pool implements CacheItemPoolInterface
     public function getItem($key)
     {
         $this->assertValidKey($key);
-
         if (array_key_exists($key, $this->deferred)) {
             /*
              * In theory, we could request & change a deferred value. In the
@@ -63,8 +62,15 @@ class Pool implements CacheItemPoolInterface
              * be passed by-ref without the cloning)
              */
             $value = $this->deferred[$key];
+            $item = is_object($value) ? clone $value : $value;
 
-            return is_object($value) ? clone $value : $value;
+            /*
+             * Deferred items should identify as being hit:
+             * @see https://groups.google.com/forum/?fromgroups#!topic/php-fig/pxy_VYgm2sU
+             */
+            $item->overrideIsHit(true);
+
+            return $item;
         }
 
         // return a stub object - the real call to the cache store will only be
@@ -171,6 +177,7 @@ class Pool implements CacheItemPoolInterface
         }
 
         $this->deferred[$item->getKey()] = $item;
+        $item->overrideIsHit(true);
 
         return true;
     }
