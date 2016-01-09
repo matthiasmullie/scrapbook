@@ -124,7 +124,12 @@ class Pool implements CacheItemPoolInterface
     {
         $this->assertValidKey($key);
 
-        return $this->store->delete($key);
+        $this->store->delete($key);
+        unset($this->deferred[$key]);
+
+        // as long as the item is gone from the cache (even if it never existed
+        // and delete failed because of that), we should return `true`
+        return true;
     }
 
     /**
@@ -138,9 +143,11 @@ class Pool implements CacheItemPoolInterface
             unset($this->deferred[$key]);
         }
 
-        $success = $this->store->deleteMulti($keys);
+        $this->store->deleteMulti($keys);
 
-        return !in_array(false, $success);
+        // as long as the item is gone from the cache (even if it never existed
+        // and delete failed because of that), we should return `true`
+        return true;
     }
 
     /**

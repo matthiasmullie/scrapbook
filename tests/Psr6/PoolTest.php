@@ -145,6 +145,17 @@ class PoolTest extends Psr6TestCase
     /**
      * @dataProvider adapterProvider
      */
+    public function testPoolDeleteNonExistingItem(KeyValueStore $cache, Pool $pool)
+    {
+        $return = $pool->deleteItem('key');
+        $this->assertEquals(true, $return);
+        $this->assertEquals(false, $cache->get('key'));
+        $this->assertEquals(null, $pool->getItem('key')->get());
+    }
+
+    /**
+     * @dataProvider adapterProvider
+     */
     public function testPoolDeleteItemSetViaPool(KeyValueStore $cache, Pool $pool)
     {
         $item = $pool->getItem('key');
@@ -164,6 +175,17 @@ class PoolTest extends Psr6TestCase
     {
         $cache->set('key', 'value');
 
+        $return = $pool->deleteItems(array('key'));
+        $this->assertEquals(true, $return);
+        $this->assertEquals(false, $cache->get('key'));
+        $this->assertEquals(null, $pool->getItem('key')->get());
+    }
+
+    /**
+     * @dataProvider adapterProvider
+     */
+    public function testPoolDeleteNonExistingItems(KeyValueStore $cache, Pool $pool)
+    {
         $return = $pool->deleteItems(array('key'));
         $this->assertEquals(true, $return);
         $this->assertEquals(false, $cache->get('key'));
