@@ -222,6 +222,12 @@ class Pool implements CacheItemPoolInterface
      */
     protected function assertValidKey($key)
     {
+        if (!is_string($key)) {
+            throw new InvalidArgumentException(
+                'Invalid key: '.var_export($key, true).'. Key should be a string.'
+            );
+        }
+
         // valid key according to PSR-6 rules
         $invalid = preg_quote(static::KEY_INVALID_CHARACTERS, '/');
         if (preg_match('/['.$invalid.']/', $key)) {
