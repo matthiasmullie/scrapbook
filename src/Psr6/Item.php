@@ -159,6 +159,9 @@ class Item implements CacheItemInterface
             $this->expire = (int) $expire->format('U');
         } elseif (is_int($time)) {
             $this->expire = time() + $time;
+        } elseif (is_null($time)) {
+            // this is allowed, but just defaults to infinite
+            $this->expire = 0;
         } else {
             throw new InvalidArgumentException(
                 'Invalid time: '.serialize($time).'. Must be integer or '.
