@@ -47,6 +47,12 @@ class Pool implements CacheItemPoolInterface
         $this->repository = new Repository($store);
     }
 
+    public function __destruct()
+    {
+        // make sure all deferred items are actually saved
+        $this->commit();
+    }
+
     /**
      * {@inheritdoc}
      */
