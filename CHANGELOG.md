@@ -1,6 +1,11 @@
 # Changelog
 
 
+## [1.0.9] - 2016-xx-xx
+### Fixed
+- Worked around APC's weird behavior of only clearing expires per page request
+
+
 ## [1.0.8] - 2016-01-12
 ### Fixed
 - Deferred items now register as hit in psr/cache Item

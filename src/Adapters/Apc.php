@@ -16,10 +16,30 @@ use MatthiasMullie\Scrapbook\KeyValueStore;
 class Apc implements KeyValueStore
 {
     /**
+     * APC does this crazy thing of only deleting expired data on every new
+     * (page) request, not checking it when you actually retrieve the value
+     * (which you may just have set in the same request)
+     * Since it's totally possible to store values that expire in the same
+     * request, we'll keep track of those expiration times here & filter them
+     * out in case they did expire.
+     *
+     * @see http://stackoverflow.com/questions/11750223/apc-user-cache-entries-not-expiring
+     *
+     * @var array
+     */
+    protected $expires = array();
+
+    /**
      * {@inheritdoc}
      */
     public function get($key, &$token = null)
     {
+        // check for values that were just stored in this request but have
+        // actually expired by now
+        if (isset($this->expires[$key]) && $this->expires[$key] < time()) {
+            return false;
+        }
+
         $value = apc_fetch($key, $success);
         if ($success === false) {
             $token = null;
@@ -37,6 +57,14 @@ class Apc implements KeyValueStore
      */
     public function getMulti(array $keys, array &$tokens = null)
     {
+        // check for values that were just stored in this request but have
+        // actually expired by now
+        foreach ($keys as $i => $key) {
+            if (isset($this->expires[$key]) && $this->expires[$key] < time()) {
+                unset($keys[$i]);
+            }
+        }
+
         $values = apc_fetch($keys);
 
         $tokens = array();
@@ -67,6 +95,7 @@ class Apc implements KeyValueStore
         }
 
         $success = apc_store($key, $value, $ttl);
+        $this->expire($key, $ttl);
         $this->unlock($key);
 
         return $success;
@@ -95,6 +124,7 @@ class Apc implements KeyValueStore
         if ($items) {
             // only write to those where lock was acquired
             apc_store($items, null, $ttl);
+            $this->expire(array_keys($items), $ttl);
             $this->unlock(array_keys($items));
         }
 
@@ -117,6 +147,7 @@ class Apc implements KeyValueStore
         }
 
         $success = apc_delete($key);
+        unset($this->expires[$key]);
         $this->unlock($key);
 
         return $success;
@@ -135,8 +166,8 @@ class Apc implements KeyValueStore
         // only delete those where lock was acquired
         if ($keys) {
             /*
-             * Contrary to the docs, apc_delete also accepts an array of multiple
-             * keys to be deleted
+             * Contrary to the docs, apc_delete also accepts an array of
+             * multiple keys to be deleted
              *
              * @see http://php.net/manual/en/function.apc-delete.php
              */
@@ -147,6 +178,7 @@ class Apc implements KeyValueStore
         $return = array();
         foreach ($keys as $key) {
             $return[$key] = !in_array($key, $failed);
+            unset($this->expires[$key]);
         }
 
         return $return;
@@ -172,6 +204,7 @@ class Apc implements KeyValueStore
         }
 
         $success = apc_add($key, $value, $ttl);
+        $this->expire($key, $ttl);
         $this->unlock($key);
 
         return $success;
@@ -214,6 +247,12 @@ class Apc implements KeyValueStore
             return false;
         }
 
+        // check for values that were just stored in this request but have
+        // actually expired by now
+        if (isset($this->expires[$key]) && $this->expires[$key] < time()) {
+            return false;
+        }
+
         // get current value, to compare with token
         $compare = apc_fetch($key);
 
@@ -232,12 +271,14 @@ class Apc implements KeyValueStore
         // negative TTLs don't always seem to properly treat the key as deleted
         if ($ttl < 0) {
             apc_delete($key);
+            unset($this->expires[$key]);
             $this->unlock($key);
 
             return true;
         }
 
         $success = apc_store($key, $value, $ttl);
+        $this->expire($key, $ttl);
         $this->unlock($key);
 
         return $success;
@@ -308,6 +349,8 @@ class Apc implements KeyValueStore
      */
     public function flush()
     {
+        $this->expires = array();
+
         return apc_clear_cache('user');
     }
 
@@ -475,5 +518,31 @@ class Apc implements KeyValueStore
         apc_delete($keys);
 
         return true;
+    }
+
+    /**
+     * Store the expiration time for items we're setting in this request, to
+     * work around APC's behavior of only clearing expires per page request.
+     *
+     * @see static::$expires
+     *
+     * @param array $key
+     * @param int   $ttl
+     */
+    protected function expire($key = array(), $ttl = 0)
+    {
+        if ($ttl === 0) {
+            // when storing indefinitely, there's no point in keeping it around,
+            // it won't just expire
+            return;
+        }
+
+        // $key can be both string (1 key) or array (multiple)
+        $keys = (array) $key;
+
+        $time = time() + $ttl;
+        foreach ($keys as $key) {
+            $this->expires[$key] = $time;
+        }
     }
 }
