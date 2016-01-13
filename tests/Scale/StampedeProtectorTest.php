@@ -10,9 +10,9 @@ use MatthiasMullie\Scrapbook\Adapters\Redis;
 use MatthiasMullie\Scrapbook\Adapters\SQL;
 use MatthiasMullie\Scrapbook\KeyValueStore;
 use MatthiasMullie\Scrapbook\Tests\AdapterProvider;
-use MatthiasMullie\Scrapbook\Tests\AdapterTest;
+use MatthiasMullie\Scrapbook\Tests\AdapterTestCase;
 
-class StampedeProtectorTest extends AdapterTest
+class StampedeProtectorTest extends AdapterTestCase
 {
     /**
      * Time (in milliseconds) to protect against stampede.
