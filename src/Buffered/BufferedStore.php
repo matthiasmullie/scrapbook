@@ -49,7 +49,7 @@ class BufferedStore implements KeyValueStore
 
     /**
      * In addition to all writes being stored to $local, we'll also
-     * keep get() values around ;)
+     * keep get() values around ;).
      *
      * {@inheritdoc}
      */
@@ -71,7 +71,7 @@ class BufferedStore implements KeyValueStore
 
     /**
      * In addition to all writes being stored to $local, we'll also
-     * keep get() values around ;)
+     * keep get() values around ;).
      *
      * {@inheritdoc}
      */

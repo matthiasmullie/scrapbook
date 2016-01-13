@@ -55,6 +55,7 @@ class Redis implements KeyValueStore
         // no value = quit early, don't generate a useless token
         if (!$exists) {
             $token = null;
+
             return false;
         }
 

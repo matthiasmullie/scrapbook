@@ -72,6 +72,7 @@ abstract class SQL implements KeyValueStore
 
         if (!isset($result['v'])) {
             $token = null;
+
             return false;
         }
 
