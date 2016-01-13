@@ -3,51 +3,44 @@
 namespace MatthiasMullie\Scrapbook\Tests\Psr6;
 
 use ReflectionObject;
-use MatthiasMullie\Scrapbook\KeyValueStore;
 use MatthiasMullie\Scrapbook\Psr6\Pool;
 
 class RepositoryTest extends Psr6TestCase
 {
-    /**
-     * @dataProvider adapterProvider
-     */
-    public function testDestructUnresolvedItem(KeyValueStore $cache, Pool $pool)
+    public function testDestructUnresolvedItem()
     {
         // add an item
-        $item = $pool->getItem('key');
+        $item = $this->pool->getItem('key');
 
-        list($unresolved, $resolved) = $this->getRepositoryData($pool);
+        list($unresolved, $resolved) = $this->getRepositoryData($this->pool);
         $this->assertNotEmpty($unresolved);
         $this->assertEmpty($resolved);
 
         // item should now get removed from repository
         unset($item);
 
-        list($unresolved, $resolved) = $this->getRepositoryData($pool);
+        list($unresolved, $resolved) = $this->getRepositoryData($this->pool);
         $this->assertEmpty($unresolved);
         $this->assertEmpty($resolved);
     }
 
-    /**
-     * @dataProvider adapterProvider
-     */
-    public function testDestructResolvedItem(KeyValueStore $cache, Pool $pool)
+    public function testDestructResolvedItem()
     {
         // add to cache, so there is something to resolve
-        $cache->set('key', 'value');
+        $this->cache->set('key', 'value');
 
         // add an item
-        $item = $pool->getItem('key');
+        $item = $this->pool->getItem('key');
         $item->get();
 
-        list($unresolved, $resolved) = $this->getRepositoryData($pool);
+        list($unresolved, $resolved) = $this->getRepositoryData($this->pool);
         $this->assertEmpty($unresolved);
         $this->assertNotEmpty($resolved);
 
         // item should now get removed from repository
         unset($item);
 
-        list($unresolved, $resolved) = $this->getRepositoryData($pool);
+        list($unresolved, $resolved) = $this->getRepositoryData($this->pool);
         $this->assertEmpty($unresolved);
         $this->assertEmpty($resolved);
     }

@@ -4,6 +4,10 @@ namespace MatthiasMullie\Scrapbook\Tests\Adapters;
 
 use MatthiasMullie\Scrapbook\Exception\Exception;
 
+/**
+ * @group default
+ * @group Couchbase
+ */
 class CouchbaseTest implements AdapterInterface
 {
     public function get()

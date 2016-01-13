@@ -9,9 +9,10 @@ use MatthiasMullie\Scrapbook\Adapters\MemoryStore;
 use MatthiasMullie\Scrapbook\Adapters\Redis;
 use MatthiasMullie\Scrapbook\Adapters\SQL;
 use MatthiasMullie\Scrapbook\KeyValueStore;
-use MatthiasMullie\Scrapbook\Tests\AdapterProviderTestCase;
+use MatthiasMullie\Scrapbook\Tests\AdapterProvider;
+use MatthiasMullie\Scrapbook\Tests\AdapterTest;
 
-class StampedeProtectorTest extends AdapterProviderTestCase
+class StampedeProtectorTest extends AdapterTest
 {
     /**
      * Time (in milliseconds) to protect against stampede.
@@ -20,52 +21,42 @@ class StampedeProtectorTest extends AdapterProviderTestCase
      */
     const SLA = 100;
 
-    public function adapterProvider()
+    /**
+     * @var StampedeProtectorStub
+     */
+    protected $protector;
+
+    public function setAdapter(KeyValueStore $adapter)
     {
-        parent::adapterProvider();
-
-        // can't access "static" inside closure in PHP < 5.4
-        $sla = static::SLA;
-
-        return array_map(function (KeyValueStore $adapter) use ($sla) {
-            return array(new StampedeProtectorStub($adapter, $sla), $adapter);
-        }, $this->getAdapters());
+        $this->cache = $adapter;
+        $this->protector = new StampedeProtectorStub($adapter, static::SLA);
     }
 
-    /**
-     * @dataProvider adapterProvider
-     */
-    public function testGetExisting(StampedeProtectorStub $protector, KeyValueStore $cache)
+    public function testGetExisting()
     {
-        $cache->set('key', 'value');
+        $this->cache->set('key', 'value');
 
         /*
          * Verify that we WERE able to fetch the value, DIDN'T wait & DIDN'T
          * create a tmp "stampede" indicator file.
          */
-        $this->assertEquals('value', $protector->get('key'));
-        $this->assertEquals(0, $protector->count);
-        $this->assertEquals(false, $cache->get('key.stampede'));
+        $this->assertEquals('value', $this->protector->get('key'));
+        $this->assertEquals(0, $this->protector->count);
+        $this->assertEquals(false, $this->cache->get('key.stampede'));
     }
 
-    /**
-     * @dataProvider adapterProvider
-     */
-    public function testGetNonExisting(StampedeProtectorStub $protector, KeyValueStore $cache)
+    public function testGetNonExisting()
     {
         /*
          * Verify that we WEREN'T able to fetch the value, DIDN'T wait & DID
          * create a tmp "stampede" indicator file.
          */
-        $this->assertEquals(false, $protector->get('key'));
-        $this->assertEquals(0, $protector->count);
-        $this->assertEquals('', $cache->get('key.stampede'));
+        $this->assertEquals(false, $this->protector->get('key'));
+        $this->assertEquals(0, $this->protector->count);
+        $this->assertEquals('', $this->cache->get('key.stampede'));
     }
 
-    /**
-     * @dataProvider adapterProvider
-     */
-    public function testGetStampede(StampedeProtectorStub $protector, KeyValueStore $cache)
+    public function testGetStampede()
     {
         if (!$this->forkable()) {
             $this->markTestSkipped("Can't test stampede without forking");
@@ -77,14 +68,14 @@ class StampedeProtectorTest extends AdapterProviderTestCase
         } elseif ($pid === 0) {
             // request non-existing key: this should make us go in stampede-
             // protection mode if another process/thread requests it again...
-            $protector->get('key');
+            $this->protector->get('key');
 
             // meanwhile, sleep for a small portion of the stampede-protection
             // time - this could be an expensive computation
             usleep(static::SLA / 10 * 1000 + 1);
 
             // now that we've computed the new value, store it!
-            $protector->set('key', 'value');
+            $this->protector->set('key', 'value');
 
             // exit child process, since I don't want the child to output any
             // test results (would be rather confusing to have output twice)
@@ -95,25 +86,22 @@ class StampedeProtectorTest extends AdapterProviderTestCase
              * start testing stampede protection until the other thread has done
              * the first request though, so let's wait a bit...
              */
-            while ($cache->getMulti(array('key', 'key.stampede')) === array()) {
+            while ($this->cache->getMulti(array('key', 'key.stampede')) === array()) {
                 usleep(10);
             }
 
             // verify that we WERE able to fetch the value, but had to wait for
             // some time because we were in stampede protection
-            $this->assertEquals('value', $protector->get('key'));
-            $this->assertGreaterThan(0, $protector->count);
+            $this->assertEquals('value', $this->protector->get('key'));
+            $this->assertGreaterThan(0, $this->protector->count);
 
             pcntl_wait($status);
         }
     }
 
-    /**
-     * @dataProvider adapterProvider
-     */
-    public function testGetMultiExisting(StampedeProtectorStub $protector, KeyValueStore $cache)
+    public function testGetMultiExisting()
     {
-        $cache->setMulti(array('key' => 'value', 'key2' => 'value2'));
+        $this->cache->setMulti(array('key' => 'value', 'key2' => 'value2'));
 
         /*
          * Verify that we WERE able to fetch the values, DIDN'T wait & DIDN'T
@@ -121,19 +109,16 @@ class StampedeProtectorTest extends AdapterProviderTestCase
          */
         $this->assertEquals(
             array('key' => 'value', 'key2' => 'value2'),
-            $protector->getMulti(array('key', 'key2'))
+            $this->protector->getMulti(array('key', 'key2'))
         );
-        $this->assertEquals(0, $protector->count);
+        $this->assertEquals(0, $this->protector->count);
         $this->assertEquals(
             array(),
-            $cache->getMulti(array('key.stampede', 'key2.stampede'))
+            $this->cache->getMulti(array('key.stampede', 'key2.stampede'))
         );
     }
 
-    /**
-     * @dataProvider adapterProvider
-     */
-    public function testGetMultiNonExisting(StampedeProtectorStub $protector, KeyValueStore $cache)
+    public function testGetMultiNonExisting()
     {
         /*
          * Verify that we WEREN'T able to fetch the values, DIDN'T wait & DID
@@ -141,21 +126,18 @@ class StampedeProtectorTest extends AdapterProviderTestCase
          */
         $this->assertEquals(
             array(),
-            $protector->getMulti(array('key', 'key2'))
+            $this->protector->getMulti(array('key', 'key2'))
         );
-        $this->assertEquals(0, $protector->count);
+        $this->assertEquals(0, $this->protector->count);
         $this->assertEquals(
             array('key.stampede' => '', 'key2.stampede' => ''),
-            $cache->getMulti(array('key.stampede', 'key2.stampede'))
+            $this->cache->getMulti(array('key.stampede', 'key2.stampede'))
         );
     }
 
-    /**
-     * @dataProvider adapterProvider
-     */
-    public function testGetMultiExistingAndNonExisting(StampedeProtectorStub $protector, KeyValueStore $cache)
+    public function testGetMultiExistingAndNonExisting()
     {
-        $cache->set('key', 'value');
+        $this->cache->set('key', 'value');
 
         /*
          * Verify that we WERE & WEREN'T able to fetch the values, DIDN'T wait &
@@ -163,25 +145,22 @@ class StampedeProtectorTest extends AdapterProviderTestCase
          */
         $this->assertEquals(
             array('key' => 'value'),
-            $protector->getMulti(array('key', 'key2'))
+            $this->protector->getMulti(array('key', 'key2'))
         );
-        $this->assertEquals(0, $protector->count);
+        $this->assertEquals(0, $this->protector->count);
         $this->assertEquals(
             array('key2.stampede' => ''),
-            $cache->getMulti(array('key.stampede', 'key2.stampede'))
+            $this->cache->getMulti(array('key.stampede', 'key2.stampede'))
         );
     }
 
-    /**
-     * @dataProvider adapterProvider
-     */
-    public function testGetMultiStampede(StampedeProtectorStub $protector, KeyValueStore $cache)
+    public function testGetMultiStampede()
     {
         if (!$this->forkable()) {
             $this->markTestSkipped("Can't test stampede without forking");
         }
 
-        $cache->set('key2', 'value2');
+        $this->cache->set('key2', 'value2');
 
         $pid = pcntl_fork();
         if ($pid === -1) {
@@ -189,14 +168,14 @@ class StampedeProtectorTest extends AdapterProviderTestCase
         } elseif ($pid === 0) {
             // request non-existing key: this should make us go in stampede-
             // protection mode if another process/thread requests it again...
-            $protector->getMulti(array('key', 'key2'));
+            $this->protector->getMulti(array('key', 'key2'));
 
             // meanwhile, sleep for a small portion of the stampede-protection
             // time - this could be an expensive computation
             usleep(static::SLA / 10 * 1000 + 1);
 
             // now that we've computed the new value, store it!
-            $protector->set('key', 'value');
+            $this->protector->set('key', 'value');
 
             // exit child process, since I don't want the child to output any
             // test results (would be rather confusing to have output twice)
@@ -207,7 +186,7 @@ class StampedeProtectorTest extends AdapterProviderTestCase
              * start testing stampede protection until the other thread has done
              * the first request though, so let's wait a bit...
              */
-            while ($cache->getMulti(array('key', 'key.stampede')) === array()) {
+            while ($this->cache->getMulti(array('key', 'key.stampede')) === array()) {
                 usleep(10);
             }
 
@@ -215,9 +194,9 @@ class StampedeProtectorTest extends AdapterProviderTestCase
             // some time because we were in stampede protection
             $this->assertEquals(
                 array('key' => 'value', 'key2' => 'value2'),
-                $protector->getMulti(array('key', 'key2'))
+                $this->protector->getMulti(array('key', 'key2'))
             );
-            $this->assertGreaterThan(0, $protector->count);
+            $this->assertGreaterThan(0, $this->protector->count);
 
             pcntl_wait($status);
         }
@@ -238,7 +217,8 @@ class StampedeProtectorTest extends AdapterProviderTestCase
 
         // Now we know $cache will be just fine when forked, but we may be
         // running tests against multiple adapters & not all of them may be fine
-        foreach ($this->getAdapters() as $adapter) {
+        $provider = new AdapterProvider(new static);
+        foreach ($provider->getAdapters() as $adapter) {
             if (!$this->forkableAdapter($adapter)) {
                 return false;
             }

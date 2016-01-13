@@ -2,251 +2,197 @@
 
 namespace MatthiasMullie\Scrapbook\Tests\Psr6;
 
-use MatthiasMullie\Scrapbook\KeyValueStore;
-use MatthiasMullie\Scrapbook\Psr6\Pool;
-
 class PoolTest extends Psr6TestCase
 {
-    /**
-     * @dataProvider adapterProvider
-     */
-    public function testPoolGetItem(KeyValueStore $cache, Pool $pool)
+    public function testPoolGetItem()
     {
-        $cache->set('key', 'value');
+        $this->cache->set('key', 'value');
 
         // get existing item
-        $item = $pool->getItem('key');
+        $item = $this->pool->getItem('key');
         $this->assertEquals('value', $item->get());
 
         // get non-existent item
-        $item = $pool->getItem('key2');
+        $item = $this->pool->getItem('key2');
         $this->assertEquals(null, $item->get());
     }
 
-    /**
-     * @dataProvider adapterProvider
-     */
-    public function testPoolGetItemSetViaPool(KeyValueStore $cache, Pool $pool)
+    public function testPoolGetItemSetViaPool()
     {
-        $item = $pool->getItem('key');
+        $item = $this->pool->getItem('key');
         $item->set('value');
-        $pool->save($item);
+        $this->pool->save($item);
 
         // get existing item
-        $item = $pool->getItem('key');
+        $item = $this->pool->getItem('key');
         $this->assertEquals('value', $item->get());
 
         // get non-existent item
-        $item = $pool->getItem('key2');
+        $item = $this->pool->getItem('key2');
         $this->assertEquals(null, $item->get());
     }
 
-    /**
-     * @dataProvider adapterProvider
-     */
-    public function testPoolGetItems(KeyValueStore $cache, Pool $pool)
+    public function testPoolGetItems()
     {
-        $cache->set('key', 'value');
+        $this->cache->set('key', 'value');
 
         // get existing & non-existent item
-        $items = $pool->getItems(array('key', 'key2'));
+        $items = $this->pool->getItems(array('key', 'key2'));
         $this->assertEquals('value', $items['key']->get());
         $this->assertEquals(null, $items['key2']->get());
     }
 
-    /**
-     * @dataProvider adapterProvider
-     */
-    public function testPoolGetItemsSetViaPool(KeyValueStore $cache, Pool $pool)
+    public function testPoolGetItemsSetViaPool()
     {
-        $item = $pool->getItem('key');
+        $item = $this->pool->getItem('key');
         $item->set('value');
-        $pool->save($item);
+        $this->pool->save($item);
 
         // get existing & non-existent item
-        $items = $pool->getItems(array('key', 'key2'));
+        $items = $this->pool->getItems(array('key', 'key2'));
         $this->assertEquals('value', $items['key']->get());
         $this->assertEquals(null, $items['key2']->get());
     }
 
-    /**
-     * @dataProvider adapterProvider
-     */
-    public function testPoolHasItem(KeyValueStore $cache, Pool $pool)
+    public function testPoolHasItem()
     {
-        $cache->set('key', 'value');
+        $this->cache->set('key', 'value');
 
         // has existing item
-        $this->assertEquals(true, $pool->hasItem('key'));
+        $this->assertEquals(true, $this->pool->hasItem('key'));
 
         // has non-existent item
-        $this->assertEquals(false, $pool->hasItem('key2'));
+        $this->assertEquals(false, $this->pool->hasItem('key2'));
     }
 
-    /**
-     * @dataProvider adapterProvider
-     */
-    public function testPoolHasItemSetViaPool(KeyValueStore $cache, Pool $pool)
+    public function testPoolHasItemSetViaPool()
     {
-        $item = $pool->getItem('key');
+        $item = $this->pool->getItem('key');
         $item->set('value');
-        $pool->save($item);
+        $this->pool->save($item);
 
         // has existing item
-        $this->assertEquals(true, $pool->hasItem('key'));
+        $this->assertEquals(true, $this->pool->hasItem('key'));
 
         // has non-existent item
-        $this->assertEquals(false, $pool->hasItem('key2'));
+        $this->assertEquals(false, $this->pool->hasItem('key2'));
     }
 
-    /**
-     * @dataProvider adapterProvider
-     */
-    public function testPoolClear(KeyValueStore $cache, Pool $pool)
+    public function testPoolClear()
     {
-        $cache->set('key', 'value');
+        $this->cache->set('key', 'value');
 
-        $return = $pool->clear();
+        $return = $this->pool->clear();
 
         $this->assertEquals(true, $return);
-        $this->assertEquals(false, $cache->get('key'));
-        $this->assertEquals(null, $pool->getItem('key')->get());
+        $this->assertEquals(false, $this->cache->get('key'));
+        $this->assertEquals(null, $this->pool->getItem('key')->get());
     }
 
-    /**
-     * @dataProvider adapterProvider
-     */
-    public function testPoolClearSetViaPool(KeyValueStore $cache, Pool $pool)
+    public function testPoolClearSetViaPool()
     {
-        $item = $pool->getItem('key');
+        $item = $this->pool->getItem('key');
         $item->set('value');
-        $pool->save($item);
+        $this->pool->save($item);
 
-        $return = $pool->clear();
+        $return = $this->pool->clear();
 
         $this->assertEquals(true, $return);
-        $this->assertEquals(false, $cache->get('key'));
-        $this->assertEquals(null, $pool->getItem('key')->get());
+        $this->assertEquals(false, $this->cache->get('key'));
+        $this->assertEquals(null, $this->pool->getItem('key')->get());
     }
 
-    /**
-     * @dataProvider adapterProvider
-     */
-    public function testPoolDeleteItem(KeyValueStore $cache, Pool $pool)
+    public function testPoolDeleteItem()
     {
-        $cache->set('key', 'value');
+        $this->cache->set('key', 'value');
 
-        $return = $pool->deleteItem('key');
+        $return = $this->pool->deleteItem('key');
         $this->assertEquals(true, $return);
-        $this->assertEquals(false, $cache->get('key'));
-        $this->assertEquals(null, $pool->getItem('key')->get());
+        $this->assertEquals(false, $this->cache->get('key'));
+        $this->assertEquals(null, $this->pool->getItem('key')->get());
     }
 
-    /**
-     * @dataProvider adapterProvider
-     */
-    public function testPoolDeleteNonExistingItem(KeyValueStore $cache, Pool $pool)
+    public function testPoolDeleteNonExistingItem()
     {
-        $return = $pool->deleteItem('key');
+        $return = $this->pool->deleteItem('key');
         $this->assertEquals(true, $return);
-        $this->assertEquals(false, $cache->get('key'));
-        $this->assertEquals(null, $pool->getItem('key')->get());
+        $this->assertEquals(false, $this->cache->get('key'));
+        $this->assertEquals(null, $this->pool->getItem('key')->get());
     }
 
-    /**
-     * @dataProvider adapterProvider
-     */
-    public function testPoolDeleteItemSetViaPool(KeyValueStore $cache, Pool $pool)
+    public function testPoolDeleteItemSetViaPool()
     {
-        $item = $pool->getItem('key');
+        $item = $this->pool->getItem('key');
         $item->set('value');
-        $pool->save($item);
+        $this->pool->save($item);
 
-        $return = $pool->deleteItem('key');
+        $return = $this->pool->deleteItem('key');
         $this->assertEquals(true, $return);
-        $this->assertEquals(false, $cache->get('key'));
-        $this->assertEquals(null, $pool->getItem('key')->get());
+        $this->assertEquals(false, $this->cache->get('key'));
+        $this->assertEquals(null, $this->pool->getItem('key')->get());
     }
 
-    /**
-     * @dataProvider adapterProvider
-     */
-    public function testPoolDeleteItems(KeyValueStore $cache, Pool $pool)
+    public function testPoolDeleteItems()
     {
-        $cache->set('key', 'value');
+        $this->cache->set('key', 'value');
 
-        $return = $pool->deleteItems(array('key'));
+        $return = $this->pool->deleteItems(array('key'));
         $this->assertEquals(true, $return);
-        $this->assertEquals(false, $cache->get('key'));
-        $this->assertEquals(null, $pool->getItem('key')->get());
+        $this->assertEquals(false, $this->cache->get('key'));
+        $this->assertEquals(null, $this->pool->getItem('key')->get());
     }
 
-    /**
-     * @dataProvider adapterProvider
-     */
-    public function testPoolDeleteNonExistingItems(KeyValueStore $cache, Pool $pool)
+    public function testPoolDeleteNonExistingItems()
     {
-        $return = $pool->deleteItems(array('key'));
+        $return = $this->pool->deleteItems(array('key'));
         $this->assertEquals(true, $return);
-        $this->assertEquals(false, $cache->get('key'));
-        $this->assertEquals(null, $pool->getItem('key')->get());
+        $this->assertEquals(false, $this->cache->get('key'));
+        $this->assertEquals(null, $this->pool->getItem('key')->get());
     }
 
-    /**
-     * @dataProvider adapterProvider
-     */
-    public function testPoolDeleteItemsSetViaPool(KeyValueStore $cache, Pool $pool)
+    public function testPoolDeleteItemsSetViaPool()
     {
-        $item = $pool->getItem('key');
+        $item = $this->pool->getItem('key');
         $item->set('value');
-        $pool->save($item);
+        $this->pool->save($item);
 
-        $return = $pool->deleteItems(array('key'));
+        $return = $this->pool->deleteItems(array('key'));
         $this->assertEquals(true, $return);
-        $this->assertEquals(false, $cache->get('key'));
-        $this->assertEquals(null, $pool->getItem('key')->get());
+        $this->assertEquals(false, $this->cache->get('key'));
+        $this->assertEquals(null, $this->pool->getItem('key')->get());
     }
 
-    /**
-     * @dataProvider adapterProvider
-     */
-    public function testPoolSave(KeyValueStore $cache, Pool $pool)
+    public function testPoolSave()
     {
-        $item = $pool->getItem('key');
+        $item = $this->pool->getItem('key');
         $item->set('value');
-        $return = $pool->save($item);
+        $return = $this->pool->save($item);
 
         $this->assertEquals(true, $return);
-        $this->assertEquals('value', $cache->get('key'));
-        $this->assertEquals('value', $pool->getItem('key')->get());
+        $this->assertEquals('value', $this->cache->get('key'));
+        $this->assertEquals('value', $this->pool->getItem('key')->get());
     }
 
-    /**
-     * @dataProvider adapterProvider
-     */
-    public function testPoolSaveDeferred(KeyValueStore $cache, Pool $pool)
+    public function testPoolSaveDeferred()
     {
-        $item = $pool->getItem('key');
+        $item = $this->pool->getItem('key');
         $item->set('value');
-        $return = $pool->saveDeferred($item);
+        $return = $this->pool->saveDeferred($item);
 
         $this->assertEquals(true, $return);
-        $this->assertEquals(false, $cache->get('key'));
-        $this->assertEquals('value', $pool->getItem('key')->get());
+        $this->assertEquals(false, $this->cache->get('key'));
+        $this->assertEquals('value', $this->pool->getItem('key')->get());
     }
 
-    /**
-     * @dataProvider adapterProvider
-     */
-    public function testPoolCommit(KeyValueStore $cache, Pool $pool)
+    public function testPoolCommit()
     {
-        $item = $pool->getItem('key');
+        $item = $this->pool->getItem('key');
         $item->set('value');
-        $pool->saveDeferred($item);
-        $return = $pool->commit();
+        $this->pool->saveDeferred($item);
+        $return = $this->pool->commit();
 
         $this->assertEquals(true, $return);
-        $this->assertEquals('value', $cache->get('key'));
-        $this->assertEquals('value', $pool->getItem('key')->get());
+        $this->assertEquals('value', $this->cache->get('key'));
+        $this->assertEquals('value', $this->pool->getItem('key')->get());
     }
 }

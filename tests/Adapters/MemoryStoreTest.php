@@ -4,6 +4,10 @@ namespace MatthiasMullie\Scrapbook\Tests\Adapters;
 
 use PHPUnit_Framework_TestCase;
 
+/**
+ * @group default
+ * @group MemoryStore
+ */
 class MemoryStoreTest extends PHPUnit_Framework_TestCase implements AdapterInterface
 {
     public function get()

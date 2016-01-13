@@ -2,18 +2,20 @@
 
 namespace MatthiasMullie\Scrapbook\Tests\Psr6;
 
-use MatthiasMullie\Scrapbook\Tests\AdapterProviderTestCase;
+use MatthiasMullie\Scrapbook\Tests\AdapterTestCase;
 use MatthiasMullie\Scrapbook\KeyValueStore;
 use MatthiasMullie\Scrapbook\Psr6\Pool;
 
-class Psr6TestCase extends AdapterProviderTestCase
+class Psr6TestCase extends AdapterTestCase
 {
-    public function adapterProvider()
-    {
-        return array_map(function (KeyValueStore $adapter) {
-            $pool = new Pool($adapter);
+    /**
+     * @var Pool
+     */
+    protected $pool;
 
-            return array($adapter, $pool);
-        }, $this->getAdapters());
+    public function setAdapter(KeyValueStore $adapter)
+    {
+        $this->cache = $adapter;
+        $this->pool = new Pool($adapter);
     }
 }

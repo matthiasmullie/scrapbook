@@ -9,13 +9,9 @@ use MatthiasMullie\Scrapbook\Tests\AdapterTest;
 
 class BufferedStoreTest extends AdapterTest
 {
-    public function adapterProvider()
+    public function setAdapter(KeyValueStore $adapter)
     {
-        // make BufferedStore objects for all adapters & run
-        // the regular test suite again
-        return array_map(function (KeyValueStore $adapter) {
-            return array(new BufferedStore($adapter));
-        }, $this->getAdapters());
+        $this->cache = new BufferedStore($adapter);
     }
 
     public function testGetFromCache()

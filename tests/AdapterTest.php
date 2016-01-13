@@ -2,59 +2,45 @@
 
 namespace MatthiasMullie\Scrapbook\Tests;
 
-use MatthiasMullie\Scrapbook\KeyValueStore;
-
-class AdapterTest extends AdapterProviderTestCase
+class AdapterTest extends AdapterTestCase
 {
-    /**
-     * @dataProvider adapterProvider
-     */
-    public function testGetAndSet(KeyValueStore $cache)
+    public function testGetAndSet()
     {
-        $return = $cache->set('key', 'value');
+        $return = $this->cache->set('key', 'value');
 
         $this->assertEquals(true, $return);
-        $this->assertEquals('value', $cache->get('key'));
+        $this->assertEquals('value', $this->cache->get('key'));
     }
 
-    /**
-     * @dataProvider adapterProvider
-     */
-    public function testGetFail(KeyValueStore $cache)
+    public function testGetFail()
     {
-        $this->assertEquals(false, $cache->get('key'));
+        $this->assertEquals(false, $this->cache->get('key'));
     }
 
-    /**
-     * @dataProvider adapterProvider
-     */
-    public function testGetNonReferential(KeyValueStore $cache)
+    public function testGetNonReferential()
     {
         // this is mostly for MemoryStore - other stores probably aren't at risk
 
         $object = new \StdClass();
         $object->value = 'test';
-        $cache->set('key', $object);
+        $this->cache->set('key', $object);
 
         // clone the object because we'll be messing with it ;)
         $comparison = clone $object;
 
         // changing the object after it's been cached shouldn't affect cache
         $object->value = 'updated-value';
-        $fromCache = $cache->get('key');
+        $fromCache = $this->cache->get('key');
         $this->assertEquals($comparison, $fromCache);
 
         // changing the value we got from cache shouldn't change what's in cache
         $fromCache->value = 'updated-value-2';
-        $fromCache2 = $cache->get('key');
+        $fromCache2 = $this->cache->get('key');
         $this->assertNotEquals($comparison, $fromCache);
         $this->assertEquals($comparison, $fromCache2);
     }
 
-    /**
-     * @dataProvider adapterProvider
-     */
-    public function testGetMulti(KeyValueStore $cache)
+    public function testGetMulti()
     {
         $items = array(
             'key' => 'value',
@@ -62,516 +48,426 @@ class AdapterTest extends AdapterProviderTestCase
         );
 
         foreach ($items as $key => $value) {
-            $cache->set($key, $value);
+            $this->cache->set($key, $value);
         }
 
-        $this->assertEquals($items, $cache->getMulti(array_keys($items)));
+        $this->assertEquals($items, $this->cache->getMulti(array_keys($items)));
 
         // requesting non-existing keys
-        $this->assertEquals(array(), $cache->getMulti(array('key3')));
-        $this->assertEquals(array('key2' => 'value2'), $cache->getMulti(array('key2', 'key3')));
+        $this->assertEquals(array(), $this->cache->getMulti(array('key3')));
+        $this->assertEquals(array('key2' => 'value2'), $this->cache->getMulti(array('key2', 'key3')));
     }
 
-    /**
-     * @dataProvider adapterProvider
-     */
-    public function testGetNoCasTokens(KeyValueStore $cache)
+    public function testGetNoCasTokens()
     {
-        $cache->get('key', $token);
+        $this->cache->get('key', $token);
         $this->assertEquals(null, $token);
 
-        $cache->getMulti(array('key'), $tokens);
+        $this->cache->getMulti(array('key'), $tokens);
         $this->assertEquals(array(), $tokens);
     }
 
-    /**
-     * @dataProvider adapterProvider
-     */
-    public function testGetCasTokensFromFalse(KeyValueStore $cache)
+    public function testGetCasTokensFromFalse()
     {
         // 'false' is also a value, with a token
-        $return = $cache->set('key', false);
+        $return = $this->cache->set('key', false);
 
         $this->assertEquals(true, $return);
 
-        $this->assertEquals(false, $cache->get('key', $token));
+        $this->assertEquals(false, $this->cache->get('key', $token));
         $this->assertNotNull($token);
 
-        $this->assertEquals(array('key' => false), $cache->getMulti(array('key'), $tokens));
+        $this->assertEquals(array('key' => false), $this->cache->getMulti(array('key'), $tokens));
         $this->assertNotNull($tokens['key']);
     }
 
-    /**
-     * @dataProvider adapterProvider
-     */
-    public function testGetCasTokensOverridesTokenValue(KeyValueStore $cache)
+    public function testGetCasTokensOverridesTokenValue()
     {
         $token = 'some-value';
         $tokens = array('some-value');
 
-        $this->assertEquals(false, $cache->get('key', $token));
+        $this->assertEquals(false, $this->cache->get('key', $token));
         $this->assertEquals(null, $token);
 
-        $this->assertEquals(array(), $cache->getMulti(array('key'), $tokens));
+        $this->assertEquals(array(), $this->cache->getMulti(array('key'), $tokens));
         $this->assertEquals(array(), $tokens);
     }
 
-    /**
-     * @dataProvider adapterProvider
-     */
-    public function testSetExpired(KeyValueStore $cache)
+    public function testSetExpired()
     {
-        $return = $cache->set('key', 'value', time() - 2);
+        $return = $this->cache->set('key', 'value', time() - 2);
         $this->assertEquals(true, $return);
-        $this->assertEquals(false, $cache->get('key'));
+        $this->assertEquals(false, $this->cache->get('key'));
 
         // test if we can add to, but not replace or touch an expired value; it
         // should be treated as if the value doesn't exist)
-        $return = $cache->replace('key', 'value');
+        $return = $this->cache->replace('key', 'value');
         $this->assertEquals(false, $return);
-        $return = $cache->touch('key', time() + 2);
+        $return = $this->cache->touch('key', time() + 2);
         $this->assertEquals(false, $return);
-        $return = $cache->add('key', 'value');
+        $return = $this->cache->add('key', 'value');
         $this->assertEquals(true, $return);
     }
 
-    /**
-     * @dataProvider adapterProvider
-     */
-    public function testSetMulti(KeyValueStore $cache)
+    public function testSetMulti()
     {
         $items = array(
             'key' => 'value',
             'key2' => 'value2',
         );
 
-        $return = $cache->setMulti($items);
+        $return = $this->cache->setMulti($items);
 
         $expect = array_fill_keys(array_keys($items), true);
         $this->assertEquals($expect, $return);
-        $this->assertEquals('value', $cache->get('key'));
-        $this->assertEquals('value2', $cache->get('key2'));
+        $this->assertEquals('value', $this->cache->get('key'));
+        $this->assertEquals('value2', $this->cache->get('key2'));
     }
 
-    /**
-     * @dataProvider adapterProvider
-     */
-    public function testSetMultiExpired(KeyValueStore $cache)
+    public function testSetMultiExpired()
     {
         $items = array(
             'key' => 'value',
             'key2' => 'value2',
         );
 
-        $return = $cache->setMulti($items, time() - 2);
+        $return = $this->cache->setMulti($items, time() - 2);
 
         $expect = array_fill_keys(array_keys($items), true);
         $this->assertEquals($expect, $return);
-        $this->assertEquals(false, $cache->get('key'));
-        $this->assertEquals(false, $cache->get('key2'));
+        $this->assertEquals(false, $this->cache->get('key'));
+        $this->assertEquals(false, $this->cache->get('key2'));
     }
 
-    /**
-     * @dataProvider adapterProvider
-     */
-    public function testDelete(KeyValueStore $cache)
+    public function testDelete()
     {
-        $cache->set('key', 'value');
+        $this->cache->set('key', 'value');
 
-        $return = $cache->delete('key');
+        $return = $this->cache->delete('key');
 
         $this->assertEquals(true, $return);
-        $this->assertEquals(false, $cache->get('key'));
+        $this->assertEquals(false, $this->cache->get('key'));
 
         // delete non-existing key
-        $return = $cache->delete('key2');
+        $return = $this->cache->delete('key2');
 
         $this->assertEquals(false, $return);
-        $this->assertEquals(false, $cache->get('key2'));
+        $this->assertEquals(false, $this->cache->get('key2'));
     }
 
-    /**
-     * @dataProvider adapterProvider
-     */
-    public function testDeleteMulti(KeyValueStore $cache)
+    public function testDeleteMulti()
     {
         $items = array(
             'key' => 'value',
             'key2' => 'value2',
         );
 
-        $cache->setMulti($items);
-        $return = $cache->deleteMulti(array_keys($items));
+        $this->cache->setMulti($items);
+        $return = $this->cache->deleteMulti(array_keys($items));
 
         $expect = array_fill_keys(array_keys($items), true);
         $this->assertEquals($expect, $return);
-        $this->assertEquals(false, $cache->get('key'));
-        $this->assertEquals(false, $cache->get('key2'));
+        $this->assertEquals(false, $this->cache->get('key'));
+        $this->assertEquals(false, $this->cache->get('key2'));
 
         // delete all non-existing key (they've been deleted already)
-        $return = $cache->deleteMulti(array_keys($items));
+        $return = $this->cache->deleteMulti(array_keys($items));
 
         $expect = array_fill_keys(array_keys($items), false);
         $this->assertEquals($expect, $return);
-        $this->assertEquals(false, $cache->get('key'));
-        $this->assertEquals(false, $cache->get('key2'));
+        $this->assertEquals(false, $this->cache->get('key'));
+        $this->assertEquals(false, $this->cache->get('key2'));
 
         // delete existing & non-existing key
-        $cache->set('key', 'value');
-        $return = $cache->deleteMulti(array_keys($items));
+        $this->cache->set('key', 'value');
+        $return = $this->cache->deleteMulti(array_keys($items));
 
         $expect = array_fill_keys(array_keys($items), false);
         $expect['key'] = true;
         $this->assertEquals($expect, $return);
-        $this->assertEquals(false, $cache->get('key'));
-        $this->assertEquals(false, $cache->get('key2'));
+        $this->assertEquals(false, $this->cache->get('key'));
+        $this->assertEquals(false, $this->cache->get('key2'));
     }
 
-    /**
-     * @dataProvider adapterProvider
-     */
-    public function testAdd(KeyValueStore $cache)
+    public function testAdd()
     {
-        $return = $cache->add('key', 'value');
+        $return = $this->cache->add('key', 'value');
 
         $this->assertEquals(true, $return);
-        $this->assertEquals('value', $cache->get('key'));
+        $this->assertEquals('value', $this->cache->get('key'));
     }
 
-    /**
-     * @dataProvider adapterProvider
-     */
-    public function testAddFail(KeyValueStore $cache)
+    public function testAddFail()
     {
-        $cache->set('key', 'value');
-        $return = $cache->add('key', 'value-2');
+        $this->cache->set('key', 'value');
+        $return = $this->cache->add('key', 'value-2');
 
         $this->assertEquals(false, $return);
-        $this->assertEquals('value', $cache->get('key'));
+        $this->assertEquals('value', $this->cache->get('key'));
     }
 
-    /**
-     * @dataProvider adapterProvider
-     */
-    public function testAddExpired(KeyValueStore $cache)
+    public function testAddExpired()
     {
-        $return = $cache->add('key', 'value', time() - 2);
+        $return = $this->cache->add('key', 'value', time() - 2);
 
         $this->assertEquals(true, $return);
-        $this->assertEquals(false, $cache->get('key'));
+        $this->assertEquals(false, $this->cache->get('key'));
     }
 
-    /**
-     * @dataProvider adapterProvider
-     */
-    public function testReplace(KeyValueStore $cache)
+    public function testReplace()
     {
-        $cache->set('key', 'value');
-        $return = $cache->replace('key', 'value-2');
+        $this->cache->set('key', 'value');
+        $return = $this->cache->replace('key', 'value-2');
 
         $this->assertEquals(true, $return);
-        $this->assertEquals('value-2', $cache->get('key'));
+        $this->assertEquals('value-2', $this->cache->get('key'));
     }
 
-    /**
-     * @dataProvider adapterProvider
-     */
-    public function testReplaceFail(KeyValueStore $cache)
+    public function testReplaceFail()
     {
-        $return = $cache->replace('key', 'value');
+        $return = $this->cache->replace('key', 'value');
 
         $this->assertEquals(false, $return);
-        $this->assertEquals(false, $cache->get('key'));
+        $this->assertEquals(false, $this->cache->get('key'));
     }
 
-    /**
-     * @dataProvider adapterProvider
-     */
-    public function testReplaceExpired(KeyValueStore $cache)
+    public function testReplaceExpired()
     {
-        $cache->set('key', 'value');
-        $return = $cache->replace('key', 'value', time() - 2);
+        $this->cache->set('key', 'value');
+        $return = $this->cache->replace('key', 'value', time() - 2);
 
         $this->assertEquals(true, $return);
-        $this->assertEquals(false, $cache->get('key'));
+        $this->assertEquals(false, $this->cache->get('key'));
     }
 
-    /**
-     * @dataProvider adapterProvider
-     */
-    public function testReplaceSameValue(KeyValueStore $cache)
+    public function testReplaceSameValue()
     {
-        $cache->set('key', 'value');
-        $return = $cache->replace('key', 'value');
+        $this->cache->set('key', 'value');
+        $return = $this->cache->replace('key', 'value');
 
         $this->assertEquals(true, $return);
     }
 
-    /**
-     * @dataProvider adapterProvider
-     */
-    public function testCas(KeyValueStore $cache)
+    public function testCas()
     {
-        $cache->set('key', 'value');
+        $this->cache->set('key', 'value');
 
         // token via get()
-        $cache->get('key', $token);
-        $return = $cache->cas($token, 'key', 'updated-value');
+        $this->cache->get('key', $token);
+        $return = $this->cache->cas($token, 'key', 'updated-value');
 
         $this->assertEquals(true, $return);
-        $this->assertEquals('updated-value', $cache->get('key'));
+        $this->assertEquals('updated-value', $this->cache->get('key'));
 
         // token via getMulti()
-        $cache->getMulti(array('key'), $tokens);
+        $this->cache->getMulti(array('key'), $tokens);
         $token = $tokens['key'];
-        $return = $cache->cas($token, 'key', 'updated-value-2');
+        $return = $this->cache->cas($token, 'key', 'updated-value-2');
 
         $this->assertEquals(true, $return);
-        $this->assertEquals('updated-value-2', $cache->get('key'));
+        $this->assertEquals('updated-value-2', $this->cache->get('key'));
     }
 
-    /**
-     * @dataProvider adapterProvider
-     */
-    public function testCasFail(KeyValueStore $cache)
+    public function testCasFail()
     {
-        $cache->set('key', 'value');
+        $this->cache->set('key', 'value');
 
         // get CAS token
-        $cache->get('key', $token);
+        $this->cache->get('key', $token);
 
         // write something else to the same key in the meantime
-        $cache->set('key', 'updated-value');
+        $this->cache->set('key', 'updated-value');
 
         // attempt CAS, which should now fail (token no longer valid)
-        $return = $cache->cas($token, 'key', 'updated-value-2');
+        $return = $this->cache->cas($token, 'key', 'updated-value-2');
 
         $this->assertEquals(false, $return);
-        $this->assertEquals('updated-value', $cache->get('key'));
+        $this->assertEquals('updated-value', $this->cache->get('key'));
     }
 
-    /**
-     * @dataProvider adapterProvider
-     */
-    public function testCasFail2(KeyValueStore $cache)
+    public function testCasFail2()
     {
-        $cache->set('key', 'value');
+        $this->cache->set('key', 'value');
 
         // get CAS token
-        $cache->get('key', $token);
+        $this->cache->get('key', $token);
 
         // delete that key in the meantime
-        $cache->delete('key');
+        $this->cache->delete('key');
 
         // attempt CAS, which should now fail (token no longer valid)
-        $return = $cache->cas($token, 'key', 'updated-value-2');
+        $return = $this->cache->cas($token, 'key', 'updated-value-2');
 
         $this->assertEquals(false, $return);
-        $this->assertEquals(false, $cache->get('key'));
+        $this->assertEquals(false, $this->cache->get('key'));
     }
 
-    /**
-     * @dataProvider adapterProvider
-     */
-    public function testCasExpired(KeyValueStore $cache)
+    public function testCasExpired()
     {
-        $cache->set('key', 'value');
+        $this->cache->set('key', 'value');
 
         // token via get()
-        $cache->get('key', $token);
-        $return = $cache->cas($token, 'key', 'updated-value', time() - 2);
+        $this->cache->get('key', $token);
+        $return = $this->cache->cas($token, 'key', 'updated-value', time() - 2);
 
         $this->assertEquals(true, $return);
-        $this->assertEquals(false, $cache->get('key'));
+        $this->assertEquals(false, $this->cache->get('key'));
     }
 
-    /**
-     * @dataProvider adapterProvider
-     */
-    public function testCasSameValue(KeyValueStore $cache)
+    public function testCasSameValue()
     {
-        $cache->set('key', 'value');
-        $cache->get('key', $token);
-        $return = $cache->cas($token, 'key', 'value');
+        $this->cache->set('key', 'value');
+        $this->cache->get('key', $token);
+        $return = $this->cache->cas($token, 'key', 'value');
 
         $this->assertEquals(true, $return);
     }
 
-    /**
-     * @dataProvider adapterProvider
-     */
-    public function testCasNoOriginalValue(KeyValueStore $cache)
+    public function testCasNoOriginalValue()
     {
-        $cache->get('key', $token);
-        $return = $cache->cas($token, 'key', 'value');
+        $this->cache->get('key', $token);
+        $return = $this->cache->cas($token, 'key', 'value');
 
         $this->assertEquals(false, $return);
-        $this->assertEquals(false, $cache->get('key'));
+        $this->assertEquals(false, $this->cache->get('key'));
     }
 
-    /**
-     * @dataProvider adapterProvider
-     */
-    public function testIncrement(KeyValueStore $cache)
+    public function testIncrement()
     {
         // set initial value
-        $return = $cache->increment('key', 1, 1);
+        $return = $this->cache->increment('key', 1, 1);
 
         $this->assertEquals(1, $return);
-        $this->assertEquals(1, $cache->get('key'));
+        $this->assertEquals(1, $this->cache->get('key'));
 
-        $return = $cache->increment('key2', 1, 0);
+        $return = $this->cache->increment('key2', 1, 0);
 
         $this->assertEquals(0, $return);
-        $this->assertEquals(0, $cache->get('key2'));
+        $this->assertEquals(0, $this->cache->get('key2'));
 
         // increment
-        $return = $cache->increment('key', 1, 1);
+        $return = $this->cache->increment('key', 1, 1);
 
         $this->assertEquals(2, $return);
-        $this->assertEquals(2, $cache->get('key'));
+        $this->assertEquals(2, $this->cache->get('key'));
     }
 
-    /**
-     * @dataProvider adapterProvider
-     */
-    public function testIncrementFail(KeyValueStore $cache)
+    public function testIncrementFail()
     {
-        $return = $cache->increment('key', -1, 0);
+        $return = $this->cache->increment('key', -1, 0);
         $this->assertEquals(false, $return);
-        $this->assertEquals(false, $cache->get('key'));
+        $this->assertEquals(false, $this->cache->get('key'));
 
-        $return = $cache->increment('key', 5, -2);
+        $return = $this->cache->increment('key', 5, -2);
         $this->assertEquals(false, $return);
-        $this->assertEquals(false, $cache->get('key'));
+        $this->assertEquals(false, $this->cache->get('key'));
 
         // non-numeric value in cache
-        $cache->set('key', 'value');
-        $return = $cache->increment('key', 1, 1);
+        $this->cache->set('key', 'value');
+        $return = $this->cache->increment('key', 1, 1);
         $this->assertEquals(false, $return);
-        $this->assertEquals('value', $cache->get('key'));
+        $this->assertEquals('value', $this->cache->get('key'));
     }
 
-    /**
-     * @dataProvider adapterProvider
-     */
-    public function testIncrementExpired(KeyValueStore $cache)
+    public function testIncrementExpired()
     {
         // set initial value
-        $return = $cache->increment('key', 1, 1, time() - 2);
+        $return = $this->cache->increment('key', 1, 1, time() - 2);
 
         $this->assertEquals(1, $return);
-        $this->assertEquals(false, $cache->get('key'));
+        $this->assertEquals(false, $this->cache->get('key'));
 
         // set initial value (not expired) & increment (expired)
-        $cache->increment('key', 1, 1);
-        $return = $cache->increment('key', 1, 1, time() - 2);
+        $this->cache->increment('key', 1, 1);
+        $return = $this->cache->increment('key', 1, 1, time() - 2);
 
         $this->assertEquals(2, $return);
-        $this->assertEquals(false, $cache->get('key'));
+        $this->assertEquals(false, $this->cache->get('key'));
     }
 
-    /**
-     * @dataProvider adapterProvider
-     */
-    public function testDecrement(KeyValueStore $cache)
+    public function testDecrement()
     {
         // set initial value
-        $return = $cache->decrement('key', 1, 1);
+        $return = $this->cache->decrement('key', 1, 1);
 
         $this->assertEquals(1, $return);
-        $this->assertEquals(1, $cache->get('key'));
+        $this->assertEquals(1, $this->cache->get('key'));
 
-        $return = $cache->decrement('key2', 1, 0);
+        $return = $this->cache->decrement('key2', 1, 0);
 
         $this->assertEquals(0, $return);
-        $this->assertEquals(0, $cache->get('key2'));
+        $this->assertEquals(0, $this->cache->get('key2'));
 
         // decrement
-        $return = $cache->decrement('key', 1, 1);
+        $return = $this->cache->decrement('key', 1, 1);
 
         $this->assertEquals(0, $return);
-        $this->assertEquals(0, $cache->get('key'));
+        $this->assertEquals(0, $this->cache->get('key'));
 
         // decrement again (can't go below 0)
-        $return = $cache->decrement('key', 1, 1);
+        $return = $this->cache->decrement('key', 1, 1);
 
         $this->assertEquals(0, $return);
-        $this->assertEquals(0, $cache->get('key'));
+        $this->assertEquals(0, $this->cache->get('key'));
     }
 
-    /**
-     * @dataProvider adapterProvider
-     */
-    public function testDecrementFail(KeyValueStore $cache)
+    public function testDecrementFail()
     {
-        $return = $cache->decrement('key', -1, 0);
+        $return = $this->cache->decrement('key', -1, 0);
         $this->assertEquals(false, $return);
-        $this->assertEquals(false, $cache->get('key'));
+        $this->assertEquals(false, $this->cache->get('key'));
 
-        $return = $cache->decrement('key', 5, -2);
+        $return = $this->cache->decrement('key', 5, -2);
         $this->assertEquals(false, $return);
-        $this->assertEquals(false, $cache->get('key'));
+        $this->assertEquals(false, $this->cache->get('key'));
 
         // non-numeric value in cache
-        $cache->set('key', 'value');
-        $return = $cache->increment('key', 1, 1);
+        $this->cache->set('key', 'value');
+        $return = $this->cache->increment('key', 1, 1);
         $this->assertEquals(false, $return);
-        $this->assertEquals('value', $cache->get('key'));
+        $this->assertEquals('value', $this->cache->get('key'));
     }
 
-    /**
-     * @dataProvider adapterProvider
-     */
-    public function testDecrementExpired(KeyValueStore $cache)
+    public function testDecrementExpired()
     {
         // set initial value
-        $return = $cache->decrement('key', 1, 1, time() - 2);
+        $return = $this->cache->decrement('key', 1, 1, time() - 2);
 
         $this->assertEquals(1, $return);
-        $this->assertEquals(false, $cache->get('key'));
+        $this->assertEquals(false, $this->cache->get('key'));
 
         // set initial value (not expired) & increment (expired)
-        $cache->decrement('key', 1, 1);
-        $return = $cache->decrement('key', 1, 1, time() - 2);
+        $this->cache->decrement('key', 1, 1);
+        $return = $this->cache->decrement('key', 1, 1, time() - 2);
 
         $this->assertEquals(0, $return);
-        $this->assertEquals(false, $cache->get('key'));
+        $this->assertEquals(false, $this->cache->get('key'));
     }
 
-    /**
-     * @dataProvider adapterProvider
-     */
-    public function testTouch(KeyValueStore $cache)
+    public function testTouch()
     {
-        $cache->set('key', 'value');
+        $this->cache->set('key', 'value');
 
         // not yet expired
-        $cache->touch('key', time() + 2);
-        $this->assertEquals('value', $cache->get('key'));
+        $this->cache->touch('key', time() + 2);
+        $this->assertEquals('value', $this->cache->get('key'));
     }
 
-    /**
-     * @dataProvider adapterProvider
-     */
-    public function testTouchExpired(KeyValueStore $cache)
+    public function testTouchExpired()
     {
-        $cache->set('key', 'value');
+        $this->cache->set('key', 'value');
 
         // expired
-        $cache->touch('key', time() - 2);
-        $this->assertEquals(false, $cache->get('key'));
+        $this->cache->touch('key', time() - 2);
+        $this->assertEquals(false, $this->cache->get('key'));
     }
 
-    /**
-     * @dataProvider adapterProvider
-     */
-    public function testFlush(KeyValueStore $cache)
+    public function testFlush()
     {
-        $cache->set('key', 'value');
-        $return = $cache->flush();
+        $this->cache->set('key', 'value');
+        $return = $this->cache->flush();
 
         $this->assertEquals(true, $return);
-        $this->assertEquals(false, $cache->get('key'));
+        $this->assertEquals(false, $this->cache->get('key'));
     }
 }

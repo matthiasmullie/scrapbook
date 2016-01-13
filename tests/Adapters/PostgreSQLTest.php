@@ -4,6 +4,10 @@ namespace MatthiasMullie\Scrapbook\Tests\Adapters;
 
 use MatthiasMullie\Scrapbook\Exception\Exception;
 
+/**
+ * @group default
+ * @group PostgreSQL
+ */
 class PostgreSQLTest implements AdapterInterface
 {
     public function get()

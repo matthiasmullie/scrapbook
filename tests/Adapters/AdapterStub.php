@@ -4,7 +4,6 @@ namespace MatthiasMullie\Scrapbook\Tests\Adapters;
 
 use Exception;
 use MatthiasMullie\Scrapbook\KeyValueStore;
-use PHPUnit_Framework_TestCase;
 
 /**
  * If an adapter fails to initialize, we'll want to proceed with the tests
@@ -13,22 +12,15 @@ use PHPUnit_Framework_TestCase;
 class AdapterStub implements KeyValueStore
 {
     /**
-     * @var PHPUnit_Framework_TestCase
-     */
-    protected $test;
-
-    /**
      * @var Exception
      */
     protected $exception;
 
     /**
-     * @param PHPUnit_Framework_TestCase $test
      * @param Exception $exception
      */
-    public function __construct(PHPUnit_Framework_TestCase $test, Exception $exception)
+    public function __construct(Exception $exception)
     {
-        $this->test = $test;
         $this->exception = $exception;
     }
 

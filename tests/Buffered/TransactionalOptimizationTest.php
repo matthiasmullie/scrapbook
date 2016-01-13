@@ -4,18 +4,26 @@ namespace MatthiasMullie\Scrapbook\Tests\Buffered;
 
 use MatthiasMullie\Scrapbook\Buffered\TransactionalStore;
 use MatthiasMullie\Scrapbook\KeyValueStore;
-use MatthiasMullie\Scrapbook\Tests\AdapterProviderTestCase;
+use MatthiasMullie\Scrapbook\Tests\AdapterTest;
 
-class TransactionalOptimizationTest extends AdapterProviderTestCase
+class TransactionalOptimizationTest extends AdapterTest
 {
-    public function adapterProvider()
-    {
-        return array_map(function (KeyValueStore $adapter) {
-            $transactionalCache = new TransactionalStore($adapter);
-            $transactionalCache->begin();
+    /**
+     * @var TransactionalStore
+     */
+    protected $transactionalCache;
 
-            return array($transactionalCache, $adapter);
-        }, $this->getAdapters());
+    public function setAdapter(KeyValueStore $adapter)
+    {
+        $this->cache = $adapter;
+        $this->transactionalCache = new TransactionalStore($adapter);
+    }
+
+    public function setUp()
+    {
+        parent::setUp();
+
+        $this->transactionalCache->begin();
     }
 
     /**
@@ -73,266 +81,247 @@ class TransactionalOptimizationTest extends AdapterProviderTestCase
      * a specific value) and that could potentially clash with
      * the order of operations being changed (e.g. CAS is executed
      * before SET).
-     *
-     * @dataProvider adapterProvider
      */
-    public function testCasCombination(TransactionalStore $transactionalCache, KeyValueStore $cache)
+    public function testCasCombination()
     {
-        $transactionalCache->set('key', 'value');
-        $this->assertEquals('value', $transactionalCache->get('key'));
-        $this->assertEquals(false, $cache->get('key'));
+        $this->transactionalCache->set('key', 'value');
+        $this->assertEquals('value', $this->transactionalCache->get('key'));
+        $this->assertEquals(false, $this->cache->get('key'));
 
-        $transactionalCache->get('key', $token);
-        $success = $transactionalCache->cas($token, 'key', 'value2');
+        $this->transactionalCache->get('key', $token);
+        $success = $this->transactionalCache->cas($token, 'key', 'value2');
         $this->assertTrue($success);
-        $this->assertEquals('value2', $transactionalCache->get('key'));
-        $this->assertEquals(false, $cache->get('key'));
+        $this->assertEquals('value2', $this->transactionalCache->get('key'));
+        $this->assertEquals(false, $this->cache->get('key'));
 
-        $transactionalCache->set('key', 'value3');
-        $this->assertEquals('value3', $transactionalCache->get('key'));
-        $this->assertEquals(false, $cache->get('key'));
+        $this->transactionalCache->set('key', 'value3');
+        $this->assertEquals('value3', $this->transactionalCache->get('key'));
+        $this->assertEquals(false, $this->cache->get('key'));
 
-        $success = $transactionalCache->commit();
+        $success = $this->transactionalCache->commit();
         $this->assertTrue($success);
-        $this->assertEquals('value3', $transactionalCache->get('key'));
-        $this->assertEquals('value3', $cache->get('key'));
+        $this->assertEquals('value3', $this->transactionalCache->get('key'));
+        $this->assertEquals('value3', $this->cache->get('key'));
     }
 
     /**
      * @see testCasCombination
-     * @dataProvider adapterProvider
      */
-    public function testCasCombination2(TransactionalStore $transactionalCache, KeyValueStore $cache)
+    public function testCasCombination2()
     {
-        $transactionalCache->set('key', 'value');
-        $this->assertEquals('value', $transactionalCache->get('key'));
-        $this->assertEquals(false, $cache->get('key'));
+        $this->transactionalCache->set('key', 'value');
+        $this->assertEquals('value', $this->transactionalCache->get('key'));
+        $this->assertEquals(false, $this->cache->get('key'));
 
-        $transactionalCache->get('key', $token);
-        $success = $transactionalCache->cas($token, 'key', 'value2');
+        $this->transactionalCache->get('key', $token);
+        $success = $this->transactionalCache->cas($token, 'key', 'value2');
         $this->assertTrue($success);
-        $this->assertEquals('value2', $transactionalCache->get('key'));
-        $this->assertEquals(false, $cache->get('key'));
+        $this->assertEquals('value2', $this->transactionalCache->get('key'));
+        $this->assertEquals(false, $this->cache->get('key'));
 
-        $success = $transactionalCache->commit();
+        $success = $this->transactionalCache->commit();
         $this->assertTrue($success);
-        $this->assertEquals('value2', $transactionalCache->get('key'));
-        $this->assertEquals('value2', $cache->get('key'));
+        $this->assertEquals('value2', $this->transactionalCache->get('key'));
+        $this->assertEquals('value2', $this->cache->get('key'));
     }
 
     /**
      * Increments are combined through a complex process. This verifies
      * that the offset is correctly adjusted throughout this process.
-     *
-     * @dataProvider adapterProvider
      */
-    public function testMultipleIncrementsOffset(TransactionalStore $transactionalCache, KeyValueStore $cache)
+    public function testMultipleIncrementsOffset()
     {
-        $cache->set('key', 3);
+        $this->cache->set('key', 3);
 
-        $transactionalCache->increment('key', 2, 10);
-        $this->assertEquals(5, $transactionalCache->get('key'));
-        $this->assertEquals(3, $cache->get('key'));
+        $this->transactionalCache->increment('key', 2, 10);
+        $this->assertEquals(5, $this->transactionalCache->get('key'));
+        $this->assertEquals(3, $this->cache->get('key'));
 
-        $transactionalCache->increment('key', 1, 30);
-        $this->assertEquals(6, $transactionalCache->get('key'));
-        $this->assertEquals(3, $cache->get('key'));
+        $this->transactionalCache->increment('key', 1, 30);
+        $this->assertEquals(6, $this->transactionalCache->get('key'));
+        $this->assertEquals(3, $this->cache->get('key'));
 
-        $transactionalCache->increment('key', 3, 50);
-        $this->assertEquals(9, $transactionalCache->get('key'));
-        $this->assertEquals(3, $cache->get('key'));
+        $this->transactionalCache->increment('key', 3, 50);
+        $this->assertEquals(9, $this->transactionalCache->get('key'));
+        $this->assertEquals(3, $this->cache->get('key'));
 
-        $success = $transactionalCache->commit();
+        $success = $this->transactionalCache->commit();
         $this->assertTrue($success);
-        $this->assertEquals(9, $transactionalCache->get('key'));
-        $this->assertEquals(9, $cache->get('key'));
+        $this->assertEquals(9, $this->transactionalCache->get('key'));
+        $this->assertEquals(9, $this->cache->get('key'));
     }
 
     /**
      * Increments are combined through a complex process. This verifies
      * that the initial value is correctly adjusted throughout this process.
-     *
-     * @dataProvider adapterProvider
      */
-    public function testMultipleIncrementsInitial(TransactionalStore $transactionalCache, KeyValueStore $cache)
+    public function testMultipleIncrementsInitial()
     {
-        $transactionalCache->increment('key', 2, 10);
-        $this->assertEquals(10, $transactionalCache->get('key'));
-        $this->assertEquals(false, $cache->get('key'));
+        $this->transactionalCache->increment('key', 2, 10);
+        $this->assertEquals(10, $this->transactionalCache->get('key'));
+        $this->assertEquals(false, $this->cache->get('key'));
 
-        $transactionalCache->increment('key', 1, 30);
-        $this->assertEquals(11, $transactionalCache->get('key'));
-        $this->assertEquals(false, $cache->get('key'));
+        $this->transactionalCache->increment('key', 1, 30);
+        $this->assertEquals(11, $this->transactionalCache->get('key'));
+        $this->assertEquals(false, $this->cache->get('key'));
 
-        $transactionalCache->increment('key', 3, 50);
-        $this->assertEquals(14, $transactionalCache->get('key'));
-        $this->assertEquals(false, $cache->get('key'));
+        $this->transactionalCache->increment('key', 3, 50);
+        $this->assertEquals(14, $this->transactionalCache->get('key'));
+        $this->assertEquals(false, $this->cache->get('key'));
 
-        $success = $transactionalCache->commit();
+        $success = $this->transactionalCache->commit();
         $this->assertTrue($success);
-        $this->assertEquals(14, $transactionalCache->get('key'));
-        $this->assertEquals(14, $cache->get('key'));
+        $this->assertEquals(14, $this->transactionalCache->get('key'));
+        $this->assertEquals(14, $this->cache->get('key'));
     }
 
     /**
      * Decrements are combined through a complex process. This verifies
      * that the offset is correctly adjusted throughout this process.
-     *
-     * @dataProvider adapterProvider
      */
-    public function testMultipleDecrementsOffset(TransactionalStore $transactionalCache, KeyValueStore $cache)
+    public function testMultipleDecrementsOffset()
     {
-        $cache->set('key', 20);
+        $this->cache->set('key', 20);
 
-        $transactionalCache->decrement('key', 2, 10);
-        $this->assertEquals(18, $transactionalCache->get('key'));
-        $this->assertEquals(20, $cache->get('key'));
+        $this->transactionalCache->decrement('key', 2, 10);
+        $this->assertEquals(18, $this->transactionalCache->get('key'));
+        $this->assertEquals(20, $this->cache->get('key'));
 
-        $transactionalCache->decrement('key', 1, 30);
-        $this->assertEquals(17, $transactionalCache->get('key'));
-        $this->assertEquals(20, $cache->get('key'));
+        $this->transactionalCache->decrement('key', 1, 30);
+        $this->assertEquals(17, $this->transactionalCache->get('key'));
+        $this->assertEquals(20, $this->cache->get('key'));
 
-        $transactionalCache->decrement('key', 3, 50);
-        $this->assertEquals(14, $transactionalCache->get('key'));
-        $this->assertEquals(20, $cache->get('key'));
+        $this->transactionalCache->decrement('key', 3, 50);
+        $this->assertEquals(14, $this->transactionalCache->get('key'));
+        $this->assertEquals(20, $this->cache->get('key'));
 
-        $success = $transactionalCache->commit();
+        $success = $this->transactionalCache->commit();
         $this->assertTrue($success);
-        $this->assertEquals(14, $transactionalCache->get('key'));
-        $this->assertEquals(14, $cache->get('key'));
+        $this->assertEquals(14, $this->transactionalCache->get('key'));
+        $this->assertEquals(14, $this->cache->get('key'));
     }
 
     /**
      * Decrements are combined through a complex process. This verifies
      * that the initial value is correctly adjusted throughout this process.
-     *
-     * @dataProvider adapterProvider
      */
-    public function testMultipleDecrementsInitial(TransactionalStore $transactionalCache, KeyValueStore $cache)
+    public function testMultipleDecrementsInitial()
     {
-        $transactionalCache->decrement('key', 2, 10);
-        $this->assertEquals(10, $transactionalCache->get('key'));
-        $this->assertEquals(false, $cache->get('key'));
+        $this->transactionalCache->decrement('key', 2, 10);
+        $this->assertEquals(10, $this->transactionalCache->get('key'));
+        $this->assertEquals(false, $this->cache->get('key'));
 
-        $transactionalCache->decrement('key', 1, 30);
-        $this->assertEquals(9, $transactionalCache->get('key'));
-        $this->assertEquals(false, $cache->get('key'));
+        $this->transactionalCache->decrement('key', 1, 30);
+        $this->assertEquals(9, $this->transactionalCache->get('key'));
+        $this->assertEquals(false, $this->cache->get('key'));
 
-        $transactionalCache->decrement('key', 3, 50);
-        $this->assertEquals(6, $transactionalCache->get('key'));
-        $this->assertEquals(false, $cache->get('key'));
+        $this->transactionalCache->decrement('key', 3, 50);
+        $this->assertEquals(6, $this->transactionalCache->get('key'));
+        $this->assertEquals(false, $this->cache->get('key'));
 
-        $success = $transactionalCache->commit();
+        $success = $this->transactionalCache->commit();
         $this->assertTrue($success);
-        $this->assertEquals(6, $transactionalCache->get('key'));
-        $this->assertEquals(6, $cache->get('key'));
+        $this->assertEquals(6, $this->transactionalCache->get('key'));
+        $this->assertEquals(6, $this->cache->get('key'));
     }
 
     /**
      * Increments & decrements are combined through a complex process. This verifies
      * that the initial value is correctly adjusted throughout this process.
-     *
-     * @dataProvider adapterProvider
      */
-    public function testMixedIncrementDecrementsOffset(TransactionalStore $transactionalCache, KeyValueStore $cache)
+    public function testMixedIncrementDecrementsOffset()
     {
-        $cache->set('key', 20);
+        $this->cache->set('key', 20);
 
-        $transactionalCache->increment('key', 2, 10);
-        $this->assertEquals(22, $transactionalCache->get('key'));
-        $this->assertEquals(20, $cache->get('key'));
+        $this->transactionalCache->increment('key', 2, 10);
+        $this->assertEquals(22, $this->transactionalCache->get('key'));
+        $this->assertEquals(20, $this->cache->get('key'));
 
-        $transactionalCache->decrement('key', 1, 30);
-        $this->assertEquals(21, $transactionalCache->get('key'));
-        $this->assertEquals(20, $cache->get('key'));
+        $this->transactionalCache->decrement('key', 1, 30);
+        $this->assertEquals(21, $this->transactionalCache->get('key'));
+        $this->assertEquals(20, $this->cache->get('key'));
 
-        $transactionalCache->increment('key', 3, 50);
-        $this->assertEquals(24, $transactionalCache->get('key'));
-        $this->assertEquals(20, $cache->get('key'));
+        $this->transactionalCache->increment('key', 3, 50);
+        $this->assertEquals(24, $this->transactionalCache->get('key'));
+        $this->assertEquals(20, $this->cache->get('key'));
 
-        $success = $transactionalCache->commit();
+        $success = $this->transactionalCache->commit();
         $this->assertTrue($success);
-        $this->assertEquals(24, $transactionalCache->get('key'));
-        $this->assertEquals(24, $cache->get('key'));
+        $this->assertEquals(24, $this->transactionalCache->get('key'));
+        $this->assertEquals(24, $this->cache->get('key'));
     }
 
     /**
      * Increments & decrements are combined through a complex process. This verifies
      * that the initial value is correctly adjusted throughout this process.
-     *
-     * @dataProvider adapterProvider
      */
-    public function testMixedIncrementDecrementsInitial(TransactionalStore $transactionalCache, KeyValueStore $cache)
+    public function testMixedIncrementDecrementsInitial()
     {
-        $transactionalCache->increment('key', 2, 10);
-        $this->assertEquals(10, $transactionalCache->get('key'));
-        $this->assertEquals(false, $cache->get('key'));
+        $this->transactionalCache->increment('key', 2, 10);
+        $this->assertEquals(10, $this->transactionalCache->get('key'));
+        $this->assertEquals(false, $this->cache->get('key'));
 
-        $transactionalCache->decrement('key', 1, 30);
-        $this->assertEquals(9, $transactionalCache->get('key'));
-        $this->assertEquals(false, $cache->get('key'));
+        $this->transactionalCache->decrement('key', 1, 30);
+        $this->assertEquals(9, $this->transactionalCache->get('key'));
+        $this->assertEquals(false, $this->cache->get('key'));
 
-        $transactionalCache->increment('key', 3, 50);
-        $this->assertEquals(12, $transactionalCache->get('key'));
-        $this->assertEquals(false, $cache->get('key'));
+        $this->transactionalCache->increment('key', 3, 50);
+        $this->assertEquals(12, $this->transactionalCache->get('key'));
+        $this->assertEquals(false, $this->cache->get('key'));
 
-        $success = $transactionalCache->commit();
+        $success = $this->transactionalCache->commit();
         $this->assertTrue($success);
-        $this->assertEquals(12, $transactionalCache->get('key'));
-        $this->assertEquals(12, $cache->get('key'));
+        $this->assertEquals(12, $this->transactionalCache->get('key'));
+        $this->assertEquals(12, $this->cache->get('key'));
     }
 
     /**
      * Decrements & increments are combined through a complex process. This verifies
      * that the initial value is correctly adjusted throughout this process.
-     *
-     * @dataProvider adapterProvider
      */
-    public function testMixedDecrementIncrementsOffset(TransactionalStore $transactionalCache, KeyValueStore $cache)
+    public function testMixedDecrementIncrementsOffset()
     {
-        $cache->set('key', 20);
+        $this->cache->set('key', 20);
 
-        $transactionalCache->decrement('key', 2, 10);
-        $this->assertEquals(18, $transactionalCache->get('key'));
-        $this->assertEquals(20, $cache->get('key'));
+        $this->transactionalCache->decrement('key', 2, 10);
+        $this->assertEquals(18, $this->transactionalCache->get('key'));
+        $this->assertEquals(20, $this->cache->get('key'));
 
-        $transactionalCache->increment('key', 1, 30);
-        $this->assertEquals(19, $transactionalCache->get('key'));
-        $this->assertEquals(20, $cache->get('key'));
+        $this->transactionalCache->increment('key', 1, 30);
+        $this->assertEquals(19, $this->transactionalCache->get('key'));
+        $this->assertEquals(20, $this->cache->get('key'));
 
-        $transactionalCache->decrement('key', 3, 50);
-        $this->assertEquals(16, $transactionalCache->get('key'));
-        $this->assertEquals(20, $cache->get('key'));
+        $this->transactionalCache->decrement('key', 3, 50);
+        $this->assertEquals(16, $this->transactionalCache->get('key'));
+        $this->assertEquals(20, $this->cache->get('key'));
 
-        $success = $transactionalCache->commit();
+        $success = $this->transactionalCache->commit();
         $this->assertTrue($success);
-        $this->assertEquals(16, $transactionalCache->get('key'));
-        $this->assertEquals(16, $cache->get('key'));
+        $this->assertEquals(16, $this->transactionalCache->get('key'));
+        $this->assertEquals(16, $this->cache->get('key'));
     }
 
     /**
      * Decrements & increments are combined through a complex process. This verifies
      * that the initial value is correctly adjusted throughout this process.
-     *
-     * @dataProvider adapterProvider
      */
-    public function testMixedDecrementIncrementsInitial(TransactionalStore $transactionalCache, KeyValueStore $cache)
+    public function testMixedDecrementIncrementsInitial()
     {
-        $transactionalCache->decrement('key', 2, 10);
-        $this->assertEquals(10, $transactionalCache->get('key'));
-        $this->assertEquals(false, $cache->get('key'));
+        $this->transactionalCache->decrement('key', 2, 10);
+        $this->assertEquals(10, $this->transactionalCache->get('key'));
+        $this->assertEquals(false, $this->cache->get('key'));
 
-        $transactionalCache->increment('key', 1, 30);
-        $this->assertEquals(11, $transactionalCache->get('key'));
-        $this->assertEquals(false, $cache->get('key'));
+        $this->transactionalCache->increment('key', 1, 30);
+        $this->assertEquals(11, $this->transactionalCache->get('key'));
+        $this->assertEquals(false, $this->cache->get('key'));
 
-        $transactionalCache->decrement('key', 3, 50);
-        $this->assertEquals(8, $transactionalCache->get('key'));
-        $this->assertEquals(false, $cache->get('key'));
+        $this->transactionalCache->decrement('key', 3, 50);
+        $this->assertEquals(8, $this->transactionalCache->get('key'));
+        $this->assertEquals(false, $this->cache->get('key'));
 
-        $success = $transactionalCache->commit();
+        $success = $this->transactionalCache->commit();
         $this->assertTrue($success);
-        $this->assertEquals(8, $transactionalCache->get('key'));
-        $this->assertEquals(8, $cache->get('key'));
+        $this->assertEquals(8, $this->transactionalCache->get('key'));
+        $this->assertEquals(8, $this->cache->get('key'));
     }
 }

@@ -6,6 +6,10 @@ use League\Flysystem\Adapter\Local;
 use League\Flysystem\Filesystem as FlysystemFilesystem;
 use MatthiasMullie\Scrapbook\Exception\Exception;
 
+/**
+ * @group default
+ * @group Flysystem
+ */
 class FlysystemTest implements AdapterInterface
 {
     public function get()
