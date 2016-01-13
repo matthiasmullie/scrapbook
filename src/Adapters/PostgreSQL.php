@@ -78,6 +78,6 @@ class PostgreSQL extends SQL
             $value = stream_get_contents($value);
         }
 
-        return is_numeric($value) ? $value : unserialize($value);
+        return parent::unserialize($value);
     }
 }

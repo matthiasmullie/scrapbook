@@ -468,7 +468,7 @@ abstract class SQL implements KeyValueStore
      */
     protected function serialize($value)
     {
-        return is_numeric($value) ? $value : serialize($value);
+        return is_int($value) || is_float($value) ? $value : serialize($value);
     }
 
     /**
@@ -480,6 +480,20 @@ abstract class SQL implements KeyValueStore
      */
     protected function unserialize($value)
     {
-        return is_numeric($value) ? $value : unserialize($value);
+        if (is_numeric($value)) {
+            $int = (int) $value;
+            if ((string) $int === $value) {
+                return $int;
+            }
+
+            $float = (float) $value;
+            if ((string) $float === $value) {
+                return $float;
+            }
+
+            return $value;
+        }
+
+        return unserialize($value);
     }
 }

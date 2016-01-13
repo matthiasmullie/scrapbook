@@ -1,13 +1,14 @@
 # Changelog
 
 
-## [1.0.8] - 2016-01-09
+## [1.0.8] - 2016-01-12
 ### Fixed
 - Deferred items now register as hit in psr/cache Item
 - Non-string keys now fail in psr/cache Pool
 - Deleting non-existing keys from cache also return true in psr/cache Pool
 - Auto-commit deferred items on psr/cache Pool destruction
 - If psr/cache Item::expiresAfter is passed null explicitly, default to forever
+- SQL adapters now also return same data type as was stored for numerics
 
 
 ## [1.0.7] - 2015-12-23
