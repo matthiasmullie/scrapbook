@@ -251,6 +251,28 @@
 				"$item->set('updated-value');\n" +
 				"$pool->save($item);\n",
 			composer: ''
+		},
+
+		taggable: {
+			src: "// create PSR-6 Pool object from cache engine\n" +
+				"$pool = new \MatthiasMullie\Scrapbook\Psr6\Pool($cache);\n" +
+				"\n" +
+				"// wrap the PSR-6 pool inside a taggable cache object\n" +
+				"$taggablePool = new \MatthiasMullie\Scrapbook\Psr6\Taggable\Pool($pool);\n" +
+				"\n" +
+				"// tag & save some data\n" +
+				"$item = $taggablePool->getItem('tobias', ['developer', 'speaker']);\n" +
+				"$item->set('foobar');\n" +
+				"$taggablePool->save($item);\n" +
+				"\n" +
+				"// fetch results\n" +
+				"$taggablePool->getItem('tobias', ['speaker', 'developer'])->isHit(); // true\n" +
+				"$taggablePool->getItem('tobias', ['developer'])->isHit(); // false\n" +
+				"\n" +
+				"// and clear by tag\n" +
+				"$taggablePool->clear(['nice guy']);\n" +
+				"$taggablePool->getItem('tobias', ['developer', 'speaker'])->isHit(); // true\n",
+			composer: 'composer require cache/taggable-cache:~0.3'
 		}
 	},
 
