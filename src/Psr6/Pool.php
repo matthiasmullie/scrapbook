@@ -174,6 +174,17 @@ class Pool implements CacheItemPoolInterface
             return true;
         }
 
+        if (!$item->hasChanged()) {
+            /*
+             * If the item didn't change, we don't have to re-save it. We do,
+             * however, need to check if the item actually holds a value: if it
+             * does, it should be considered "saved" (even though nothing has
+             * changed, the value for this key is in cache) and if it doesn't,
+             * well then nothing is in cache.
+             */
+            return $item->get() !== null;
+        }
+
         return $this->store->set($item->getKey(), $item->get(), $expire);
     }
 

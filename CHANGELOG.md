@@ -9,6 +9,7 @@
 - Auto-commit deferred items on psr/cache Pool destruction
 - If psr/cache Item::expiresAfter is passed null explicitly, default to forever
 - SQL adapters now also return same data type as was stored for numerics
+- Fixed psr/cache Pool::save return value when storing a non-existing Item
 
 
 ## [1.0.7] - 2015-12-23

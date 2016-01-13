@@ -47,6 +47,11 @@ class Item implements CacheItemInterface
     protected $isHit = null;
 
     /**
+     * @var bool
+     */
+    protected $changed = false;
+
+    /**
      * @param string     $key
      * @param Repository $repository
      */
@@ -115,6 +120,7 @@ class Item implements CacheItemInterface
     public function set($value)
     {
         $this->value = $value;
+        $this->changed = true;
 
         return $this;
     }
@@ -143,6 +149,7 @@ class Item implements CacheItemInterface
         } else {
             $this->expire = 0;
         }
+        $this->changed = true;
 
         return $this;
     }
@@ -168,6 +175,7 @@ class Item implements CacheItemInterface
                 'instance of DateInterval.'
             );
         }
+        $this->changed = true;
 
         return $this;
     }
@@ -181,6 +189,17 @@ class Item implements CacheItemInterface
     public function getExpiration()
     {
         return $this->expire;
+    }
+
+    /**
+     * We'll want to know if this Item was altered (value or expiration date)
+     * once we'll want to store it.
+     *
+     * @return bool
+     */
+    public function hasChanged()
+    {
+        return $this->changed;
     }
 
     /**
