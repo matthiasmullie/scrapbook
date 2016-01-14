@@ -1,7 +1,7 @@
 # Changelog
 
 
-## [1.0.9] - 2016-xx-xx
+## [1.0.9] - 2016-01-14
 ### Added
 - Add cache/taggable-cache implementation that works for all PSR-6 libraries
 - Include cache/integration-tests test suite

@@ -360,10 +360,8 @@ around every possible PSR-cache (including Scrapbook's), regardless of whether
 or not they've implemented the cache/taggable-cache traits. That's the beauty
 of having a standardized psr/cache interface across multiple projects.
 
-
-## Usage & documentation
-
-See [cache/taggable-cache](https://github.com/php-cache/taggable-cache).
+See [cache/taggable-cache](https://github.com/php-cache/taggable-cache) for
+example usage & documentation.
 
 
 ## Installation
