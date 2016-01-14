@@ -91,8 +91,6 @@ class Memcached implements KeyValueStore
         $keys = array_map(array($this, 'encodeKey'), array_keys($items));
         $items = array_combine($keys, $items);
         $success = $this->client->setMulti($items, $expire);
-        $keys = array_map(array($this, 'decodeKey'), array_keys($success));
-        $success = array_combine($keys, $success);
 
         return array_fill_keys(array_keys($items), $success);
     }
