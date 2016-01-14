@@ -252,10 +252,8 @@ Adds a [PSR-6](http://www.scrapbook.cash/projects/psr-cache.html) layer so that
 any KeyValueStore-compatible adapter (or buffered/transactional cache) can be
 accessed in a PSR-6 compatible manner.
 
-PSR-6 has not yet been finalized - if it changes, so will this code in response.
 
-
-## Usage
+## Example usage
 
 ```php
 // boilerplate code example with Memcached, but any
@@ -343,6 +341,29 @@ Sets the expiration time for this cache item.
 ### expiresAfter($expiration): static
 
 Sets the expiration time for this cache item.
+
+
+# Taggable cache
+
+[cache/taggable-cache](https://github.com/php-cache/taggable-cache) is a project
+to help [psr/cache](https://github.com/php-fig/fig-standards/blob/master/proposed/cache.md)
+compliant projects implement tagging into their cache.
+
+Like a lot of other psr/cache implementations, Scrapbook's version
+(purposefully) does not directly implement cache/taggable-cache: the goal is
+only to provide an exact psr/cache implementation. Nothing more, nothing less,
+or there's no point in having a standard interface when people are using
+non-standard features.
+
+This project implements cache/taggable-cache in a way that lets you wrap it
+around every possible PSR-cache (including Scrapbook's), regardless of whether
+or not they've implemented the cache/taggable-cache traits. That's the beauty
+of having a standardized psr/cache interface across multiple projects.
+
+
+## Usage & documentation
+
+See [cache/taggable-cache](https://github.com/php-cache/taggable-cache).
 
 
 ## Installation

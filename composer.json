@@ -14,7 +14,8 @@
     "buffer", "buffered",
     "transaction", "transactional", "commit", "rollback",
     "stampede", "protection", "mitigation",
-    "psr6", "psr-6", "psr-cache"
+    "psr6", "psr-6", "psr-cache",
+    "tag", "taggable"
   ],
   "homepage": "http://scrapbook.cash",
   "license": "MIT",
