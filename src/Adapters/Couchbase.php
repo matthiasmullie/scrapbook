@@ -52,10 +52,9 @@ class Couchbase implements KeyValueStore
             return false;
         }
 
-        $result = $this->unserialize($result);
         $token = $result->cas;
 
-        return $result->error ? false : $result->value;
+        return $result->error ? false : $this->unserialize($result->value);
     }
 
     /**
