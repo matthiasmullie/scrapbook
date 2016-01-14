@@ -1,15 +1,15 @@
 <?php
 
-namespace MatthiasMullie\Scrapbook\Tests\Psr6\Integration;
+namespace MatthiasMullie\Scrapbook\Tests\Psr6\Taggable;
 
-use Cache\IntegrationTests\CachePoolTest;
+use Cache\IntegrationTests\TaggableCachePoolTest;
 use MatthiasMullie\Scrapbook\KeyValueStore;
 use MatthiasMullie\Scrapbook\Psr6\Pool as OriginalPool;
 use MatthiasMullie\Scrapbook\Psr6\Taggable\Pool as TaggablePool;
 use MatthiasMullie\Scrapbook\Tests\AdapterProvider;
 use MatthiasMullie\Scrapbook\Tests\AdapterProviderTestInterface;
 
-class IntegrationPoolTest extends CachePoolTest implements AdapterProviderTestInterface
+class TaggableCacheTest extends TaggableCachePoolTest implements AdapterProviderTestInterface
 {
     /**
      * @var TaggablePool
