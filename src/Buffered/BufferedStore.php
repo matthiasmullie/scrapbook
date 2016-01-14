@@ -59,11 +59,8 @@ class BufferedStore implements KeyValueStore
 
         // only store if we managed to retrieve a value (valid token) and it's
         // not already in cache (or we may mess up tokens)
-        if ($token !== false) {
-            $this->local->get($key, $localToken);
-            if ($localToken !== null) {
-                $this->local->set($key, $value);
-            }
+        if ($value !== false && $this->local->get($key, $localToken) === false && $localToken === null) {
+            $this->local->set($key, $value);
         }
 
         return $value;
