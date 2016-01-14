@@ -13,6 +13,7 @@
 - Worked around APC's weird behavior of only clearing expires per page request
 - Store `get` result in buffer if it wasn't in there already
 - Encode certain characters in Memcached keys
+- Serialize arrays & objects in Couchbase, because it forgets their data type
 
 
 ## [1.0.8] - 2016-01-12

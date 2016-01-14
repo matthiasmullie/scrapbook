@@ -52,6 +52,7 @@ class Couchbase implements KeyValueStore
             return false;
         }
 
+        $result = $this->unserialize($result);
         $token = $result->cas;
 
         return $result->error ? false : $result->value;
@@ -75,7 +76,7 @@ class Couchbase implements KeyValueStore
                 continue;
             }
 
-            $results[$key] = $value->value;
+            $results[$key] = $this->unserialize($value->value);
             $tokens[$key] = $value->cas;
         }
 
@@ -87,6 +88,7 @@ class Couchbase implements KeyValueStore
      */
     public function set($key, $value, $expire = 0)
     {
+        $value = $this->serialize($value);
         try {
             $result = $this->client->upsert($key, $value, array('expiry' => $expire));
         } catch (\CouchbaseException $e) {
@@ -103,7 +105,7 @@ class Couchbase implements KeyValueStore
     {
         foreach ($items as $key => $value) {
             $items[$key] = array(
-                'value' => $value,
+                'value' => $this->serialize($value),
                 'expiry' => $expire,
             );
         }
@@ -160,6 +162,7 @@ class Couchbase implements KeyValueStore
      */
     public function add($key, $value, $expire = 0)
     {
+        $value = $this->serialize($value);
         try {
             $result = $this->client->insert($key, $value, array('expiry' => $expire));
         } catch (\CouchbaseException $e) {
@@ -174,6 +177,7 @@ class Couchbase implements KeyValueStore
      */
     public function replace($key, $value, $expire = 0)
     {
+        $value = $this->serialize($value);
         try {
             $result = $this->client->replace($key, $value, array('expiry' => $expire));
         } catch (\CouchbaseException $e) {
@@ -188,6 +192,7 @@ class Couchbase implements KeyValueStore
      */
     public function cas($token, $key, $value, $expire = 0)
     {
+        $value = $this->serialize($value);
         try {
             $result = $this->client->replace($key, $value, array('expiry' => $expire, 'cas' => $token));
         } catch (\CouchbaseException $e) {
@@ -314,5 +319,32 @@ class Couchbase implements KeyValueStore
             // exception: "The key does not exist on the server"
             return true;
         }
+    }
+
+    /**
+     * Couchbase doesn't properly remember the data type being stored:
+     * arrays and objects are turned into StdClass instances.
+     *
+     * @param mixed $value
+     *
+     * @return string|mixed
+     */
+    protected function serialize($value)
+    {
+        return (is_array($value) || is_object($value)) ? serialize($value) : $value;
+    }
+
+    /**
+     * Restore serialized data.
+     *
+     * @param mixed $value
+     *
+     * @return mixed|int
+     */
+    protected function unserialize($value)
+    {
+        $unserialized = @unserialize($value);
+
+        return $unserialized === false ? $value : $unserialized;
     }
 }
