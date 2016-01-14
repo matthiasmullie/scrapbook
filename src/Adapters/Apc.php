@@ -526,8 +526,8 @@ class Apc implements KeyValueStore
      *
      * @see static::$expires
      *
-     * @param array $key
-     * @param int   $ttl
+     * @param array|string $key
+     * @param int          $ttl
      */
     protected function expire($key = array(), $ttl = 0)
     {
