@@ -25,14 +25,15 @@ services:
   - docker
 
 before_script:
+  - pip install codecov
   - tests/.travis/$ADAPTER.sh
   - composer self-update && composer install --dev
 
 script:
   - ./vendor/bin/phpunit --group "${ADAPTER}"
 
-after_script:
-  - php vendor/bin/coveralls
+after_success:
+  - codecov
 
 matrix:
   fast_finish: true
