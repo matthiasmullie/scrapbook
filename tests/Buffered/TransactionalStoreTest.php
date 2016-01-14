@@ -3,6 +3,7 @@
 namespace MatthiasMullie\Scrapbook\Tests\Buffered;
 
 use MatthiasMullie\Scrapbook\Buffered\TransactionalStore;
+use MatthiasMullie\Scrapbook\Exception\UnbegunTransaction;
 use MatthiasMullie\Scrapbook\KeyValueStore;
 use MatthiasMullie\Scrapbook\Tests\AdapterTestCase;
 
@@ -30,7 +31,11 @@ class TransactionalStoreTest extends AdapterTestCase
     {
         parent::tearDown();
 
-        $this->transactionalCache->rollback();
+        try {
+            $this->transactionalCache->rollback();
+        } catch (UnbegunTransaction $e) {
+            // this is alright, guess we've terminated the transaction already
+        }
     }
 
     public function testGetAndSet()
