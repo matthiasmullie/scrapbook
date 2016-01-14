@@ -12,6 +12,7 @@
 ### Fixed
 - Worked around APC's weird behavior of only clearing expires per page request
 - Store `get` result in buffer if it wasn't in there already
+- Encode certain characters in Memcached keys
 
 
 ## [1.0.8] - 2016-01-12

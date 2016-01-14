@@ -2,6 +2,7 @@
 
 namespace MatthiasMullie\Scrapbook\Adapters;
 
+use MatthiasMullie\Scrapbook\Exception\InvalidKey;
 use MatthiasMullie\Scrapbook\KeyValueStore;
 
 /**
@@ -41,6 +42,7 @@ class Memcached implements KeyValueStore
          * reported, also seen it make CAS return result unreliable)
          * @see https://github.com/php-memcached-dev/php-memcached/issues/21
          */
+        $key = $this->encodeKey($key);
         $values = $this->client->getMulti(array($key), $token);
 
         if (!isset($values[$key])) {
@@ -59,7 +61,10 @@ class Memcached implements KeyValueStore
      */
     public function getMulti(array $keys, array &$tokens = null)
     {
+        $keys = array_map(array($this, 'encodeKey'), $keys);
         $return = $this->client->getMulti($keys, $tokens);
+        $keys = array_map(array($this, 'decodeKey'), array_keys($return));
+        $return = array_combine($keys, $return);
 
         // HHVMs getMulti() returns null instead of empty array for no results,
         // so normalize that
@@ -73,6 +78,8 @@ class Memcached implements KeyValueStore
      */
     public function set($key, $value, $expire = 0)
     {
+        $key = $this->encodeKey($key);
+
         return $this->client->set($key, $value, $expire);
     }
 
@@ -81,7 +88,11 @@ class Memcached implements KeyValueStore
      */
     public function setMulti(array $items, $expire = 0)
     {
+        $keys = array_map(array($this, 'encodeKey'), array_keys($items));
+        $items = array_combine($keys, $items);
         $success = $this->client->setMulti($items, $expire);
+        $keys = array_map(array($this, 'decodeKey'), array_keys($success));
+        $success = array_combine($keys, $success);
 
         return array_fill_keys(array_keys($items), $success);
     }
@@ -91,6 +102,8 @@ class Memcached implements KeyValueStore
      */
     public function delete($key)
     {
+        $key = $this->encodeKey($key);
+
         return $this->client->delete($key);
     }
 
@@ -103,22 +116,26 @@ class Memcached implements KeyValueStore
             /*
              * HHVM doesn't support deleteMulti, so I'll hack around it by
              * setting all items expired.
-             * I could also delete() all items, but that would probably take
-             * more network requests (this version always takes 2)
+             * I could also delete() all items one by one, but that would
+             * probably take more network requests (this version always takes 2)
              *
              * @see http://docs.hhvm.com/manual/en/memcached.deletemulti.php
              */
             $values = $this->getMulti($keys);
-            $this->client->setMulti(array_fill_keys(array_keys($values), ''), time() - 1);
+
+            $keys = array_map(array($this, 'encodeKey'), array_keys($values));
+            $this->client->setMulti(array_fill_keys($keys, ''), time() - 1);
 
             $return = array();
             foreach ($keys as $key) {
+                $key = $this->decodeKey($key);
                 $return[$key] = array_key_exists($key, $values);
             }
 
             return $return;
         }
 
+        $keys = array_map(array($this, 'decodeKey'), $keys);
         $result = (array) $this->client->deleteMulti($keys);
 
         /*
@@ -129,6 +146,7 @@ class Memcached implements KeyValueStore
          * to replace the error codes by falses.
          */
         foreach ($result as $key => $status) {
+            $key = $this->decodeKey($key);
             $result[$key] = $status === true;
         }
 
@@ -140,6 +158,8 @@ class Memcached implements KeyValueStore
      */
     public function add($key, $value, $expire = 0)
     {
+        $key = $this->encodeKey($key);
+
         return $this->client->add($key, $value, $expire);
     }
 
@@ -148,6 +168,8 @@ class Memcached implements KeyValueStore
      */
     public function replace($key, $value, $expire = 0)
     {
+        $key = $this->encodeKey($key);
+
         return $this->client->replace($key, $value, $expire);
     }
 
@@ -159,6 +181,8 @@ class Memcached implements KeyValueStore
         if (!is_float($token)) {
             return false;
         }
+
+        $key = $this->encodeKey($key);
 
         return $this->client->cas($token, $key, $value, $expire);
     }
@@ -265,5 +289,52 @@ class Memcached implements KeyValueStore
         $success = $this->client->cas($token, $key, $value, $expire);
 
         return $success ? $value : false;
+    }
+
+    /**
+     * Encode a key for use on the wire inside the memcached protocol.
+     *
+     * We encode spaces and line breaks to avoid protocol errors. We encode
+     * the other control characters for compatibility with libmemcached
+     * verify_key. We leave other punctuation alone, to maximise backwards
+     * compatibility.
+     *
+     * @see https://github.com/wikimedia/mediawiki/commit/be76d869#diff-75b7c03970b5e43de95ff95f5faa6ef1R100
+     * @see https://github.com/wikimedia/mediawiki/blob/master/includes/libs/objectcache/MemcachedBagOStuff.php#L116
+     *
+     * @param string $key
+     *
+     * @return string
+     *
+     * @throws InvalidKey
+     */
+    protected function encodeKey($key)
+    {
+        $key = preg_replace_callback('/[^\x21\x22\x24\x26-\x39\x3b-\x7e]+/', function ($match) {
+            return rawurlencode($match[0]);
+        }, $key);
+
+        if (strlen($key) > 255) {
+            throw new InvalidKey(
+                "Invalid key: $key. Encoded Memcached keys can not exceed 255 chars."
+            );
+        }
+
+        return $key;
+    }
+
+    /**
+     * Decode a key encoded with encodeKey().
+     *
+     * @param string $key
+     *
+     * @return string
+     */
+    protected function decodeKey($key)
+    {
+        // matches %21, %22, ... %7E (=decoded alternatives for those encoded in encodeKey)
+        return preg_replace_callback('/%(2[1246789]|3[0-9]|3[B-F]|[4-6][0-9A-F]|5[0-9A-E])/i', function ($match) {
+            return urldecode($match[0]);
+        }, $key);
     }
 }

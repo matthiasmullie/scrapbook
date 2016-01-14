@@ -282,7 +282,9 @@ class StampedeProtector implements KeyValueStore
         $suffix = '.stampede';
 
         if (substr($key, -strlen($suffix)) === $suffix) {
-            throw new InvalidKey("Keys with suffix '$suffix' are reserved.");
+            throw new InvalidKey(
+                "Invalid key: $key. Keys with suffix '$suffix' are reserved."
+            );
         }
 
         return $key.$suffix;
