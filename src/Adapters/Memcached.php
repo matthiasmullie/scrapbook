@@ -69,6 +69,7 @@ class Memcached implements KeyValueStore
         // HHVMs getMulti() returns null instead of empty array for no results,
         // so normalize that
         $tokens = $tokens ?: array();
+        $tokens = array_combine($keys, $tokens);
 
         return $return ?: array();
     }
@@ -91,8 +92,9 @@ class Memcached implements KeyValueStore
         $keys = array_map(array($this, 'encodeKey'), array_keys($items));
         $items = array_combine($keys, $items);
         $success = $this->client->setMulti($items, $expire);
+        $keys = array_map(array($this, 'decodeKey'), array_keys($items));
 
-        return array_fill_keys(array_keys($items), $success);
+        return array_fill_keys($keys, $success);
     }
 
     /**
@@ -133,8 +135,10 @@ class Memcached implements KeyValueStore
             return $return;
         }
 
-        $keys = array_map(array($this, 'decodeKey'), $keys);
+        $keys = array_map(array($this, 'encodeKey'), $keys);
         $result = (array) $this->client->deleteMulti($keys);
+        $keys = array_map(array($this, 'decodeKey'), array_keys($result));
+        $result = array_combine($keys, $result);
 
         /*
          * Contrary to docs (http://php.net/manual/en/memcached.deletemulti.php)
@@ -144,7 +148,6 @@ class Memcached implements KeyValueStore
          * to replace the error codes by falses.
          */
         foreach ($result as $key => $status) {
-            $key = $this->decodeKey($key);
             $result[$key] = $status === true;
         }
 
@@ -284,6 +287,7 @@ class Memcached implements KeyValueStore
         $value += $offset;
         // value can never be lower than 0
         $value = max(0, $value);
+        $key = $this->encodeKey($key);
         $success = $this->client->cas($token, $key, $value, $expire);
 
         return $success ? $value : false;
@@ -308,7 +312,8 @@ class Memcached implements KeyValueStore
      */
     protected function encodeKey($key)
     {
-        $key = preg_replace_callback('/[^\x21\x22\x24\x26-\x39\x3b-\x7e]+/', function ($match) {
+        $regex = '/[^\x21\x22\x24\x26-\x39\x3b-\x7e]+/';
+        $key = preg_replace_callback($regex, function ($match) {
             return rawurlencode($match[0]);
         }, $key);
 
@@ -330,9 +335,12 @@ class Memcached implements KeyValueStore
      */
     protected function decodeKey($key)
     {
-        // matches %21, %22, ... %7E (=decoded alternatives for those encoded in encodeKey)
-        return preg_replace_callback('/%(2[1246789]|3[0-9]|3[B-F]|[4-6][0-9A-F]|5[0-9A-E])/i', function ($match) {
-            return urldecode($match[0]);
+        // matches %20, %7F, ... but not %21, %22, ...
+        // (=the encoded versions for those encoded in encodeKey)
+        $regex = '/%(?!2[1246789]|3[0-9]|3[B-F]|[4-6][0-9A-F]|5[0-9A-E])[0-9A-Z]{2}/i';
+
+        return preg_replace_callback($regex, function ($match) {
+            return rawurldecode($match[0]);
         }, $key);
     }
 }
