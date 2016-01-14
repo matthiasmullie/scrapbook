@@ -33,6 +33,7 @@
   "require-dev": {
     "phpunit/phpunit": "~4.8",
     "satooshi/php-coveralls": "~1.0",
+    "cache/taggable-cache": "~0.3",
     "cache/integration-tests": "dev-master"
   },
   "suggest": {
@@ -41,7 +42,8 @@
     "ext-memcached": ">=2.0.0",
     "ext-redis": ">=2.2.0 || 0.0.0.0",
     "ext-pdo": ">=0.1.0",
-    "league/flysystem": "~1.0"
+    "league/flysystem": "~1.0",
+    "cache/taggable-cache": "~0.3"
   },
   "provide": {
     "psr/cache-implementation": "~1.0"

@@ -2,11 +2,16 @@
 
 
 ## [1.0.9] - 2016-xx-xx
+### Added
+- Add cache/taggable-cache implementation that works for all PSR-6 libraries
+- Include cache/integration-tests test suite
+
+### Changed
+- Revamped unit tests: no longer use dataProvider, but provide grouped suites
+
 ### Fixed
 - Worked around APC's weird behavior of only clearing expires per page request
 - Store `get` result in buffer if it wasn't in there already
-- Revamped unit tests: no longer use dataProvider, but provide grouped suites
-- Include cache/integration-tests test suite
 
 
 ## [1.0.8] - 2016-01-12
