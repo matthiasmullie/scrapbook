@@ -21,7 +21,8 @@ class TaggableCacheTest extends TaggableCachePoolTest implements AdapterProvider
      */
     public static function suite()
     {
-        $provider = new AdapterProvider(new static);
+        $provider = new AdapterProvider(new static());
+
         return $provider->getSuite();
     }
 

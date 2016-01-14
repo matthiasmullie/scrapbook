@@ -14,7 +14,8 @@ class AdapterTestCase extends PHPUnit_Framework_TestCase implements AdapterProvi
 
     public static function suite()
     {
-        $provider = new AdapterProvider(new static);
+        $provider = new AdapterProvider(new static());
+
         return $provider->getSuite();
     }
 

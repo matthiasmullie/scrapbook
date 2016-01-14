@@ -217,7 +217,7 @@ class StampedeProtectorTest extends AdapterTestCase
 
         // Now we know $cache will be just fine when forked, but we may be
         // running tests against multiple adapters & not all of them may be fine
-        $provider = new AdapterProvider(new static);
+        $provider = new AdapterProvider(new static());
         foreach ($provider->getAdapters() as $adapter) {
             if (!$this->forkableAdapter($adapter)) {
                 return false;

@@ -52,7 +52,7 @@ class AdapterProvider
             // let's add all of the integrations tests for every adapter
             $suite->addTest($tests);
 
-            $i++;
+            ++$i;
         }
 
         return $suite;
@@ -64,12 +64,11 @@ class AdapterProvider
      * that we must unwrap in order to assign the adapter.
      *
      * @param \PHPUnit_Framework_TestSuite $suite
-     * @param KeyValueStore $adapter
+     * @param KeyValueStore                $adapter
      */
     protected function injectAdapter(\PHPUnit_Framework_TestSuite $suite, KeyValueStore $adapter)
     {
-        foreach ($suite as $test)
-        {
+        foreach ($suite as $test) {
             if ($test instanceof \PHPUnit_Framework_TestSuite) {
                 $this->injectAdapter($test, $adapter);
             } else {
@@ -91,8 +90,7 @@ class AdapterProvider
         $tests = $suite->tests();
         $suite->setGroupDetails(array('default' => $tests, $group => $tests));
 
-        foreach ($suite->tests() as $test)
-        {
+        foreach ($suite->tests() as $test) {
             if ($test instanceof \PHPUnit_Framework_TestSuite) {
                 $this->injectGroup($test, $group);
             }
@@ -113,7 +111,7 @@ class AdapterProvider
         $adapters = $this->getAllAdapters();
         foreach ($adapters as $class) {
             try {
-                /** @var AdapterInterface $adapter */
+                /* @var AdapterInterface $adapter */
                 $fqcn = "\\MatthiasMullie\\Scrapbook\\Tests\\Adapters\\{$class}Test";
                 $adapter = new $fqcn();
 
