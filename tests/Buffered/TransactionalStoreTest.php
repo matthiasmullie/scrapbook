@@ -26,6 +26,13 @@ class TransactionalStoreTest extends AdapterTestCase
         $this->transactionalCache->begin();
     }
 
+    public function tearDown()
+    {
+        parent::tearDown();
+
+        $this->transactionalCache->rollback();
+    }
+
     public function testGetAndSet()
     {
         $this->transactionalCache->set('key', 'value');

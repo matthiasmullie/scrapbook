@@ -19,4 +19,11 @@ class TransactionalStoreAdapterTest extends AdapterTest
 
         $this->cache->begin();
     }
+
+    public function tearDown()
+    {
+        parent::tearDown();
+
+        $this->cache->rollback();
+    }
 }

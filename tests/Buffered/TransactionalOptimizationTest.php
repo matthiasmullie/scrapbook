@@ -26,6 +26,13 @@ class TransactionalOptimizationTest extends AdapterTest
         $this->transactionalCache->begin();
     }
 
+    public function tearDown()
+    {
+        parent::tearDown();
+
+        $this->transactionalCache->rollback();
+    }
+
     /**
      * Confirm that multiple set() calls are combined into 1 setMulti().
      */
