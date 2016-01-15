@@ -2,6 +2,7 @@
 
 namespace MatthiasMullie\Scrapbook\Tests;
 
+use MatthiasMullie\Scrapbook\Exception\Exception;
 use MatthiasMullie\Scrapbook\KeyValueStore;
 use MatthiasMullie\Scrapbook\Tests\Adapters\AdapterInterface;
 use MatthiasMullie\Scrapbook\Tests\Adapters\AdapterStub;
@@ -23,9 +24,19 @@ class AdapterProvider
 
     /**
      * @param PHPUnit_Framework_TestCase $testCase
+     *
+     * @throws Exception
      */
     public function __construct(PHPUnit_Framework_TestCase $testCase)
     {
+        if (!$testCase instanceof AdapterProviderTestInterface) {
+            $class = get_class($testCase);
+            throw new Exception(
+                "AdapterProvider can't be used with a class ($class) that ".
+                "doesn't implement AdapterProviderTestInterface."
+            );
+        }
+
         $this->testCase = $testCase;
     }
 
