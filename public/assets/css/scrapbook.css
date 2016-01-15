@@ -266,6 +266,10 @@ html, body, .jPanelMenu-panel {
  * Lists should display as lists
  */
 #content-wrapper ul, #content-wrapper ol {
-    list-style: outside none disc;
-    margin: 0 0 15px 15px;
+	list-style: outside none disc;
+	margin: 0 0 15px 15px;
+}
+#content-wrapper .categories ul {
+	list-style: outside none none;
+	margin: 0;
 }
