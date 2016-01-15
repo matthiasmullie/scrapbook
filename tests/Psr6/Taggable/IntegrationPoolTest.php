@@ -12,7 +12,7 @@ use MatthiasMullie\Scrapbook\Tests\AdapterProviderTestInterface;
 class IntegrationPoolTest extends CachePoolTest implements AdapterProviderTestInterface
 {
     /**
-     * @var TaggablePool
+     * @var TaggablePool|null
      */
     protected $pool;
 
@@ -35,7 +35,7 @@ class IntegrationPoolTest extends CachePoolTest implements AdapterProviderTestIn
         $pool = new OriginalPool($adapter);
 
         // wrap PSR-6 cache into Taggable cache
-        $this->pool = new TaggablePool($pool);
+        $this->pool = class_exists('\Cache\Taggable\TaggablePoolInterface') ? new TaggablePool($pool) : null;
     }
 
     /**
@@ -44,5 +44,21 @@ class IntegrationPoolTest extends CachePoolTest implements AdapterProviderTestIn
     public function createCachePool()
     {
         return $this->pool;
+    }
+
+    public function setUp()
+    {
+        if ($this->pool === null) {
+            $this->markTestSkipped('Unable to construct Taggable pool.');
+        }
+
+        parent::setUp();
+    }
+
+    public function tearDown()
+    {
+        if ($this->pool !== null) {
+            parent::tearDown();
+        }
     }
 }
