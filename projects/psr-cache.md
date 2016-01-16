@@ -35,10 +35,25 @@ is an attempt to standardize how cache is implemented across frameworks &
 libraries in the PHP landscape.
 
 It's a relatively simple & straightforward interface, which supports fewer
-features than MatthiasMullie\Scrapbook\KeyValueStore (e.g. CAS is missing).
-But it will - hopefully - make for a less fragmented PHP cache landscape (which,
-ironically, Scrapbook is contributing to.)
+features than KeyValueStore (e.g. CAS is missing). But it will - hopefully -
+make for a less fragmented PHP cache landscape (which, ironically, Scrapbook is
+contributing to.)
 
-This project bridges the gap between MatthiasMullie\Scrapbook\KeyValueStore
-based adapters & extras, and PSR-6: any of the Scrapbook tools are accessible
-in a PSR-6 compatible manner.
+This project bridges the gap between KeyValueStore based adapters & extras, and
+PSR-6: any of the Scrapbook tools are accessible in a PSR-6 compatible manner.
+
+<hr class="sep20">
+
+## Methods Pool
+
+<hr class="sep10">
+
+{% include psr-6-pool.html %}
+
+<hr class="sep20">
+
+## Methods Item
+
+<hr class="sep10">
+
+{% include psr-6-item.html %}
