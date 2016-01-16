@@ -7,7 +7,7 @@ namespace MatthiasMullie\Scrapbook;
  *
  * @author Matthias Mullie <scrapbook@mullie.eu>
  * @copyright Copyright (c) 2014, Matthias Mullie. All rights reserved.
- * @license MIT License
+ * @license LICENSE MIT
  */
 interface KeyValueStore
 {

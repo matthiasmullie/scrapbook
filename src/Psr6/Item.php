@@ -12,7 +12,7 @@ use Psr\Cache\CacheItemInterface;
  *
  * @author Matthias Mullie <scrapbook@mullie.eu>
  * @copyright Copyright (c) 2014, Matthias Mullie. All rights reserved.
- * @license MIT License
+ * @license LICENSE MIT
  */
 class Item implements CacheItemInterface
 {
