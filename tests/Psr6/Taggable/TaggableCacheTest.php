@@ -35,7 +35,7 @@ class TaggableCacheTest extends TaggableCachePoolTest implements AdapterProvider
         $pool = new OriginalPool($adapter);
 
         // wrap PSR-6 cache into Taggable cache
-        $this->pool = class_exists('\Cache\Taggable\TaggablePoolInterface') ? new TaggablePool($pool) : null;
+        $this->pool = interface_exists('\Cache\Taggable\TaggablePoolInterface') ? new TaggablePool($pool) : null;
     }
 
     /**
