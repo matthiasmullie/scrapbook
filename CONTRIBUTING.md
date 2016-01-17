@@ -56,7 +56,7 @@ Travis CI are located.
 
 A lot of them use Docker to launch the cache servers but you can always install
 the servers natively, in which case you may need to alter the adapters
-configuration (e.b. because you're running the server on a different port). This
+configuration (e.g. because you're running the server on a different port). This
 configuration is located in [tests/Adapters](tests/Adapters), in the `::get`
 method of every adapter. If you do need to alter these in order to run the tests
 on your machine, make sure not to commit those changes!
