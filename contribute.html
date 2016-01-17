@@ -1,0 +1,174 @@
+---
+layout: page
+title: How to contribute?
+description: How to contribute to Scrapbook?
+weight: 4
+---
+
+<div class="container">
+	<div class="sixteen columns">
+		<h2>Issues</h2>
+		<hr class="sep10">
+
+		<p>
+			When <a href="https://github.com/matthiasmullie/scrapbook/issues/new">filing bugs</a>,
+			try to be as thorough as possible:
+		</p>
+
+		<ul>
+			<li>What version of Scrapbook did you use?</li>
+			<li>What did you try to do? <i>Please post the relevant parts of your code.</i></li>
+			<li>What went wrong? <i>Please include error messages, if any.</i></li>
+			<li>What was the expected result?</li>
+		</ul>
+
+		<hr class="sep20">
+
+		<h2>Pull requests</h2>
+		<hr class="sep10">
+
+		<p>
+			Bug fixes and general improvements to the existing codebase are always welcome.
+			New features are also welcome, but will be judged on an individual basis. If
+			you'd rather not risk wasting your time implementing a new feature only to see
+			it turned down, please start the discussion by
+			<a href="https://github.com/matthiasmullie/scrapbook/issues/new" title="opening an issue">opening an issue</a>.
+		</p>
+
+		<p>
+			Where applicable, new features should follow the existing model of wrapping them
+			around a KeyValueStore object, which is in turn also a KeyValueStore. Like how
+			an adapter can be wrapped inside a StampedeProtected, which can in turn be
+			wrapped inside a TransactionalStore. This keeps functionality nicely isolated
+			(single responsibility) while still offering a consistent API.
+		</p>
+
+		<p>
+			Don't forget to add your changes to the <a href="https://github.com/matthiasmullie/scrapbook/blob/master/CHANGELOG.md" title="changelog">changelog</a>.
+		</p>
+
+		<hr class="sep20">
+
+		<h2>Testing</h2>
+		<hr class="sep10">
+
+
+		<h3 class="headline">Running the tests</h3>
+		<span class="brd-headling"></span>
+		<div class="clearfix"></div>
+
+		<p>
+			To run the complete test suite, for all adapters:
+		</p>
+
+		<pre>vendor/bin/phpunit</pre>
+
+		<p>
+			Or a specific adapter (in this case Memcached):
+		</p>
+
+		<pre>vendor/bin/phpunit --group "Memcached"</pre>
+
+		<p>
+			Or a couple of adapters (in this case the SQL group):
+		</p>
+
+		<pre>vendor/bin/phpunit --group "MySQL,PostgreSQL,SQLite"</pre>
+
+		<p>
+			Some adapter rely on external services (cache server) & libraries (client-side
+			APIs). If you need help to install these, take a look inside the
+			<a href="https://github.com/matthiasmullie/scrapbook/blob/master/tests/.travis" title="tests/.travis directory">tests/.travis directory</a>, where the installation scripts for
+			Travis CI are located.
+		</p>
+
+		<p>
+			A lot of them use Docker to launch the cache servers but you can always install
+			the servers natively, in which case you may need to alter the adapters
+			configuration (e.g. because you're running the server on a different port). This
+			configuration is located in <a href="https://github.com/matthiasmullie/scrapbook/blob/master/tests/Adapters" title="tests/Adapters">tests/Adapters</a>, in the <code>::get</code>
+			method of every adapter. If you do need to alter these in order to run the tests
+			on your machine, make sure not to commit those changes!
+		</p>
+
+		<p>
+			Travis CI has been <a href="https://github.com/matthiasmullie/scrapbook/blob/master/.travis.yml" title="configured">configured</a> to run a matrix of all supported
+			PHP versions & adapters individually. Upon submitting a new pull request, that
+			test suite will be run & report back on your pull request. Please make sure the
+			test suite passes.
+		</p>
+
+		<hr class="sep20">
+
+		<h3 class="headline">Writing tests</h3>
+		<span class="brd-headling"></span>
+		<div class="clearfix"></div>
+
+		<p>
+			Please include tests for every change or addition to the code.
+		</p>
+
+		<hr class="sep10">
+
+		<h4>New adapter</h4>
+
+		<p>
+			To add a new adapter, just add a new <i>AdapterName</i>Test.php file in the
+			<a href="https://github.com/matthiasmullie/scrapbook/blob/master/tests/Adapters" title="tests/Adapters">tests/Adapters</a> directory, similar to the existing adapters.
+			That file should implement AdapterInterface & <code>::get</code> should return that
+			adapter's KeyValueStore implementation & throw a
+			<code>MatthiasMullie\Scrapbook\Exception\Exception</code> in case it fails to initialize.
+		</p>
+
+		<p>
+			These adapter tests can also include adapter-specific tests. Just look at
+			<a href="https://github.com/matthiasmullie/scrapbook/blob/master/tests/Adapters/MemoryStoreTest.php" title="MemoryStoreTest.php">MemoryStoreTest.php</a>, for example.
+		</p>
+
+		<p>
+			Make sure to remember to also include the adapter in <a href="https://github.com/matthiasmullie/scrapbook/blob/master/.travis.yml" title=".travis.yml">.travis.yml</a>
+			and create an <a href="https://github.com/matthiasmullie/scrapbook/blob/master/tests/.travis" title="installation script">installation script</a> for Travis CI.
+		</p>
+
+		<hr class="sep10">
+
+		<h4>Other new class</h4>
+
+		<p>
+			To create a new test that can be run for all adapters, make sure it extends from
+			<a href="https://github.com/matthiasmullie/scrapbook/blob/master/tests/AdapterProviderTestInterface.php" title="AdapterProviderTestInterface">AdapterProviderTestInterface</a> and has a
+			static function <code>::suite</code> that calls
+			<a href="https://github.com/matthiasmullie/scrapbook/blob/master/tests/AdapterProvider.php" title="AdapterProvider">AdapterProvider</a>. Or just extend
+			<a href="https://github.com/matthiasmullie/scrapbook/blob/master/tests/AdapterTestCase.php" title="AdapterTestCase">AdapterTestCase</a> directly, which has that already
+			wired up.
+		</p>
+
+		<hr class="sep20">
+
+		<h2>Coding standards</h2>
+		<hr class="sep10">
+
+		<p>
+			All code must follow <a href="http://www.php-fig.org/psr/psr-2/" title="PSR-2">PSR-2</a>. Just make sure
+			to run php-cs-fixer before submitting the code, it'll take care of the
+			formatting for you:
+		</p>
+
+		<pre>vendor/bin/php-cs-fixer fix src
+vendor/bin/php-cs-fixer fix tests</pre>
+
+		<p>
+			Document the code thoroughly!
+		</p>
+
+		<hr class="sep20">
+
+		<h2>License</h2>
+		<hr class="sep10">
+
+		<p>
+			Note that Scrapbook is <a href="license.html" title="MIT license">MIT-licensed</a>, which basically allows anyone to do
+			anything they like with it, without restriction.
+		</p>
+	</div>
+</div>
