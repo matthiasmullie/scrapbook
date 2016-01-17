@@ -24,7 +24,7 @@ an adapter can be wrapped inside a StampedeProtected, which can in turn be
 wrapped inside a TransactionalStore. This keeps functionality nicely isolated
 (single responsibility) while still offering a consistent API.
 
-Don't forget to add your changes to the [changelog](CHANGELOD.md).
+Don't forget to add your changes to the [changelog](CHANGELOG.md).
 
 
 ## Testing
@@ -83,7 +83,7 @@ adapter's KeyValueStore implementation & throw a
 These adapter tests can also include adapter-specific tests. Just look at
 [MemoryStoreTest.php](tests/Adapters/MemoryStoreTest.php), for example.
 
-Make sure not to forget to also include the adapter in [.travis.yml](travis.yml)
+Make sure to remember to also include the adapter in [.travis.yml](.travis.yml)
 and create an [installation script](tests/.travis) for Travis CI.
 
 
