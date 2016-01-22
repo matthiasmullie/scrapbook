@@ -141,6 +141,6 @@ section to generate the exact configuration you'd like to use (adapter,
 interface, extras) and some example code.
 
 
-## License
+# License
 
 Scrapbook is [MIT](http://opensource.org/licenses/MIT) licensed.
