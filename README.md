@@ -9,7 +9,8 @@
 
 Documentation: http://www.scrapbook.cash - API reference: http://docs.scrapbook.cash
 
-**Adapters**:
+## Adapters
+
 [Memcached](http://www.scrapbook.cash/adapters/memcached.html),
 [Redis](http://www.scrapbook.cash/adapters/redis.html),
 [Couchbase](http://www.scrapbook.cash/adapters/couchbase.html),
@@ -21,11 +22,11 @@ Documentation: http://www.scrapbook.cash - API reference: http://docs.scrapbook.
 [MemoryStore](http://www.scrapbook.cash/adapters/memory.html)
 
 
-# Interfaces
+## Interfaces
 
 2 interfaces are available & both work with all adapters.
 
-## KeyValueStore
+### KeyValueStore
 
 KeyValueStore is inspired by the Memcached API (driver model). It'll let you do
 the most advanced cache operations & is easiest to use.
@@ -51,7 +52,7 @@ A detailed list of the KeyValueStore interface & it's methods can be found in
 the [documentation](http://www.scrapbook.cash/projects/key-value-store.html).
 
 
-## PSR-6 CacheItemPoolInterface & CacheItemInterface
+### PSR-6 CacheItemPoolInterface & CacheItemInterface
 
 PSR-6 (a PHP-FIG standard) is a different approach (pool model): there's 1 class to interact
 with the cache backend (Pool) & one to represent the cache value (Item).
@@ -86,9 +87,9 @@ A detailed list of the PSR-6 interface & it's methods can be found in the
 [documentation](http://www.scrapbook.cash/projects/psr-cache.html).
 
 
-# Extras
+## Extras
 
-## Local buffer
+### Local buffer
 
 [BufferedStore](http://www.scrapbook.cash/projects/buffered-cache.html) helps
 avoid repeat requests to your real cache by keeping the value in memory. That
@@ -96,7 +97,7 @@ way, you don't have to do that in your application - just keep querying that
 cache!
 
 
-## Transactions
+### Transactions
 
 Just like database transactions,
 [TransactionalStore](http://www.scrapbook.cash/projects/transactional-cache.html)
@@ -104,7 +105,7 @@ lets you defer cache writes to a later point in time, until you're ready to
 commit all of it (or rollback.) You can even nest multiple transactions!
 
 
-## Stampede protection
+### Stampede protection
 
 Cache stampedes can happen when you get a sudden surge of traffic but the data
 is not yet in cache.
@@ -113,7 +114,7 @@ will make sure that only 1 request will generate the result & the others just
 wait until it pops up in cache, instead of cripling your servers.
 
 
-## Taggable cache
+### Taggable cache
 
 
 [Taggable cache](http://www.scrapbook.cash/projects/taggable-cache.html) is a
@@ -123,7 +124,7 @@ will enable it to work with all (and not just Scrapbook's) PSR-cache compliant
 implementations.
 
 
-# Installation
+## Installation
 
 Simply add a dependency on matthiasmullie/scrapbook to your composer.json file
 if you use [Composer](https://getcomposer.org/) to manage the dependencies of
@@ -141,6 +142,6 @@ section to generate the exact configuration you'd like to use (adapter,
 interface, extras) and some example code.
 
 
-# License
+## License
 
 Scrapbook is [MIT](http://opensource.org/licenses/MIT) licensed.
