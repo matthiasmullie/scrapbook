@@ -71,10 +71,10 @@ class Pool implements CacheItemPoolInterface
             $item = is_object($value) ? clone $value : $value;
 
             /*
-             * Deferred items should identify as being hit:
+             * Deferred items should identify as being hit, unless if expired:
              * @see https://groups.google.com/forum/?fromgroups#!topic/php-fig/pxy_VYgm2sU
              */
-            $item->overrideIsHit(true);
+            $item->overrideIsHit(!$item->isExpired());
 
             return $item;
         }
@@ -168,8 +168,7 @@ class Pool implements CacheItemPoolInterface
             );
         }
 
-        $expire = $item->getExpiration();
-        if ($expire !== 0 && $expire < time()) {
+        if ($item->isExpired()) {
             // already expired: don't even save it
             return true;
         }
@@ -184,6 +183,8 @@ class Pool implements CacheItemPoolInterface
              */
             return $item->get() !== null;
         }
+
+        $expire = $item->getExpiration();
 
         return $this->store->set($item->getKey(), $item->get(), $expire);
     }
@@ -201,7 +202,10 @@ class Pool implements CacheItemPoolInterface
         }
 
         $this->deferred[$item->getKey()] = $item;
-        $item->overrideIsHit(true);
+        // let's pretend that this actually comes from cache (we'll store it
+        // there soon), unless if it's already expired (in which case it will
+        // never reach cache...)
+        $item->overrideIsHit(!$item->isExpired());
 
         return true;
     }
@@ -213,15 +217,14 @@ class Pool implements CacheItemPoolInterface
     {
         $deferred = array();
         foreach ($this->deferred as $key => $item) {
-            $expire = $item->getExpiration();
-
-            if ($expire !== 0 && $expire < time()) {
+            if ($item->isExpired()) {
                 // already expired: don't even save it
                 continue;
             }
 
             // setMulti doesn't allow to set expiration times on a per-item basis,
             // so we'll have to group our requests per expiration date
+            $expire = $item->getExpiration();
             $deferred[$expire][$item->getKey()] = $item->get();
         }
 

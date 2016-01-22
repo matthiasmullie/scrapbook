@@ -192,6 +192,18 @@ class Item implements CacheItemInterface
     }
 
     /**
+     * Returns true if the item is already expired, false otherwise.
+     *
+     * @return bool
+     */
+    public function isExpired()
+    {
+        $expire = $this->getExpiration();
+
+        return $expire !== 0 && $expire < time();
+    }
+
+    /**
      * We'll want to know if this Item was altered (value or expiration date)
      * once we'll want to store it.
      *
