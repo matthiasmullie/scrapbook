@@ -34,15 +34,16 @@ class Shard implements KeyValueStore
     protected $caches = array();
 
     /**
-     * Overloadable with multiple KeyValueStore objects
+     * Overloadable with multiple KeyValueStore objects.
      *
-     * @param KeyValueStore $cache1
+     * @param KeyValueStore      $cache1
      * @param KeyValueStore|null $cache2
-     * @param KeyValueStore|null $cache3
      */
-    public function __construct(KeyValueStore $cache1 /* , [KeyValueStore $cache2, [...]] */)
+    public function __construct(KeyValueStore $cache1, KeyValueStore $cache2 = null /* , [KeyValueStore $cache3, [...]] */)
     {
-        $this->caches = func_get_args();
+        $caches = func_get_args();
+        $caches = array_filter($caches);
+        $this->caches = $caches;
     }
 
     /**
@@ -198,6 +199,7 @@ class Shard implements KeyValueStore
      * cache key.
      *
      * @param string $key
+     *
      * @return KeyValueStore
      */
     protected function getShard($key)
@@ -227,6 +229,7 @@ class Shard implements KeyValueStore
      * multiple cache keys.
      *
      * @param array $keys
+     *
      * @return SplObjectStorage
      */
     protected function getShards(array $keys)

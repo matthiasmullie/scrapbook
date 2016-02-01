@@ -7,7 +7,7 @@ use MatthiasMullie\Scrapbook\KeyValueStore;
 use MatthiasMullie\Scrapbook\Scale\Shard;
 use MatthiasMullie\Scrapbook\Tests\AdapterTestCase;
 
-class ShardTest extends AdapterTestCase
+class ShardSpreadTest extends AdapterTestCase
 {
     /**
      * @var Shard

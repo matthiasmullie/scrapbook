@@ -4,6 +4,110 @@ namespace MatthiasMullie\Scrapbook\Tests;
 
 class AdapterTest extends AdapterTestCase
 {
+    public function testGetAndSet()
+    {
+        $return = $this->cache->set('test key', 'value');
+
+        $this->assertEquals(true, $return);
+        $this->assertEquals('value', $this->cache->get('test key'));
+    }
+
+    public function testGetFail()
+    {
+        $this->assertEquals(false, $this->cache->get('test key'));
+    }
+
+    public function testGetNonReferential()
+    {
+        // this is mostly for MemoryStore - other stores probably aren't at risk
+
+        $object = new \StdClass();
+        $object->value = 'test';
+        $this->cache->set('test key', $object);
+
+        // clone the object because we'll be messing with it ;)
+        $comparison = clone $object;
+
+        // changing the object after it's been cached shouldn't affect cache
+        $object->value = 'updated-value';
+        $fromCache = $this->cache->get('test key');
+        $this->assertEquals($comparison, $fromCache);
+
+        // changing the value we got from cache shouldn't change what's in cache
+        $fromCache->value = 'updated-value-2';
+        $fromCache2 = $this->cache->get('test key');
+        $this->assertNotEquals($comparison, $fromCache);
+        $this->assertEquals($comparison, $fromCache2);
+    }
+
+    public function testGetMulti()
+    {
+        $items = array(
+            'test key' => 'value',
+            'key2' => 'value2',
+        );
+
+        foreach ($items as $key => $value) {
+            $this->cache->set($key, $value);
+        }
+
+        $this->assertEquals($items, $this->cache->getMulti(array_keys($items)));
+
+        // requesting non-existing keys
+        $this->assertEquals(array(), $this->cache->getMulti(array('key3')));
+        $this->assertEquals(array('key2' => 'value2'), $this->cache->getMulti(array('key2', 'key3')));
+    }
+
+    public function testGetNoCasTokens()
+    {
+        $this->cache->get('test key', $token);
+        $this->assertEquals(null, $token);
+
+        $this->cache->getMulti(array('test key'), $tokens);
+        $this->assertEquals(array(), $tokens);
+    }
+
+    public function testGetCasTokensFromFalse()
+    {
+        // 'false' is also a value, with a token
+        $return = $this->cache->set('test key', false);
+
+        $this->assertEquals(true, $return);
+
+        $this->assertEquals(false, $this->cache->get('test key', $token));
+        $this->assertNotNull($token);
+
+        $this->assertEquals(array('test key' => false), $this->cache->getMulti(array('test key'), $tokens));
+        $this->assertNotNull($tokens['test key']);
+    }
+
+    public function testGetCasTokensOverridesTokenValue()
+    {
+        $token = 'some-value';
+        $tokens = array('some-value');
+
+        $this->assertEquals(false, $this->cache->get('test key', $token));
+        $this->assertEquals(null, $token);
+
+        $this->assertEquals(array(), $this->cache->getMulti(array('test key'), $tokens));
+        $this->assertEquals(array(), $tokens);
+    }
+
+    public function testSetExpired()
+    {
+        $return = $this->cache->set('test key', 'value', time() - 2);
+        $this->assertEquals(true, $return);
+        $this->assertEquals(false, $this->cache->get('test key'));
+
+        // test if we can add to, but not replace or touch an expired value; it
+        // should be treated as if the value doesn't exist)
+        $return = $this->cache->replace('test key', 'value');
+        $this->assertEquals(false, $return);
+        $return = $this->cache->touch('test key', time() + 2);
+        $this->assertEquals(false, $return);
+        $return = $this->cache->add('test key', 'value');
+        $this->assertEquals(true, $return);
+    }
 
     public function testSetMulti()
     {
