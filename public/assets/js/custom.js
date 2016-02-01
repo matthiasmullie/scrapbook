@@ -277,13 +277,6 @@
 	},
 
 	extras = {
-		stampede: {
-			'src-begin': "// create stampede protector layer over our real cache\n" +
-						"$cache = new \\MatthiasMullie\\Scrapbook\\Scale\\StampedeProtector($cache);\n",
-			'src-end': "",
-			composer: ''
-		},
-
 		buffered: {
 			'src-begin': "// create buffered cache layer over our real cache\n" +
 						"$cache = new \\MatthiasMullie\\Scrapbook\\Buffered\\BufferedStore($cache);\n",
@@ -299,6 +292,24 @@
 						"$cache->begin();\n",
 			'src-end': "// now commit all write operations\n" +
 						"$cache->commit();\n",
+			composer: ''
+		},
+
+		stampede: {
+			'src-begin': "// create stampede protector layer over our real cache\n" +
+			"$cache = new \\MatthiasMullie\\Scrapbook\\Scale\\StampedeProtector($cache);\n",
+			'src-end': "",
+			composer: ''
+		},
+
+		shard: {
+			'src-begin': "// creating a second cache server\n" +
+			"(MemoryStore for this example, but could be anything)\n" +
+			"$cache2 = new \\MatthiasMullie\\Scrapbook\\Adapters\\MemoryStore();\n\n" +
+			"// create shard layer over our real cache\n" +
+			"// all data will now automatically be distributed between both caches\n" +
+			"$cache = new \\MatthiasMullie\\Scrapbook\\Scale\\Shard($cache, $cache2);\n",
+			'src-end': "",
 			composer: ''
 		}
 	},
