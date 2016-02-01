@@ -1,8 +1,8 @@
 ---
-layout: project
+layout: extra
 title: Stampede protector
 description: A cache stampede happens when there are a lot of requests for data that is not currently in cache, causing a lot of concurrent complex operations. Stampede protector will make sure only the first process executes and the other processes just wait, instead of crippling the server.
-weight: 4
+weight: 2
 icon: fa fa-pause
 class: MatthiasMullie\Scrapbook\Scale\StampedeProtector
 ---

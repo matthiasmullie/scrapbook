@@ -1,0 +1,58 @@
+---
+layout: page
+---
+
+<div class="container">
+	<div class="eleven columns">
+		<div style="position: relative">
+			<a href="https://github.com/matthiasmullie/scrapbook"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://camo.githubusercontent.com/38ef81f8aca64bb9a64448d0d70f1308ef5341ab/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f6461726b626c75655f3132313632312e706e67" alt="Fork {{ page.title }} on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png"></a>
+
+			{{ content }}
+		</div>
+	</div>
+
+	<div class="five columns" id="adapter-details">
+		<p>{{ page.description }}</p>
+
+		<h3>Status</h3>
+		<nav class="categories">
+			<ul>
+				<li><a href="https://travis-ci.org/matthiasmullie/scrapbook" title="Build status"><img src="https://api.travis-ci.org/matthiasmullie/scrapbook.svg?branch=master" alt="Build status"/></a></li>
+				<li><a href="https://codecov.io/github/matthiasmullie/scrapbook" title="Code coverage"><img src="http://img.shields.io/codecov/c/github/matthiasmullie/scrapbook.svg" alt="Code coverage"/></a></li>
+				<li><a href="https://scrutinizer-ci.com/g/matthiasmullie/scrapbook" title="Code quality"><img src="http://img.shields.io/scrutinizer/g/matthiasmullie/scrapbook.svg" alt="Code quality"/></a></li>
+				<li><a href="https://packagist.org/packages/matthiasmullie/scrapbook" title="Latest version"><img src="http://img.shields.io/packagist/v/matthiasmullie/scrapbook.svg" alt="Latest version"/></a></li>
+				<li><a href="https://packagist.org/packages/matthiasmullie/scrapbook" title="Downloads total"><img src="http://img.shields.io/packagist/dt/matthiasmullie/scrapbook.svg" alt="Downloads total"/></a></li>
+			</ul>
+		</nav>
+
+		<hr class="sep20">
+
+		<h3>Project links</h3>
+		<nav class="categories">
+			<ul>
+				<li><a href="https://github.com/matthiasmullie/scrapbook" title="{{ page.title }} on GitHub">GitHub</a></li>
+				<li><a href="https://packagist.org/packages/matthiasmullie/scrapbook" title="{{ page.title }} on Packagist">Packagist</a></li>
+			</ul>
+		</nav>
+
+		<hr class="sep20">
+
+		<h3>Documentation</h3>
+		<nav class="categories">
+			<ul>
+				{% if page.class %}
+					<li><a href="http://docs.scrapbook.cash/class-{{ page.class | replace:'\','.' }}.html" title="{{ page.class }}">{{ page.class }}</a></li>
+				{% endif %}
+				{% if page.namespace %}
+					<li><a href="http://docs.scrapbook.cash/namespace-{{ page.namespace | replace:'\','.' }}.html" title="{{ page.namespace }}">{{ page.namespace }}</a></li>
+				{% endif %}
+			</ul>
+		</nav>
+
+		<hr class="sep20">
+
+		<h3>Composer</h3>
+		<pre>composer require matthiasmullie/scrapbook{% if page.composer %}{% for requirement in page.composer %}
+{{ requirement }}{% endfor %}{% endif %}</pre>
+	</div>
+</div>

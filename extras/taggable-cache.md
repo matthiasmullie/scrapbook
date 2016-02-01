@@ -1,8 +1,8 @@
 ---
-layout: project
+layout: extra
 title: Taggable cache
 description: A PSR-cache implementation that allows you to tag related items & clear cached data for only that tag. It's an implementation of cache/taggable-cache's traits that will enable it to work with all (and not just Scrapbook's) PSR-cache compliant implementations.
-weight: 6
+weight: 4
 icon: fa fa-tag
 namespace: MatthiasMullie\Scrapbook\Psr6\Taggable
 composer: [ 'composer require cache/taggable-cache:~0.3' ]

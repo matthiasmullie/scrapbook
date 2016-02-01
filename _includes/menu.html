@@ -12,7 +12,7 @@
     {% assign pages_list = site.pages | sort:"weight" %}
     {% for node in pages_list %}
       {% if node.title != null %}
-        {% if node.layout != "default" and node.layout != "post" and node.layout != "adapter" and node.layout != "project" %}
+        {% if node.layout != "default" and node.layout != "post" and node.layout != "adapter" and node.layout != "interface" and node.layout != "extra" %}
           <li>
             <a href="{{ node.url }}"{% if page.url == node.url %} id="current"{% endif %}>{{ node.title }}</a>
 

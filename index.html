@@ -14,14 +14,14 @@ weight: 0
 
 		<p>
 			Scrapbook is a caching environment for PHP.
-			The cornerstone is <a href="{{ site.baseurl }}projects/key-value-store.html">key-value-store</a>, which sets a standard interface for cache adapters to implement.
+			The cornerstone is <a href="{{ site.baseurl }}interfaces/key-value-store.html">key-value-store</a>, which sets a standard interface for cache adapters to implement.
 			All adapters hide their inner workings behind a shared implementation.
 			Using it means you're not just building for <a href="{{ site.baseurl }}adapters/memcached.html">Memcached</a>.
 			Your code will work just fine on <a href="{{ site.baseurl }}adapters.html">any of the other adapters</a>, without modifications!
 		</p>
 		<p>
 			Having 1 shared interface to connect with all those backends means additional tools can be built on top of them & they'll work for all key-value stores.
-			Like making them <a href="{{ site.baseurl }}projects/psr-cache.html">PSR-6 compatible</a>. Or implementing a <a href="{{ site.baseurl }}projects/buffered-cache.html">buffered</a> or <a href="{{ site.baseurl }}projects/transactional-cache.html">transactional</a> cache. Or <a href="{{ site.baseurl }}projects/stampede-protector.html">stampede protection</a> or <a href="{{ site.baseurl }}projects/shard.html">sharding</a>.
+			Like making them <a href="{{ site.baseurl }}interfaces/psr-cache.html">PSR-6 compatible</a>. Or implementing a <a href="{{ site.baseurl }}extras/buffered-cache.html">buffered</a> or <a href="{{ site.baseurl }}extras/transactional-cache.html">transactional</a> cache. Or <a href="{{ site.baseurl }}extras/stampede-protector.html">stampede protection</a> or <a href="{{ site.baseurl }}extras/shard.html">sharding</a>.
 		</p>
 	</div>
 

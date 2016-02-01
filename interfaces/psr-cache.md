@@ -1,5 +1,5 @@
 ---
-layout: project
+layout: interface
 title: PSR-6 cache
 description: The PHP-FIG (Framework Interop Group) have defined a standard (called PSR-6 or psr/cache) for how to implement cache in PHP Frameworks & libraries. Scrapbook has an implementation that builds on key-value-store, so it works with all adapters.
 weight: 1

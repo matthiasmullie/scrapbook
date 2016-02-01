@@ -1,0 +1,34 @@
+---
+layout: page
+title: Interfaces
+description: Other than the interface defining all adapters, scrapbook also has a PSR-6 compatible implementation & a buffered & transactional cache layer.
+weight: 2
+---
+
+<div class="container">
+	{% assign pages_list = site.pages | sort:"weight" %}
+	{% for node in pages_list %}
+		{% if node.title != null %}
+			{% if node.layout == "interface" %}
+				<div class="eight columns">
+					<div class="featured-box">
+						<div class="icon-left">
+							<i class="{{ node.icon }}"></i>
+						</div>
+
+						<div class="featured-desc-2">
+							<h3>{{ node.title }}</h3>
+							<hr class="sep5">
+
+							<p>
+								{{ node.description }}<br/>
+								<hr class="sep5">
+								<a href="{{ node.url }}" class="button color"><i class="fa fa-book"></i> Docs &rsaquo;</a>
+							</p>
+						</div>
+					</div>
+				</div>
+			{% endif %}
+		{% endif %}
+	{% endfor %}
+</div>

@@ -1,15 +1,15 @@
 ---
 layout: page
-title: Projects
-description: Other than the interface defining all adapters, scrapbook also has a PSR-6 compatible implementation & a buffered & transactional cache layer.
-weight: 2
+title: Extras
+description: Scrapbook comes with some nifty features (for robustness, development ease & scalability) that build on (and wrap around) the interfaces.
+weight: 3
 ---
 
 <div class="container">
 	{% assign pages_list = site.pages | sort:"weight" %}
 	{% for node in pages_list %}
 		{% if node.title != null %}
-			{% if node.layout == "project" %}
+			{% if node.layout == "extra" %}
 				<div class="eight columns">
 					<div class="featured-box">
 						<div class="icon-left">

@@ -5,7 +5,6 @@ description: SQLite is a software library that implements a self-contained, serv
 weight: 5
 image: sqlite.jpg
 homepage: http://www.sqlite.org
-project: scrapbook/sql
 class: MatthiasMullie\Scrapbook\Adapters\SQLite
 ---
 
