@@ -1,7 +1,7 @@
 ---
 layout: project
 title: Shard
-description: When you have too much data for (or requests to) 1 little server, this'll yet you shard it over multiple cache servers. All data will be automatically be distributed evenly across your server pool, so all the individual cache servers only get a fraction of the data & traffic.
+description: When you have too much data for (or requests to) 1 little server, this'll let you shard it over multiple cache servers. All data will automatically be distributed evenly across your server pool, so all the individual cache servers only get a fraction of the data & traffic.
 weight: 5
 icon: fa fa-arrows-alt
 class: MatthiasMullie\Scrapbook\Scale\Shard
