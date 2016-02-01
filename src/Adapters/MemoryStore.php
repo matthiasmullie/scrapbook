@@ -39,11 +39,15 @@ class MemoryStore implements KeyValueStore
     public function __construct($limit = null)
     {
         if ($limit === null) {
-            // if no limit is given, allow 10% of the available memory to be filled
-            $limit = $this->shorthandToBytes(ini_get('memory_limit')) / 10;
-            $limit = (int) $limit;
+            $phpLimit = ini_get('memory_limit');
+            if ($phpLimit <= 0) {
+                $this->limit = PHP_INT_MAX;
+            } else {
+                $this->limit = (int) ($this->shorthandToBytes($phpLimit) / 10);
+            }
+        } else {
+            $this->limit = $this->shorthandToBytes($limit);
         }
-        $this->limit = $this->shorthandToBytes($limit);
     }
 
     /**
