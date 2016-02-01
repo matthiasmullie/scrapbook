@@ -116,10 +116,10 @@ wait until it pops up in cache, instead of cripling your servers.
 
 ### Sharding
 
-When you have too much data for (or requests to) 1 little server, this'll yet
+When you have too much data for (or requests to) 1 little server, this'll let
 you [shard](http://www.scrapbook.cash/projects/shard.html) it over multiple
 cache servers.
-All data will be automatically be distributed evenly across your server pool, so
+All data will automatically be distributed evenly across your server pool, so
 all the individual cache servers only get a fraction of the data & traffic.
 
 
