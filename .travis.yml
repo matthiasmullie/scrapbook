@@ -18,7 +18,6 @@ env:
   - ADAPTER=MySQL
   - ADAPTER=SQLite
   - ADAPTER=PostgreSQL
-  - ADAPTER=Filesystem
   - ADAPTER=Flysystem
 
 services:

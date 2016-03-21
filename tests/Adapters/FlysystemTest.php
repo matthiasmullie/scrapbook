@@ -3,7 +3,7 @@
 namespace MatthiasMullie\Scrapbook\Tests\Adapters;
 
 use League\Flysystem\Adapter\Local;
-use League\Flysystem\Filesystem as FlysystemFilesystem;
+use League\Flysystem\Filesystem;
 use MatthiasMullie\Scrapbook\Exception\Exception;
 
 /**
@@ -25,7 +25,7 @@ class FlysystemTest implements AdapterInterface
         }
 
         $adapter = new Local($path, LOCK_EX);
-        $filesystem = new FlysystemFilesystem($adapter);
+        $filesystem = new Filesystem($adapter);
 
         return new \MatthiasMullie\Scrapbook\Adapters\Flysystem($filesystem);
     }

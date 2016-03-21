@@ -3,7 +3,8 @@
 
 ## [1.2.0] - 2016-03-21
 ### Removed
-- Removed Taggable, since it seens cache/taggable-cache now does the same
+- Removed Taggable, since it seems `cache/taggable-cache` now does the same
+- Removed deprecated Filesystem adapter
 
 
 ## [1.1.0] - 2016-02-01

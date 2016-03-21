@@ -4,7 +4,7 @@ namespace MatthiasMullie\Scrapbook\Adapters;
 
 use League\Flysystem\FileNotFoundException;
 use League\Flysystem\FileExistsException;
-use League\Flysystem\Filesystem as FlysystemFilesystem;
+use League\Flysystem\Filesystem;
 use MatthiasMullie\Scrapbook\KeyValueStore;
 
 /**
@@ -20,14 +20,14 @@ use MatthiasMullie\Scrapbook\KeyValueStore;
 class Flysystem implements KeyValueStore
 {
     /**
-     * @var FlysystemFilesystem
+     * @var Filesystem
      */
     protected $filesystem;
 
     /**
-     * @param FlysystemFilesystem $filesystem
+     * @param Filesystem $filesystem
      */
-    public function __construct(FlysystemFilesystem $filesystem)
+    public function __construct(Filesystem $filesystem)
     {
         $this->filesystem = $filesystem;
     }
