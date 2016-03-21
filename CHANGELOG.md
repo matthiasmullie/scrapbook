@@ -1,6 +1,11 @@
 # Changelog
 
 
+## [1.2.0] - 2016-03-21
+### Removed
+- Removed Taggable, since it seens cache/taggable-cache now does the same
+
+
 ## [1.1.0] - 2016-02-01
 ### Added
 - Added sharding class

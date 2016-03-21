@@ -14,8 +14,7 @@
     "buffer", "buffered",
     "transaction", "transactional", "commit", "rollback",
     "stampede", "protection", "mitigation",
-    "psr6", "psr-6", "psr-cache",
-    "tag", "taggable"
+    "psr6", "psr-6", "psr-cache"
   ],
   "homepage": "http://scrapbook.cash",
   "license": "MIT",
@@ -34,8 +33,7 @@
   "require-dev": {
     "phpunit/phpunit": "~4.8",
     "fabpot/php-cs-fixer": "~1.0",
-    "cache/integration-tests": "dev-master",
-    "cache/taggable-cache": "~0.3"
+    "cache/integration-tests": "dev-master"
   },
   "suggest": {
     "ext-apc": ">=3.1.1",
@@ -43,8 +41,7 @@
     "ext-memcached": ">=2.0.0",
     "ext-redis": ">=2.2.0 || 0.0.0.0",
     "ext-pdo": ">=0.1.0",
-    "league/flysystem": "~1.0",
-    "cache/taggable-cache": "~0.3"
+    "league/flysystem": "~1.0"
   },
   "provide": {
     "psr/cache-implementation": "~1.0"
