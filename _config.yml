@@ -1,10 +1,3 @@
-# Dependencies
-markdown:         redcarpet
-highlighter:      pygments
-
-# Permalinks
-permalink:        pretty
-
 # Setup
 title:            Scrapbook
 description:      'Scrapbook is a caching environment for PHP, with adapters for e.g. Memcached, Redis, Couchbase, APC, SQL and additional capabilities (e.g. transactions) built on top.'
@@ -27,7 +20,7 @@ version:          1.0.0
 github:
   repo:           https://github.com/matthiasmullie/scrapbook
 
-permalink:        /:title
+permalink:        /:title/
 
 gems:
   # Generate sitemap
