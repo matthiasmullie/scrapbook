@@ -123,15 +123,6 @@ All data will automatically be distributed evenly across your server pool, so
 all the individual cache servers only get a fraction of the data & traffic.
 
 
-### Taggable cache
-
-[Taggable cache](http://www.scrapbook.cash/extras/taggable-cache.html) is a
-PSR-6 implementation that allows you to tag related items & clear cached data
-for only that tag. It's an implementation of cache/taggable-cache's traits that
-will enable it to work with all (and not just Scrapbook's) PSR-cache compliant
-implementations.
-
-
 ## Installation
 
 Simply add a dependency on matthiasmullie/scrapbook to your composer.json file
