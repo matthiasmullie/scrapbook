@@ -1,6 +1,11 @@
 # Changelog
 
 
+## [1.2.1] - 2016-04-05
+### Fixed
+- Made MySQL's value a LONGBLOB, which can store bigger values
+
+
 ## [1.2.0] - 2016-03-21
 ### Removed
 - Removed Taggable, since it seems `cache/taggable-cache` now does the same
@@ -161,3 +166,5 @@
 [1.0.9]: https://github.com/matthiasmullie/scrapbook/compare/1.0.8...1.0.9
 [1.0.10]: https://github.com/matthiasmullie/scrapbook/compare/1.0.9...1.0.10
 [1.1.0]: https://github.com/matthiasmullie/scrapbook/compare/1.0.10...1.1.0
+[1.2.0]: https://github.com/matthiasmullie/scrapbook/compare/1.1.0...1.2.0
+[1.2.1]: https://github.com/matthiasmullie/scrapbook/compare/1.2.0...1.2.1

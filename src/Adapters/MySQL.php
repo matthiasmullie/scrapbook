@@ -119,7 +119,7 @@ class MySQL extends SQL
         $this->client->exec(
             "CREATE TABLE IF NOT EXISTS $this->table (
                 k VARBINARY(255) NOT NULL PRIMARY KEY,
-                v BLOB,
+                v LONGBLOB,
                 e TIMESTAMP NULL DEFAULT NULL,
                 KEY e (e)
             )"
