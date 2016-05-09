@@ -168,11 +168,6 @@ class Pool implements CacheItemPoolInterface
             );
         }
 
-        if ($item->isExpired()) {
-            // already expired: don't even save it
-            return true;
-        }
-
         if (!$item->hasChanged()) {
             /*
              * If the item didn't change, we don't have to re-save it. We do,

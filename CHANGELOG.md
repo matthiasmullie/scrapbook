@@ -1,6 +1,11 @@
 # Changelog
 
 
+## [1.2.2] - 2016-05-09
+### Fixed
+- Make sure expired items are also stored (they may override existing value)
+
+
 ## [1.2.1] - 2016-04-05
 ### Fixed
 - Made MySQL's value a LONGBLOB, which can store bigger values
@@ -168,3 +173,4 @@
 [1.1.0]: https://github.com/matthiasmullie/scrapbook/compare/1.0.10...1.1.0
 [1.2.0]: https://github.com/matthiasmullie/scrapbook/compare/1.1.0...1.2.0
 [1.2.1]: https://github.com/matthiasmullie/scrapbook/compare/1.2.0...1.2.1
+[1.2.2]: https://github.com/matthiasmullie/scrapbook/compare/1.2.1...1.2.2
