@@ -11,15 +11,15 @@ Documentation: http://www.scrapbook.cash - API reference: http://docs.scrapbook.
 
 ## Adapters
 
-[Memcached](http://www.scrapbook.cash/adapters/memcached.html),
-[Redis](http://www.scrapbook.cash/adapters/redis.html),
-[Couchbase](http://www.scrapbook.cash/adapters/couchbase.html),
-[APC](http://www.scrapbook.cash/adapters/apc.html),
-[MySQL](http://www.scrapbook.cash/adapters/mysql.html),
-[SQLite](http://www.scrapbook.cash/adapters/sqlite.html),
-[PostgreSQL](http://www.scrapbook.cash/adapters/postgresql.html),
-[Flysystem](http://www.scrapbook.cash/adapters/flysystem.html),
-[MemoryStore](http://www.scrapbook.cash/adapters/memory.html)
+[Memcached](http://www.scrapbook.cash/adapters/memcached/),
+[Redis](http://www.scrapbook.cash/adapters/redis/),
+[Couchbase](http://www.scrapbook.cash/adapters/couchbase/),
+[APC](http://www.scrapbook.cash/adapters/apc/),
+[MySQL](http://www.scrapbook.cash/adapters/mysql/),
+[SQLite](http://www.scrapbook.cash/adapters/sqlite/),
+[PostgreSQL](http://www.scrapbook.cash/adapters/postgresql/),
+[Flysystem](http://www.scrapbook.cash/adapters/flysystem/),
+[MemoryStore](http://www.scrapbook.cash/adapters/memory/)
 
 
 ## Interfaces
@@ -49,7 +49,7 @@ $cache->get('key'); // returns 'value'
 ```
 
 A detailed list of the KeyValueStore interface & it's methods can be found in
-the [documentation](http://www.scrapbook.cash/interfaces/key-value-store.html).
+the [documentation](http://www.scrapbook.cash/interfaces/key-value-store/).
 
 
 ### PSR-6 CacheItemPoolInterface & CacheItemInterface
@@ -84,14 +84,14 @@ $pool->save($item);
 ```
 
 A detailed list of the PSR-6 interface & it's methods can be found in the
-[documentation](http://www.scrapbook.cash/interfaces/psr-cache.html).
+[documentation](http://www.scrapbook.cash/interfaces/psr-cache/).
 
 
 ## Extras
 
 ### Local buffer
 
-[BufferedStore](http://www.scrapbook.cash/extras/buffered-cache.html) helps
+[BufferedStore](http://www.scrapbook.cash/extras/buffered-cache/) helps
 avoid repeat requests to your real cache by keeping the value in memory. That
 way, you don't have to do that in your application - just keep querying that
 cache!
@@ -100,7 +100,7 @@ cache!
 ### Transactions
 
 Just like database transactions,
-[TransactionalStore](http://www.scrapbook.cash/extras/transactional-cache.html)
+[TransactionalStore](http://www.scrapbook.cash/extras/transactional-cache/)
 lets you defer cache writes to a later point in time, until you're ready to
 commit all of it (or rollback.) You can even nest multiple transactions!
 
@@ -109,7 +109,7 @@ commit all of it (or rollback.) You can even nest multiple transactions!
 
 Cache stampedes can happen when you get a sudden surge of traffic but the data
 is not yet in cache.
-[StampedeProtector](http://www.scrapbook.cash/extras/stampede-protector.html)
+[StampedeProtector](http://www.scrapbook.cash/extras/stampede-protector/)
 will make sure that only 1 request will generate the result & the others just
 wait until it pops up in cache, instead of cripling your servers.
 
@@ -117,7 +117,7 @@ wait until it pops up in cache, instead of cripling your servers.
 ### Sharding
 
 When you have too much data for (or requests to) 1 little server, this'll let
-you [shard](http://www.scrapbook.cash/extras/shard.html) it over multiple
+you [shard](http://www.scrapbook.cash/extras/shard/) it over multiple
 cache servers.
 All data will automatically be distributed evenly across your server pool, so
 all the individual cache servers only get a fraction of the data & traffic.
