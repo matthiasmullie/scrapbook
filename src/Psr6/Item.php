@@ -146,10 +146,21 @@ class Item implements CacheItemInterface
         if ($expiration instanceof DateTimeInterface || $expiration instanceof DateTime) {
             // convert datetime to unix timestamp
             $this->expire = (int) $expiration->format('U');
-        } else {
+            $this->changed = true;
+        } elseif ($expiration === null) {
             $this->expire = 0;
+            $this->changed = true;
+        } else {
+            $class = get_class($this);
+            $type = gettype($expiration);
+            $error = "Argument 1 passed to $class::expiresAt()  must be an ".
+                "instance of DateTime or DateTimeImmutable, $type given";
+
+            if (class_exists('\TypeError')) {
+                throw new \TypeError($error);
+            }
+            trigger_error($error, E_USER_ERROR);
         }
-        $this->changed = true;
 
         return $this;
     }
