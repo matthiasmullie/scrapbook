@@ -91,6 +91,7 @@ class SimpleCache implements CacheInterface, CounterInterface
      */
     public function setMultiple($items, $ttl = null)
     {
+        $ttl = $this->ttl($ttl);
         $success = $this->store->setMulti($items, $ttl);
 
         return !in_array(false, $success);
