@@ -112,7 +112,7 @@ class Couchbase implements KeyValueStore
         try {
             $results = $this->client->upsert($items);
         } catch (\CouchbaseException $e) {
-            return false;
+            return array_fill_keys(array_keys($items), false);
         }
 
         $success = array();
@@ -145,7 +145,7 @@ class Couchbase implements KeyValueStore
         try {
             $results = $this->client->remove($keys);
         } catch (\CouchbaseException $e) {
-            return false;
+            return array_fill_keys($keys, false);
         }
 
         $success = array();
