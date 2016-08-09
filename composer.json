@@ -14,7 +14,8 @@
     "buffer", "buffered",
     "transaction", "transactional", "commit", "rollback",
     "stampede", "protection", "mitigation",
-    "psr6", "psr-6", "psr-cache"
+    "psr6", "psr-6", "psr-cache",
+    "psr16", "psr-16", "psr-simplecache"
   ],
   "homepage": "http://scrapbook.cash",
   "license": "MIT",
@@ -44,11 +45,13 @@
     "league/flysystem": "~1.0"
   },
   "provide": {
-    "psr/cache-implementation": "~1.0"
+    "psr/cache-implementation": "~1.0",
+    "psr/simplecache-implementation": "~1.0"
   },
   "autoload": {
     "psr-4": {
-      "MatthiasMullie\\Scrapbook\\": "src/"
+      "MatthiasMullie\\Scrapbook\\": "src/",
+      "Psr\\SimpleCache\\": "src/Psr16/psr-simplecache/"
     }
   },
   "autoload-dev": {

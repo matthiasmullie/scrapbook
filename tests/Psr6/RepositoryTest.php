@@ -2,8 +2,8 @@
 
 namespace MatthiasMullie\Scrapbook\Tests\Psr6;
 
-use ReflectionObject;
 use MatthiasMullie\Scrapbook\Psr6\Pool;
+use ReflectionObject;
 
 class RepositoryTest extends Psr6TestCase
 {

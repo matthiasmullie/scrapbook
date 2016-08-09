@@ -2,9 +2,9 @@
 
 namespace MatthiasMullie\Scrapbook\Tests\Psr6;
 
-use MatthiasMullie\Scrapbook\Tests\AdapterTestCase;
 use MatthiasMullie\Scrapbook\KeyValueStore;
 use MatthiasMullie\Scrapbook\Psr6\Pool;
+use MatthiasMullie\Scrapbook\Tests\AdapterTestCase;
 
 class Psr6TestCase extends AdapterTestCase
 {
