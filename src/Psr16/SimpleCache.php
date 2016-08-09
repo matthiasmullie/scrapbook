@@ -135,17 +135,19 @@ class SimpleCache implements CacheInterface, CounterInterface
 
     /**
      * Accepts all TTL inputs valid in PSR-16 (null|int|DateInterval) and
-     * converts them into TTL for KeyValueStore (null|int).
+     * converts them into TTL for KeyValueStore (int).
      *
      * @param null|int|DateInterval $ttl
      *
-     * @return null|int
+     * @return int
      *
      * @throws \TypeError
      */
     protected function ttl($ttl)
     {
-        if ($ttl === null || is_int($ttl)) {
+        if ($ttl === null) {
+            return 0;
+        } elseif (is_int($ttl)) {
             return $ttl;
         } elseif ($ttl instanceof DateInterval) {
             // convert DateInterval to integer by adding it to a 0 DateTime
@@ -164,6 +166,6 @@ class SimpleCache implements CacheInterface, CounterInterface
         }
         trigger_error($error, E_USER_ERROR);
 
-        return null;
+        return 0;
     }
 }
