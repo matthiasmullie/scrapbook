@@ -387,9 +387,9 @@ class Apc implements KeyValueStore
             }
 
             // no need for locking - set will do that
-            $this->set($key, $initial, $ttl);
+            $success = $this->add($key, $initial, $ttl);
 
-            return $initial;
+            return $success ? $initial : false;
         }
 
         if (!is_numeric($value) || $value < 0) {

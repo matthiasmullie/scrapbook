@@ -275,9 +275,9 @@ class Memcached implements KeyValueStore
     {
         $value = $this->get($key, $token);
         if ($value === false) {
-            $this->set($key, $initial, $expire);
+            $success = $this->add($key, $initial, $expire);
 
-            return $initial;
+            return $success ? $initial : false;
         }
 
         if (!is_numeric($value) || $value < 0) {
