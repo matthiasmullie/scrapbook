@@ -139,31 +139,31 @@ class SimpleCacheTest extends AdapterTestCase
     public function testIncrement()
     {
         // test setting initial value
-        $success = $this->simplecache->increment('key', 5);
-        $this->assertSame(1, $success);
+        $result = $this->simplecache->increment('key', 5);
+        $this->assertSame(1, $result);
         $this->assertSame(1, $this->cache->get('key'));
 
         // test incrementing value
-        $success = $this->simplecache->increment('key', 5);
-        $this->assertSame(6, $success);
+        $result = $this->simplecache->increment('key', 5);
+        $this->assertSame(6, $result);
         $this->assertSame(6, $this->cache->get('key'));
     }
 
     public function testDecrement()
     {
         // test setting initial value
-        $success = $this->simplecache->decrement('key', 5);
-        $this->assertSame(1, $success);
+        $result = $this->simplecache->decrement('key', 5);
+        $this->assertSame(1, $result);
         $this->assertSame(1, $this->cache->get('key'));
 
         // test decrementing value
-        $success = $this->simplecache->decrement('key', 1);
-        $this->assertSame(0, $success);
+        $result = $this->simplecache->decrement('key', 1);
+        $this->assertSame(0, $result);
         $this->assertSame(0, $this->cache->get('key'));
 
         // decrement again (can't go below 0)
-        $success = $this->simplecache->decrement('key', 1);
-        $this->assertSame(0, $success);
+        $result = $this->simplecache->decrement('key', 1);
+        $this->assertSame(0, $result);
         $this->assertSame(0, $this->cache->get('key'));
     }
 }
