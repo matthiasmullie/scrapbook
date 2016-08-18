@@ -210,22 +210,7 @@ class Couchbase implements KeyValueStore
             return false;
         }
 
-        try {
-            $result = $this->client->counter($key, $offset, array('initial' => $initial, 'expiry' => $expire));
-
-            /*
-             * Negative expire here doesn't properly seem to expire immediately.
-             * Unfortunately, we still had to do the counter request to figure
-             * out the correct return value.
-             */
-            if ($expire < 0 || ($expire > 2592000 && $expire < time())) {
-                $this->delete($key);
-            }
-        } catch (\CouchbaseException $e) {
-            return false;
-        }
-
-        return $result->error ? false : $result->value;
+        return $this->doIncrement($key, $offset, $initial, $expire);
     }
 
     /**
@@ -237,22 +222,7 @@ class Couchbase implements KeyValueStore
             return false;
         }
 
-        try {
-            $result = $this->client->counter($key, -$offset, array('initial' => $initial, 'expiry' => $expire));
-
-            /*
-             * Negative expire here doesn't properly seem to expire immediately.
-             * Unfortunately, we still had to do the counter request to figure
-             * out the correct return value.
-             */
-            if ($expire < 0 || ($expire > 2592000 && $expire < time())) {
-                $this->delete($key);
-            }
-        } catch (\CouchbaseException $e) {
-            return false;
-        }
-
-        return $result->error ? false : $result->value;
+        return $this->doIncrement($key, -$offset, $initial, $expire);
     }
 
     /**
@@ -321,6 +291,42 @@ class Couchbase implements KeyValueStore
     }
 
     /**
+     * We could use `$this->client->counter()`, but it doesn't seem to respect
+     * data types and stores the values as strings instead of integers.
+     *
+     * Shared between increment/decrement: both have mostly the same logic
+     * (decrement just increments a negative value), but need their validation
+     * split up (increment won't accept negative values).
+     *
+     * @param string $key
+     * @param int    $offset
+     * @param int    $initial
+     * @param int    $expire
+     *
+     * @return int|bool
+     */
+    protected function doIncrement($key, $offset, $initial, $expire)
+    {
+        $value = $this->get($key, $token);
+        if ($value === false) {
+            $success = $this->add($key, $initial, $expire);
+
+            return $success ? $initial : false;
+        }
+
+        if (!is_numeric($value) || $value < 0) {
+            return false;
+        }
+
+        $value += $offset;
+        // value can never be lower than 0
+        $value = max(0, $value);
+        $success = $this->cas($token, $key, $value, $expire);
+
+        return $success ? $value : false;
+    }
+
+    /**
      * Couchbase doesn't properly remember the data type being stored:
      * arrays and objects are turned into StdClass instances.
      *
@@ -338,7 +344,7 @@ class Couchbase implements KeyValueStore
      *
      * @param mixed $value
      *
-     * @return mixed|int
+     * @return mixed|int|float
      */
     protected function unserialize($value)
     {
