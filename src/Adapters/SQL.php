@@ -477,7 +477,7 @@ abstract class SQL implements KeyValueStore
      *
      * @param mixed $value
      *
-     * @return mixed|int
+     * @return mixed|int|float
      */
     protected function unserialize($value)
     {
