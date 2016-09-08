@@ -49,6 +49,10 @@ class Redis implements KeyValueStore
 
         /** @var array $return */
         $return = $this->client->exec();
+        if ($return === false) {
+            return false;
+        }
+
         $value = $return[0];
         $exists = $return[1];
 
@@ -79,6 +83,9 @@ class Redis implements KeyValueStore
 
         /** @var array $return */
         $return = $this->client->exec();
+        if ($return === false) {
+            return array();
+        }
 
         $values = array_shift($return);
         $exists = $return;
