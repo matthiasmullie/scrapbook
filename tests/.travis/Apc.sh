@@ -1,10 +1,10 @@
 INI_PATH=`php -r "echo php_ini_loaded_file();"`
 PHP_VERSION=`php -r "echo phpversion();"`
 
-pecl uninstall apcu
-
 if [[ $PHP_VERSION != *"hhvm" ]]
 then
+    pecl uninstall apcu
+
     if [[ `php-config --vernum` -ge 70000 ]] # PHP>=7.0
     then
         pecl config-set preferred_state beta
