@@ -1,3 +1,4 @@
+INI_PATH=`php -r "echo php_ini_loaded_file();"`
 PHP_VERSION=`php -r "echo phpversion();"`
 
 sudo kill -9 `sudo lsof -t -i:11211` # kill listeners on required port
@@ -15,11 +16,13 @@ then
         git checkout php7
         git pull
 
-        /usr/local/php7/bin/phpize
-        ./configure --with-php-config=/usr/local/php7/bin/php-config
+        phpize
+        ./configure --disable-memcached-sasl
 
         make
         sudo make install
+
+        echo 'extension="memcached.so"' >> $INI_PATH
     else # PHP<7.0
         pecl uninstall memcached
 
