@@ -7,7 +7,6 @@ then
 
     if [[ `php-config --vernum` -ge 70000 ]] # PHP>=7.0
     then
-        pecl config-set preferred_state beta
         printf "yes\n" | pecl install apcu
     else # PHP<7.0
         printf "yes\n" | pecl install apcu-4.0.10
