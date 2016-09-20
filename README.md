@@ -24,7 +24,7 @@ Documentation: http://www.scrapbook.cash - API reference: http://docs.scrapbook.
 
 ## Interfaces
 
-2 interfaces are available & both work with all adapters.
+3 interfaces are available & they work with all adapters.
 
 ### KeyValueStore
 
@@ -54,8 +54,9 @@ the [documentation](http://www.scrapbook.cash/interfaces/key-value-store/).
 
 ### PSR-6 CacheItemPoolInterface & CacheItemInterface
 
-PSR-6 (a PHP-FIG standard) is a different approach (pool model): there's 1 class to interact
-with the cache backend (Pool) & one to represent the cache value (Item).
+PSR-6 (a PHP-FIG standard) is a different approach (pool model): there's 1 class
+to interact with the cache backend (Pool) & one to represent the cache value
+(Item).
 This interface is supported by multiple cache implementations, so there won't be
 any vendor lock-in
 
@@ -85,6 +86,37 @@ $pool->save($item);
 
 A detailed list of the PSR-6 interface & it's methods can be found in the
 [documentation](http://www.scrapbook.cash/interfaces/psr-cache/).
+
+
+### PSR-16 CacheInterface & CounterInterface
+
+PSR-16 is a second PHP-FIG cache standard. It's a driver model just like
+KeyValueStore, and it works very much in the same way.
+This interface is supported by multiple cache implementations, so there won't be
+any vendor lock-in
+
+However, it also doesn't offer much more than basic `get`, `set` & `delete`
+functionality (which is quite often more than enough!)
+
+```php
+// boilerplate code example with Memcached, but any
+// MatthiasMullie\Scrapbook\KeyValueStore adapter will work
+$client = new \Memcached();
+$client->addServer('localhost', 11211);
+$cache = new \MatthiasMullie\Scrapbook\Adapters\Memcached($client);
+
+// create Simplecache object from cache engine
+$simplecache = new \MatthiasMullie\Scrapbook\Psr16\SimpleCache($cache);
+
+// get value from cache
+$value = $simplecache->get('key');
+
+// ... or store a new value to cache
+$simplecache->set('key', 'updated-value');
+```
+
+A detailed list of the PSR-16 interface & it's methods can be found in the
+[documentation](http://www.scrapbook.cash/interfaces/psr-simplecache/).
 
 
 ## Extras
