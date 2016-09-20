@@ -1,6 +1,19 @@
 # Changelog
 
 
+## [1.3.0] - 2016-09-20
+### Added
+- Add preliminary support for proposed PSR-16
+
+### Changed
+- Throw exception when invalid object is fed to Item::expiresAt
+
+### Fixed
+- Don't cause PHP warnings when Redis connection fails on get/getMulti
+- Stop using Couchbase's `counter`, which is not typesafe
+- Fixed Couchbase setMulti & deleteMulti failure return values
+
+
 ## [1.2.2] - 2016-05-09
 ### Fixed
 - Make sure expired items are also stored (they may override existing value)
@@ -174,3 +187,4 @@
 [1.2.0]: https://github.com/matthiasmullie/scrapbook/compare/1.1.0...1.2.0
 [1.2.1]: https://github.com/matthiasmullie/scrapbook/compare/1.2.0...1.2.1
 [1.2.2]: https://github.com/matthiasmullie/scrapbook/compare/1.2.1...1.2.2
+[1.3.0]: https://github.com/matthiasmullie/scrapbook/compare/1.2.2...1.3.0
