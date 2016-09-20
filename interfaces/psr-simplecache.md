@@ -4,7 +4,7 @@ title: PSR-16 simplecache
 description: psr/simplecache is a PHP-FIG (Framework Interop Group) standard for a driver model cache implementation. It's a relatively simple & straightforward driver model interface, very similar to KeyValueStore.
 weight: 2
 icon: fa fa-gear
-namespace: MatthiasMullie\Scrapbook\Psr16
+class: MatthiasMullie\Scrapbook\Psr16\SimpleCache
 ---
 
 ```php
