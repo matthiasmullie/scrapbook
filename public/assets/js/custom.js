@@ -251,6 +251,18 @@
 				"$item->set('updated-value');\n" +
 				"$pool->save($item);\n",
 			composer: ''
+		},
+
+		psr16: {
+			src: "// create Simplecache object from cache engine\n" +
+				"$simplecache = new \\MatthiasMullie\\Scrapbook\\Psr16\\SimpleCache($cache);\n" +
+				"\n" +
+				"// get value from cache\n" +
+				"$value = $simplecache->get('key');\n" +
+				"\n" +
+				"// ... or store a new value to cache\n" +
+				"$simplecache->set('key', 'updated-value');\n",
+			composer: ''
 		}
 	},
 
