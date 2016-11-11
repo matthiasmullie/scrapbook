@@ -29,7 +29,8 @@
   ],
   "require": {
     "php": "^5.3|^7.0",
-    "psr/cache": "~1.0"
+    "psr/cache": "~1.0",
+    "psr/simple-cache": "^0.1"
   },
   "require-dev": {
     "phpunit/phpunit": "~4.8",
@@ -50,8 +51,7 @@
   },
   "autoload": {
     "psr-4": {
-      "MatthiasMullie\\Scrapbook\\": "src/",
-      "Psr\\SimpleCache\\": "src/Psr16/psr-simplecache/"
+      "MatthiasMullie\\Scrapbook\\": "src/"
     }
   },
   "autoload-dev": {
