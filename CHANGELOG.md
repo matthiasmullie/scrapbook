@@ -5,6 +5,9 @@
 ### Added
 - Added $default param to PSR-16's `get()`
 
+### Changed
+- Treat all PSR-16 TTL's as relative
+
 
 ## [1.3.0] - 2016-09-20
 ### Added
