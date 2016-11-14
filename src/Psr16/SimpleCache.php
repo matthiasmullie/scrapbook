@@ -32,13 +32,13 @@ class SimpleCache implements CacheInterface, CounterInterface
     /**
      * {@inheritdoc}
      */
-    public function get($key)
+    public function get($key, $default = null)
     {
         // KeyValueStore::get returns false for cache misses (which could also
         // be confused for a `false` value), so we'll check existence with getMulti
         $multi = $this->store->getMulti(array($key));
 
-        return isset($multi[$key]) ? $multi[$key] : null;
+        return isset($multi[$key]) ? $multi[$key] : $default;
     }
 
     /**

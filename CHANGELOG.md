@@ -1,6 +1,11 @@
 # Changelog
 
 
+## [1.3.1] - 2016-11-14
+### Added
+- Added $default param to PSR-16's `get()`
+
+
 ## [1.3.0] - 2016-09-20
 ### Added
 - Add preliminary support for proposed PSR-16

@@ -33,6 +33,12 @@ class SimpleCacheTest extends AdapterTestCase
         $this->assertSame(null, $this->simplecache->get('key'));
     }
 
+    public function testGetDefault()
+    {
+        $this->assertSame('default', $this->simplecache->get('key', 'default'));
+    }
+
+
     public function testSet()
     {
         $success = $this->simplecache->set('key', 'value');
