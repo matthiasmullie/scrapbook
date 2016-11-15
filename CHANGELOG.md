@@ -1,12 +1,13 @@
 # Changelog
 
 
-## [1.3.1] - 2016-11-14
+## [1.3.1] - 2016-11-15
 ### Added
 - Added $default param to PSR-16's `get()`
 
 ### Changed
 - Treat all PSR-16 TTL's as relative
+- Renamed PSR-16 `exists()` to `has()`
 
 
 ## [1.3.0] - 2016-09-20

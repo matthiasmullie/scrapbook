@@ -134,12 +134,12 @@ class SimpleCacheTest extends AdapterTestCase
         $this->assertSame(array(), $this->cache->getMulti(array('key', 'key2')));
     }
 
-    public function testExists()
+    public function testHas()
     {
         $this->cache->set('key', 'value');
 
-        $this->assertSame(true, $this->simplecache->exists('key'));
-        $this->assertSame(false, $this->simplecache->exists('key2'));
+        $this->assertSame(true, $this->simplecache->has('key'));
+        $this->assertSame(false, $this->simplecache->has('key2'));
     }
 
     public function testIncrement()

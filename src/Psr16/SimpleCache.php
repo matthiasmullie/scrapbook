@@ -108,7 +108,7 @@ class SimpleCache implements CacheInterface, CounterInterface
     /**
      * {@inheritdoc}
      */
-    public function exists($key)
+    public function has($key)
     {
         // KeyValueStore::get returns false for cache misses (which could also
         // be confused for a `false` value), so we'll check existence with getMulti
