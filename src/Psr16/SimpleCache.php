@@ -155,7 +155,11 @@ class SimpleCache implements CacheInterface, CounterInterface
              * KeyValueStore doesn't get confused.
              * @see https://github.com/dragoonis/psr-simplecache/issues/3
              */
-            return $ttl + time();
+            if ($ttl < 30 * 24 * 60 * 60) {
+                return $ttl + time();
+            }
+
+            return $ttl;
         } elseif ($ttl instanceof DateInterval) {
             // convert DateInterval to integer by adding it to a 0 DateTime
             $datetime = new DateTime();
