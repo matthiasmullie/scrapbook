@@ -30,7 +30,7 @@
   "require": {
     "php": "^5.3|^7.0",
     "psr/cache": "~1.0",
-    "psr/simple-cache": "^0.1"
+    "psr/simple-cache": "^0.2"
   },
   "require-dev": {
     "phpunit/phpunit": "~4.8",
