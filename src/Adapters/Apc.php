@@ -3,6 +3,8 @@
 namespace MatthiasMullie\Scrapbook\Adapters;
 
 use APCIterator;
+use APCuIterator;
+use MatthiasMullie\Scrapbook\Exception\Exception;
 use MatthiasMullie\Scrapbook\KeyValueStore;
 
 /**
@@ -10,7 +12,7 @@ use MatthiasMullie\Scrapbook\KeyValueStore;
  * exchangeable (KeyValueStore) interface.
  *
  * @author Matthias Mullie <scrapbook@mullie.eu>
- * @copyright Copyright (c) 2014, Matthias Mullie. All rights reserved.
+ * @copyright Copyright (c) 2014, Matthias Mullie. All rights reserved
  * @license LICENSE MIT
  */
 class Apc implements KeyValueStore
@@ -40,7 +42,7 @@ class Apc implements KeyValueStore
             return false;
         }
 
-        $value = apc_fetch($key, $success);
+        $value = $this->apcu_fetch($key, $success);
         if ($success === false) {
             $token = null;
 
@@ -65,7 +67,7 @@ class Apc implements KeyValueStore
             }
         }
 
-        $values = apc_fetch($keys);
+        $values = $this->apcu_fetch($keys);
 
         $tokens = array();
         foreach ($values as $key => $value) {
@@ -94,7 +96,7 @@ class Apc implements KeyValueStore
             return false;
         }
 
-        $success = apc_store($key, $value, $ttl);
+        $success = $this->apcu_store($key, $value, $ttl);
         $this->expire($key, $ttl);
         $this->unlock($key);
 
@@ -123,7 +125,7 @@ class Apc implements KeyValueStore
 
         if ($items) {
             // only write to those where lock was acquired
-            apc_store($items, null, $ttl);
+            $this->apcu_store($items, null, $ttl);
             $this->expire(array_keys($items), $ttl);
             $this->unlock(array_keys($items));
         }
@@ -146,7 +148,7 @@ class Apc implements KeyValueStore
             return false;
         }
 
-        $success = apc_delete($key);
+        $success = $this->apcu_delete($key);
         unset($this->expires[$key]);
         $this->unlock($key);
 
@@ -165,13 +167,19 @@ class Apc implements KeyValueStore
 
         // only delete those where lock was acquired
         if ($keys) {
-            /*
+            /**
              * Contrary to the docs, apc_delete also accepts an array of
-             * multiple keys to be deleted
+             * multiple keys to be deleted. Docs for apcu_delete are ok in this
+             * regard.
+             * But both are flawed in terms of return value in this case: an
+             * array with failed keys is returned.
              *
              * @see http://php.net/manual/en/function.apc-delete.php
+             *
+             * @var string[]
              */
-            $failed = array_merge($failed, apc_delete($keys));
+            $result = $this->apcu_delete($keys);
+            $failed = array_merge($failed, $result);
             $this->unlock($keys);
         }
 
@@ -203,7 +211,7 @@ class Apc implements KeyValueStore
             return false;
         }
 
-        $success = apc_add($key, $value, $ttl);
+        $success = $this->apcu_add($key, $value, $ttl);
         $this->expire($key, $ttl);
         $this->unlock($key);
 
@@ -254,7 +262,7 @@ class Apc implements KeyValueStore
         }
 
         // get current value, to compare with token
-        $compare = apc_fetch($key);
+        $compare = $this->apcu_fetch($key);
 
         if ($compare === false) {
             $this->unlock($key);
@@ -270,14 +278,14 @@ class Apc implements KeyValueStore
 
         // negative TTLs don't always seem to properly treat the key as deleted
         if ($ttl < 0) {
-            apc_delete($key);
+            $this->apcu_delete($key);
             unset($this->expires[$key]);
             $this->unlock($key);
 
             return true;
         }
 
-        $success = apc_store($key, $value, $ttl);
+        $success = $this->apcu_store($key, $value, $ttl);
         $this->expire($key, $ttl);
         $this->unlock($key);
 
@@ -326,7 +334,7 @@ class Apc implements KeyValueStore
         }
 
         // get existing TTL & quit early if it's that one already
-        $iterator = new APCIterator('user', '/^'.preg_quote($key, '/').'$/', \APC_ITER_VALUE | \APC_ITER_TTL, 1, \APC_LIST_ACTIVE);
+        $iterator = $this->APCuIterator('/^'.preg_quote($key, '/').'$/', \APC_ITER_VALUE | \APC_ITER_TTL, 1, \APC_LIST_ACTIVE);
         $current = $iterator->current();
         if (!$current) {
             // doesn't exist
@@ -351,7 +359,7 @@ class Apc implements KeyValueStore
     {
         $this->expires = array();
 
-        return apc_clear_cache('user');
+        return $this->apcu_clear_cache();
     }
 
     /**
@@ -492,7 +500,7 @@ class Apc implements KeyValueStore
 
         // lock these keys, then compile a list of successfully locked keys
         // (using the returned failure array)
-        $result = (array) apc_add($values, null, $ttl);
+        $result = (array) $this->apcu_add($values, null, $ttl);
         $failed = array();
         foreach ($result as $key => $err) {
             $failed[] = substr($key, strlen('scrapbook.lock.'));
@@ -515,7 +523,7 @@ class Apc implements KeyValueStore
             $keys[$i] = "scrapbook.lock.$key";
         }
 
-        apc_delete($keys);
+        $this->apcu_delete($keys);
 
         return true;
     }
@@ -544,5 +552,125 @@ class Apc implements KeyValueStore
         foreach ($keys as $key) {
             $this->expires[$key] = $time;
         }
+    }
+
+    /**
+     * @param string|string[] $key
+     * @param bool            $success
+     *
+     * @return mixed|false
+     */
+    protected function apcu_fetch($key, &$success = null)
+    {
+        if ($this->apc_version() === 'apcu') {
+            return apcu_fetch($key, $success);
+        } else {
+            return apc_fetch($key, $success);
+        }
+    }
+
+    /**
+     * @param string|string[] $key
+     * @param mixed           $var
+     * @param int             $ttl
+     *
+     * @return bool|bool[]
+     */
+    protected function apcu_store($key, $var, $ttl = 0)
+    {
+        if ($this->apc_version() === 'apcu') {
+            return apcu_store($key, $var, $ttl);
+        } else {
+            return apc_store($key, $var, $ttl);
+        }
+    }
+
+    /**
+     * @param string|string[]|APCIterator|APCuIterator $key
+     *
+     * @return bool|string[]
+     */
+    protected function apcu_delete($key)
+    {
+        if ($this->apc_version() === 'apcu') {
+            return apcu_delete($key);
+        } else {
+            return apc_delete($key);
+        }
+    }
+
+    /**
+     * @param string|string[] $key
+     * @param mixed           $var
+     * @param int             $ttl
+     *
+     * @return bool|bool[]
+     */
+    protected function apcu_add($key, $var, $ttl = 0)
+    {
+        if ($this->apc_version() === 'apcu') {
+            return apcu_add($key, $var, $ttl);
+        } else {
+            return apc_add($key, $var, $ttl);
+        }
+    }
+
+    /**
+     * @return bool
+     */
+    protected function apcu_clear_cache()
+    {
+        if ($this->apc_version() === 'apcu') {
+            return apcu_clear_cache();
+        } else {
+            return apc_clear_cache('user');
+        }
+    }
+
+    /**
+     * @param string|string[]|null $search
+     * @param int                  $format
+     * @param int                  $chunk_size
+     * @param int                  $list
+     *
+     * @return APCIterator|APCuIterator
+     */
+    protected function APCuIterator($search = null, $format = null, $chunk_size = null, $list = null)
+    {
+        $arguments = func_get_args();
+
+        if ($this->apc_version() === 'apcu') {
+            // I can't set the defaults parameter values because the APC_ or
+            // APCU_ constants may not exist, so I'll just initialize from
+            // func_get_args, not passing those params that haven't been set
+            $reflect = new \ReflectionClass('APCuIterator');
+
+            return $reflect->newInstanceArgs($arguments);
+        } else {
+            array_unshift($arguments, 'user');
+            $reflect = new \ReflectionClass('APCIterator');
+
+            return $reflect->newInstanceArgs($arguments);
+        }
+    }
+
+    /**
+     * Figures out if we're on APC or APCu.
+     *
+     * @return string
+     *
+     * @throws Exception
+     */
+    protected function apc_version()
+    {
+        if (function_exists('apcu_fetch')) {
+            return 'apcu';
+        }
+
+        if (function_exists('apc_fetch')) {
+            return 'apc';
+        }
+
+        throw new Exception('ext-apc(u) is not installed.');
     }
 }

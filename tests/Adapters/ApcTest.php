@@ -12,8 +12,8 @@ class ApcTest implements AdapterInterface
 {
     public function get()
     {
-        if (!function_exists('apc_fetch')) {
-            throw new Exception('ext-apc is not installed.');
+        if (!function_exists('apc_fetch') && !function_exists('apcu_fetch')) {
+            throw new Exception('ext-apc(u) is not installed.');
         }
 
         return new \MatthiasMullie\Scrapbook\Adapters\Apc();
