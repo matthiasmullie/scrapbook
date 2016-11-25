@@ -21,7 +21,7 @@ class AdapterTest extends AdapterTestCase
     {
         // this is mostly for MemoryStore - other stores probably aren't at risk
 
-        $object = new \StdClass();
+        $object = new \stdClass();
         $object->value = 'test';
         $this->cache->set('test key', $object);
 

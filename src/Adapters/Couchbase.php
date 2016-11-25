@@ -328,7 +328,7 @@ class Couchbase implements KeyValueStore
 
     /**
      * Couchbase doesn't properly remember the data type being stored:
-     * arrays and objects are turned into StdClass instances.
+     * arrays and objects are turned into stdClass instances.
      *
      * @param mixed $value
      *
