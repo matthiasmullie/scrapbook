@@ -13,7 +13,7 @@ use MatthiasMullie\Scrapbook\KeyValueStore;
  * instead of having to get it over the wire.
  *
  * @author Matthias Mullie <scrapbook@mullie.eu>
- * @copyright Copyright (c) 2014, Matthias Mullie. All rights reserved.
+ * @copyright Copyright (c) 2014, Matthias Mullie. All rights reserved
  * @license LICENSE MIT
  */
 class BufferedStore implements KeyValueStore
@@ -39,7 +39,7 @@ class BufferedStore implements KeyValueStore
     protected $local;
 
     /**
-     * @param KeyValueStore $cache The real cache we'll buffer for.
+     * @param KeyValueStore $cache The real cache we'll buffer for
      */
     public function __construct(KeyValueStore $cache)
     {

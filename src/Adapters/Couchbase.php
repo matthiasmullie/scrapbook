@@ -12,7 +12,7 @@ use MatthiasMullie\Scrapbook\KeyValueStore;
  * @see http://docs.couchbase.com/developer/php-2.0/php-intro.html
  *
  * @author Matthias Mullie <scrapbook@mullie.eu>
- * @copyright Copyright (c) 2014, Matthias Mullie. All rights reserved.
+ * @copyright Copyright (c) 2014, Matthias Mullie. All rights reserved
  * @license LICENSE MIT
  */
 class Couchbase implements KeyValueStore

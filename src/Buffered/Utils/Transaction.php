@@ -19,7 +19,7 @@ use MatthiasMullie\Scrapbook\KeyValueStore;
  * Until commit() is called, all data is read from the temporary Buffer instance.
  *
  * @author Matthias Mullie <scrapbook@mullie.eu>
- * @copyright Copyright (c) 2014, Matthias Mullie. All rights reserved.
+ * @copyright Copyright (c) 2014, Matthias Mullie. All rights reserved
  * @license LICENSE MIT
  */
 class Transaction implements KeyValueStore

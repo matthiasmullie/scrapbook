@@ -16,7 +16,7 @@ use MatthiasMullie\Scrapbook\KeyValueStore;
  * with every other value that has not yet been resolved, while we're at it)
  *
  * @author Matthias Mullie <scrapbook@mullie.eu>
- * @copyright Copyright (c) 2014, Matthias Mullie. All rights reserved.
+ * @copyright Copyright (c) 2014, Matthias Mullie. All rights reserved
  * @license LICENSE MIT
  */
 class Repository

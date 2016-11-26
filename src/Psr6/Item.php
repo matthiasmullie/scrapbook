@@ -11,7 +11,7 @@ use Psr\Cache\CacheItemInterface;
  * Representation of a cache item, both existing & non-existing (to be created).
  *
  * @author Matthias Mullie <scrapbook@mullie.eu>
- * @copyright Copyright (c) 2014, Matthias Mullie. All rights reserved.
+ * @copyright Copyright (c) 2014, Matthias Mullie. All rights reserved
  * @license LICENSE MIT
  */
 class Item implements CacheItemInterface

@@ -19,7 +19,7 @@ use MatthiasMullie\Scrapbook\Adapters\MemoryStore;
  * a key is just not known, or known-but-deleted (=expired)
  *
  * @author Matthias Mullie <scrapbook@mullie.eu>
- * @copyright Copyright (c) 2014, Matthias Mullie. All rights reserved.
+ * @copyright Copyright (c) 2014, Matthias Mullie. All rights reserved
  * @license LICENSE MIT
  */
 class Buffer extends MemoryStore

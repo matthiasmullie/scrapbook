@@ -13,7 +13,7 @@ use MatthiasMullie\Scrapbook\KeyValueStore;
  * application logic against cache, without having to run a cache server.
  *
  * @author Matthias Mullie <scrapbook@mullie.eu>
- * @copyright Copyright (c) 2014, Matthias Mullie. All rights reserved.
+ * @copyright Copyright (c) 2014, Matthias Mullie. All rights reserved
  * @license LICENSE MIT
  */
 class MemoryStore implements KeyValueStore

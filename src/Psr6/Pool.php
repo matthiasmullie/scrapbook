@@ -11,7 +11,7 @@ use MatthiasMullie\Scrapbook\KeyValueStore;
  * values to the cache.
  *
  * @author Matthias Mullie <scrapbook@mullie.eu>
- * @copyright Copyright (c) 2014, Matthias Mullie. All rights reserved.
+ * @copyright Copyright (c) 2014, Matthias Mullie. All rights reserved
  * @license LICENSE MIT
  */
 class Pool implements CacheItemPoolInterface

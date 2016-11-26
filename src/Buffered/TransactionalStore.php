@@ -23,7 +23,7 @@ use MatthiasMullie\Scrapbook\KeyValueStore;
  * data stays behind.
  *
  * @author Matthias Mullie <scrapbook@mullie.eu>
- * @copyright Copyright (c) 2014, Matthias Mullie. All rights reserved.
+ * @copyright Copyright (c) 2014, Matthias Mullie. All rights reserved
  * @license LICENSE MIT
  */
 class TransactionalStore implements KeyValueStore
@@ -37,7 +37,7 @@ class TransactionalStore implements KeyValueStore
     protected $transactions = array();
 
     /**
-     * @param KeyValueStore $cache The real cache we'll buffer for.
+     * @param KeyValueStore $cache The real cache we'll buffer for
      */
     public function __construct(KeyValueStore $cache)
     {

@@ -14,7 +14,7 @@ use MatthiasMullie\Scrapbook\KeyValueStore;
  * other processes, we'll create separate lock-files to flag a cache key in use.
  *
  * @author Matthias Mullie <scrapbook@mullie.eu>
- * @copyright Copyright (c) 2014, Matthias Mullie. All rights reserved.
+ * @copyright Copyright (c) 2014, Matthias Mullie. All rights reserved
  * @license LICENSE MIT
  */
 class Flysystem implements KeyValueStore

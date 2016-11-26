@@ -10,7 +10,7 @@ use MatthiasMullie\Scrapbook\KeyValueStore;
  * exchangeable (KeyValueStore) interface.
  *
  * @author Matthias Mullie <scrapbook@mullie.eu>
- * @copyright Copyright (c) 2014, Matthias Mullie. All rights reserved.
+ * @copyright Copyright (c) 2014, Matthias Mullie. All rights reserved
  * @license LICENSE MIT
  */
 class Memcached implements KeyValueStore

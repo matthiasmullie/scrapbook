@@ -34,7 +34,7 @@ use MatthiasMullie\Scrapbook\KeyValueStore;
  * from another process. Those will be handled by this class.
  *
  * @author Matthias Mullie <scrapbook@mullie.eu>
- * @copyright Copyright (c) 2014, Matthias Mullie. All rights reserved.
+ * @copyright Copyright (c) 2014, Matthias Mullie. All rights reserved
  * @license LICENSE MIT
  */
 class Defer

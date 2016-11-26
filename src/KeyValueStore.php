@@ -6,7 +6,7 @@ namespace MatthiasMullie\Scrapbook;
  * Interface for key-value storage engines.
  *
  * @author Matthias Mullie <scrapbook@mullie.eu>
- * @copyright Copyright (c) 2014, Matthias Mullie. All rights reserved.
+ * @copyright Copyright (c) 2014, Matthias Mullie. All rights reserved
  * @license LICENSE MIT
  */
 interface KeyValueStore

@@ -40,7 +40,7 @@ use MatthiasMullie\Scrapbook\KeyValueStore;
  * within that time.
  *
  * @author Matthias Mullie <scrapbook@mullie.eu>
- * @copyright Copyright (c) 2014, Matthias Mullie. All rights reserved.
+ * @copyright Copyright (c) 2014, Matthias Mullie. All rights reserved
  * @license LICENSE MIT
  */
 class StampedeProtector implements KeyValueStore
@@ -65,7 +65,7 @@ class StampedeProtector implements KeyValueStore
     protected $attempts = 10;
 
     /**
-     * @param KeyValueStore $cache The real cache we'll buffer for.
+     * @param KeyValueStore $cache The real cache we'll buffer for
      * @param int           $sla   Stampede protection time, in milliseconds
      */
     public function __construct(KeyValueStore $cache, $sla = 1000)
