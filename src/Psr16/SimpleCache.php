@@ -6,7 +6,6 @@ use DateInterval;
 use DateTime;
 use MatthiasMullie\Scrapbook\KeyValueStore;
 use Psr\SimpleCache\CacheInterface;
-use Psr\SimpleCache\CounterInterface;
 use Traversable;
 
 /**
@@ -14,7 +13,7 @@ use Traversable;
  * @copyright Copyright (c) 2014, Matthias Mullie. All rights reserved
  * @license LICENSE MIT
  */
-class SimpleCache implements CacheInterface, CounterInterface
+class SimpleCache implements CacheInterface
 {
     /**
      * @var KeyValueStore
@@ -115,22 +114,6 @@ class SimpleCache implements CacheInterface, CounterInterface
         $multi = $this->store->getMulti(array($key));
 
         return isset($multi[$key]);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function increment($key, $step = 1)
-    {
-        return $this->store->increment($key, $step, 1);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function decrement($key, $step = 1)
-    {
-        return $this->store->decrement($key, $step, 1);
     }
 
     /**

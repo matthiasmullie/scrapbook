@@ -10,6 +10,9 @@
 - Treat all PSR-16 TTL's as relative
 - Renamed PSR-16 `exists()` to `has()`
 
+### Removed
+- Removed PSR-16 CounterInterface & its methods
+
 
 ## [1.3.0] - 2016-09-20
 ### Added
