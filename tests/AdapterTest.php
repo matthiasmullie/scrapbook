@@ -58,6 +58,25 @@ class AdapterTest extends AdapterTestCase
         $this->assertEquals(array('key2' => 'value2'), $this->cache->getMulti(array('key2', 'key3')));
     }
 
+    public function testGetMultiNamespace()
+    {
+        $items = array(
+            'test key' => 'value',
+            'key2' => 'value2',
+        );
+
+        $this->cache->setNamespace('ns');
+        foreach ($items as $key => $value) {
+            $this->cache->set($key, $value);
+        }
+
+        $this->assertEquals($items, $this->cache->getMulti(array_keys($items)));
+
+        // requesting non-existing keys
+        $this->assertEquals(array(), $this->cache->getMulti(array('key3')));
+        $this->assertEquals(array('key2' => 'value2'), $this->cache->getMulti(array('key2', 'key3')));
+    }
+
     public function testGetNoCasTokens()
     {
         $this->cache->get('test key', $token);
@@ -116,6 +135,22 @@ class AdapterTest extends AdapterTestCase
             'key2' => 'value2',
         );
 
+        $return = $this->cache->setMulti($items);
+
+        $expect = array_fill_keys(array_keys($items), true);
+        $this->assertEquals($expect, $return);
+        $this->assertEquals('value', $this->cache->get('test key'));
+        $this->assertEquals('value2', $this->cache->get('key2'));
+    }
+
+    public function testSetMultiNamespace()
+    {
+        $items = array(
+            'test key' => 'value',
+            'key2' => 'value2',
+        );
+
+        $this->cache->setNamespace('ns');
         $return = $this->cache->setMulti($items);
 
         $expect = array_fill_keys(array_keys($items), true);
@@ -184,6 +219,23 @@ class AdapterTest extends AdapterTestCase
 
         $expect = array_fill_keys(array_keys($items), false);
         $expect['test key'] = true;
+        $this->assertEquals($expect, $return);
+        $this->assertEquals(false, $this->cache->get('test key'));
+        $this->assertEquals(false, $this->cache->get('key2'));
+    }
+
+    public function testDeleteMultiNamespace()
+    {
+        $items = array(
+            'test key' => 'value',
+            'key2' => 'value2',
+        );
+
+        $this->cache->setNamespace('ns');
+        $this->cache->setMulti($items);
+        $return = $this->cache->deleteMulti(array_keys($items));
+
+        $expect = array_fill_keys(array_keys($items), true);
         $this->assertEquals($expect, $return);
         $this->assertEquals(false, $this->cache->get('test key'));
         $this->assertEquals(false, $this->cache->get('key2'));
@@ -471,5 +523,23 @@ class AdapterTest extends AdapterTestCase
 
         $this->assertEquals(true, $return);
         $this->assertEquals(false, $this->cache->get('test key'));
+    }
+
+    public function testFlushNamespace()
+    {
+        $this->cache->set('test key', 'value1');
+
+        $this->cache->setNamespace('ns');
+
+        $this->cache->set('test key', 'value2');
+
+        $return = $this->cache->flush();
+
+        $this->assertEquals(true, $return);
+        $this->assertEquals(false, $this->cache->get('test key'));
+
+        $this->cache->setNamespace();
+
+        $this->assertEquals('value1', $this->cache->get('test key'));
     }
 }

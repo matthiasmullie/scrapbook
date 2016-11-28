@@ -242,4 +242,14 @@ class TransactionalStore implements KeyValueStore
 
         return $cache->flush();
     }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setNamespace($namespace = '')
+    {
+        $cache = end($this->transactions);
+
+        $cache->setNamespace($namespace);
+    }
 }

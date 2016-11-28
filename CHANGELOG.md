@@ -1,6 +1,11 @@
 # Changelog
 
 
+## [1.4.0] - 2016-12-09
+### Added
+- Added support for collections
+
+
 ## [1.3.1] - 2016-12-09
 ### Added
 - Added $default param to PSR-16's `get()`
@@ -207,3 +212,4 @@
 [1.2.2]: https://github.com/matthiasmullie/scrapbook/compare/1.2.1...1.2.2
 [1.3.0]: https://github.com/matthiasmullie/scrapbook/compare/1.2.2...1.3.0
 [1.3.1]: https://github.com/matthiasmullie/scrapbook/compare/1.3.0...1.3.1
+[1.4.0]: https://github.com/matthiasmullie/scrapbook/compare/1.3.1...1.4.0

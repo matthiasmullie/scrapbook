@@ -291,6 +291,14 @@ class Couchbase implements KeyValueStore
     }
 
     /**
+     * {@inheritdoc}
+     */
+    public function setNamespace($namespace = '')
+    {
+        // @todo implement this
+    }
+
+    /**
      * We could use `$this->client->counter()`, but it doesn't seem to respect
      * data types and stores the values as strings instead of integers.
      *

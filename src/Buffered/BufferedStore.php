@@ -204,4 +204,12 @@ class BufferedStore implements KeyValueStore
 
         return $result;
     }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setNamespace($namespace = '')
+    {
+        $this->transaction->setNamespace($namespace);
+    }
 }

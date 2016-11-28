@@ -312,6 +312,14 @@ class Flysystem implements KeyValueStore
     }
 
     /**
+     * {@inheritdoc}
+     */
+    public function setNamespace($namespace = '')
+    {
+        // @todo implement this
+    }
+
+    /**
      * Shared between increment/decrement: both have mostly the same logic
      * (decrement just increments a negative value), but need their validation
      * split up (increment won't accept negative values).

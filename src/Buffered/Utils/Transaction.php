@@ -57,9 +57,14 @@ class Transaction implements KeyValueStore
      * has not yet been committed. In that case, we don't want to fall back to
      * real cache values, because they're about to be flushed.
      *
-     * @var bool
+     * @var bool[]
      */
-    protected $suspend = false;
+    protected $flushed = array();
+
+    /**
+     * @var string
+     */
+    protected $namespace = '';
 
     /**
      * @param Buffer        $local
@@ -84,7 +89,7 @@ class Transaction implements KeyValueStore
         $value = $this->local->get($key, $token);
 
         // short-circuit reading from real cache if we have an uncommitted flush
-        if ($this->suspend && $token === null) {
+        if ($this->isFlushed($this->namespace) && $token === null) {
             // flush hasn't been committed yet, don't read from real cache!
             return false;
         }
@@ -119,7 +124,7 @@ class Transaction implements KeyValueStore
          * one particular request - which it is.
          */
         $token = uniqid();
-        $this->tokens[$token] = serialize($value);
+        $this->tokens[$this->namespace][$token] = serialize($value);
 
         return $value;
     }
@@ -134,7 +139,7 @@ class Transaction implements KeyValueStore
         $tokens = array();
 
         // short-circuit reading from real cache if we have an uncommitted flush
-        if (!$this->suspend) {
+        if (!$this->isFlushed($this->namespace)) {
             // figure out which missing key we need to get from real cache
             $keys = array_diff($keys, array_keys($values));
             foreach ($keys as $i => $key) {
@@ -156,7 +161,7 @@ class Transaction implements KeyValueStore
         foreach ($values as $key => $value) {
             $token = uniqid();
             $tokens[$key] = $token;
-            $this->tokens[$token] = serialize($value);
+            $this->tokens[$this->namespace][$token] = serialize($value);
         }
 
         return $values;
@@ -322,7 +327,7 @@ class Transaction implements KeyValueStore
      */
     public function cas($token, $key, $value, $expire = 0)
     {
-        $originalValue = isset($this->tokens[$token]) ? $this->tokens[$token] : null;
+        $originalValue = isset($this->tokens[$this->namespace][$token]) ? $this->tokens[$this->namespace][$token] : null;
 
         // value is no longer the same as what we used for token
         if (serialize($this->get($key)) !== $originalValue) {
@@ -443,14 +448,25 @@ class Transaction implements KeyValueStore
         }
 
         // clear all buffered writes, flush wipes them out anyway
-        $this->clear();
+        $this->clear($this->namespace);
 
         // make sure that reads, from now on until commit, don't read from cache
-        $this->suspend = true;
+        $this->flushed[$this->namespace] = true;
 
         $this->defer->flush();
 
         return true;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setNamespace($namespace = '')
+    {
+        $this->namespace = $namespace;
+        $this->local->setNamespace($namespace);
+        $this->cache->setNamespace($namespace);
+        $this->defer->setNamespace($namespace);
     }
 
     /**
@@ -481,10 +497,32 @@ class Transaction implements KeyValueStore
 
     /**
      * Clears all transaction-related data stored in memory.
+     *
+     * @param string $namespace
      */
-    protected function clear()
+    protected function clear($namespace = '')
     {
-        $this->tokens = array();
-        $this->suspend = false;
+        if ($namespace) {
+            $this->tokens[$namespace] = array();
+            $this->flushed[$namespace] = array();
+        } else {
+            $this->tokens = array();
+            $this->flushed = array();
+        }
+    }
+
+    /**
+     * @param string $namespace
+     * @return bool
+     */
+    protected function isFlushed($namespace)
+    {
+        if (isset($this->flushed['']) && $this->flushed['']) {
+            return true;
+        } elseif (isset($this->flushed[$namespace]) && $this->flushed[$namespace]) {
+            return true;
+        }
+
+        return false;
     }
 }

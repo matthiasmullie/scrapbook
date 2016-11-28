@@ -222,6 +222,14 @@ class StampedeProtector implements KeyValueStore
     }
 
     /**
+     * {@inheritdoc}
+     */
+    public function setNamespace($namespace = '')
+    {
+        $this->cache->setNamespace($namespace);
+    }
+
+    /**
      * As soon as a key turns up empty (doesn't yet exist in cache), we'll
      * "protect" it for some time. This will be done by writing to a key similar
      * to the original key name. If this key is present (which it will only be
