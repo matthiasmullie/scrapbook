@@ -21,6 +21,11 @@ class Memcached implements KeyValueStore
     protected $client;
 
     /**
+     * @var string
+     */
+    protected $namespace = '';
+
+    /**
      * @param \Memcached $client
      */
     public function __construct(\Memcached $client)
@@ -256,7 +261,14 @@ class Memcached implements KeyValueStore
      */
     public function flush()
     {
-        return $this->client->flush();
+        if ($this->namespace !== '') {
+            $this->client->setOption(\Memcached::OPT_PREFIX_KEY, '');
+            $success = $this->increment($this->namespace);
+            $this->setNamespace($this->namespace);
+            return $success !== false;
+        } else {
+            return $this->client->flush();
+        }
     }
 
     /**
@@ -264,7 +276,28 @@ class Memcached implements KeyValueStore
      */
     public function setNamespace($namespace = '')
     {
-        // @todo implement this
+        $this->client->setOption(\Memcached::OPT_PREFIX_KEY, '');
+
+        // global namespace, nothing special left to take care of!
+        if ($namespace === '') {
+            $this->namespace = '';
+            return;
+        }
+
+        /*
+         * Non-global namespace: it's easy enough to just set a prefix to be
+         * used, but we can not only clear a prefix!
+         * Instead, we'll generate a unique prefix key, based on the namespace.
+         * If we want to flush, we just create a new prefix and use that one.
+         */
+        $this->namespace = 'ns:'.$namespace;
+        $idx = $this->get($this->namespace);
+
+        if ($idx === false) {
+            $idx = $this->increment($this->namespace);
+        }
+
+        $this->client->setOption(\Memcached::OPT_PREFIX_KEY, $this->namespace.':'.$idx.':');
     }
 
     /**
