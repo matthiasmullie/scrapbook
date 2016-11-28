@@ -1,9 +1,10 @@
 # Changelog
 
 
-## [1.3.1] - 2016-11-15
+## [1.3.1] - 2016-11-28
 ### Added
 - Added $default param to PSR-16's `get()`
+- Added APCu support
 
 ### Changed
 - Treat all PSR-16 TTL's as relative

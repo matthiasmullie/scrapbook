@@ -31,6 +31,13 @@ class Apc implements KeyValueStore
      */
     protected $expires = array();
 
+    public function __construct()
+    {
+        if (!function_exists('apcu_fetch') && !function_exists('apc_fetch')) {
+            throw new Exception('ext-apc(u) is not installed.');
+        }
+    }
+
     /**
      * {@inheritdoc}
      */
@@ -562,7 +569,7 @@ class Apc implements KeyValueStore
      */
     protected function apcu_fetch($key, &$success = null)
     {
-        if ($this->apc_version() === 'apcu') {
+        if (function_exists('apcu_fetch')) {
             return apcu_fetch($key, $success);
         } else {
             return apc_fetch($key, $success);
@@ -578,7 +585,7 @@ class Apc implements KeyValueStore
      */
     protected function apcu_store($key, $var, $ttl = 0)
     {
-        if ($this->apc_version() === 'apcu') {
+        if (function_exists('apcu_store')) {
             return apcu_store($key, $var, $ttl);
         } else {
             return apc_store($key, $var, $ttl);
@@ -592,7 +599,7 @@ class Apc implements KeyValueStore
      */
     protected function apcu_delete($key)
     {
-        if ($this->apc_version() === 'apcu') {
+        if (function_exists('apcu_delete')) {
             return apcu_delete($key);
         } else {
             return apc_delete($key);
@@ -608,7 +615,7 @@ class Apc implements KeyValueStore
      */
     protected function apcu_add($key, $var, $ttl = 0)
     {
-        if ($this->apc_version() === 'apcu') {
+        if (function_exists('apcu_add')) {
             return apcu_add($key, $var, $ttl);
         } else {
             return apc_add($key, $var, $ttl);
@@ -620,7 +627,7 @@ class Apc implements KeyValueStore
      */
     protected function apcu_clear_cache()
     {
-        if ($this->apc_version() === 'apcu') {
+        if (function_exists('apcu_clear_cache')) {
             return apcu_clear_cache();
         } else {
             return apc_clear_cache('user');
@@ -639,7 +646,7 @@ class Apc implements KeyValueStore
     {
         $arguments = func_get_args();
 
-        if ($this->apc_version() === 'apcu') {
+        if (class_exists('APCuIterator', false)) {
             // I can't set the defaults parameter values because the APC_ or
             // APCU_ constants may not exist, so I'll just initialize from
             // func_get_args, not passing those params that haven't been set
@@ -652,25 +659,5 @@ class Apc implements KeyValueStore
 
             return $reflect->newInstanceArgs($arguments);
         }
-    }
-
-    /**
-     * Figures out if we're on APC or APCu.
-     *
-     * @return string
-     *
-     * @throws Exception
-     */
-    protected function apc_version()
-    {
-        if (function_exists('apcu_fetch')) {
-            return 'apcu';
-        }
-
-        if (function_exists('apc_fetch')) {
-            return 'apc';
-        }
-
-        throw new Exception('ext-apc(u) is not installed.');
     }
 }
