@@ -195,6 +195,16 @@ class Shard implements KeyValueStore
     }
 
     /**
+     * {@inheritdoc}
+     */
+    public function setNamespace($namespace = '')
+    {
+        foreach ($this->caches as $cache) {
+            $cache->setNamespace($namespace);
+        }
+    }
+
+    /**
      * Get the shard (KeyValueStore object) that corresponds to a particular
      * cache key.
      *

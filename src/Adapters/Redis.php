@@ -447,6 +447,14 @@ class Redis implements KeyValueStore
     }
 
     /**
+     * {@inheritdoc}
+     */
+    public function setNamespace($namespace = '')
+    {
+        // @todo implement this
+    }
+
+    /**
      * Redis expects true TTL, not expiration timestamp.
      *
      * @param int $expire

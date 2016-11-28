@@ -369,6 +369,14 @@ abstract class SQL implements KeyValueStore
     }
 
     /**
+     * {@inheritdoc}
+     */
+    public function setNamespace($namespace = '')
+    {
+        // @todo implement this
+    }
+
+    /**
      * Shared between increment/decrement: both have mostly the same logic
      * (decrement just increments a negative value), but need their validation
      * & use of non-ttl native methods split up.
