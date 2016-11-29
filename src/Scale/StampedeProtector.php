@@ -224,9 +224,10 @@ class StampedeProtector implements KeyValueStore
     /**
      * {@inheritdoc}
      */
-    public function setNamespace($namespace = '')
+    public function collection($name)
     {
-        $this->cache->setNamespace($namespace);
+        $collection = $this->cache->collection($name);
+        return new StampedeProtector($collection);
     }
 
     /**
