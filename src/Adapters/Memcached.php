@@ -2,6 +2,7 @@
 
 namespace MatthiasMullie\Scrapbook\Adapters;
 
+use MatthiasMullie\Scrapbook\Collections\Memcached as Collection;
 use MatthiasMullie\Scrapbook\Exception\InvalidKey;
 use MatthiasMullie\Scrapbook\KeyValueStore;
 
@@ -21,11 +22,6 @@ class Memcached implements KeyValueStore
     protected $client;
 
     /**
-     * @var string
-     */
-    protected $namespace = '';
-
-    /**
      * @param \Memcached $client
      */
     public function __construct(\Memcached $client)
@@ -38,6 +34,8 @@ class Memcached implements KeyValueStore
      */
     public function get($key, &$token = null)
     {
+        $key = $this->encode($key);
+
         /*
          * Wouldn't it be awesome if I just didn't use the obvious method? :)
          *
@@ -47,7 +45,6 @@ class Memcached implements KeyValueStore
          * reported, also seen it make CAS return result unreliable)
          * @see https://github.com/php-memcached-dev/php-memcached/issues/21
          */
-        $key = $this->encodeKey($key);
         $values = $this->client->getMulti(array($key), $token);
 
         if (!isset($values[$key])) {
@@ -66,9 +63,9 @@ class Memcached implements KeyValueStore
      */
     public function getMulti(array $keys, array &$tokens = null)
     {
-        $keys = array_map(array($this, 'encodeKey'), $keys);
+        $keys = array_map(array($this, 'encode'), $keys);
         $return = $this->client->getMulti($keys, $tokens);
-        $keys = array_map(array($this, 'decodeKey'), array_keys($return));
+        $keys = array_map(array($this, 'decode'), array_keys($return));
         $return = array_combine($keys, $return);
 
         // HHVMs getMulti() returns null instead of empty array for no results,
@@ -84,7 +81,7 @@ class Memcached implements KeyValueStore
      */
     public function set($key, $value, $expire = 0)
     {
-        $key = $this->encodeKey($key);
+        $key = $this->encode($key);
 
         return $this->client->set($key, $value, $expire);
     }
@@ -94,10 +91,10 @@ class Memcached implements KeyValueStore
      */
     public function setMulti(array $items, $expire = 0)
     {
-        $keys = array_map(array($this, 'encodeKey'), array_keys($items));
+        $keys = array_map(array($this, 'encode'), array_keys($items));
         $items = array_combine($keys, $items);
         $success = $this->client->setMulti($items, $expire);
-        $keys = array_map(array($this, 'decodeKey'), array_keys($items));
+        $keys = array_map(array($this, 'decode'), array_keys($items));
 
         return array_fill_keys($keys, $success);
     }
@@ -107,7 +104,7 @@ class Memcached implements KeyValueStore
      */
     public function delete($key)
     {
-        $key = $this->encodeKey($key);
+        $key = $this->encode($key);
 
         return $this->client->delete($key);
     }
@@ -128,21 +125,21 @@ class Memcached implements KeyValueStore
              */
             $values = $this->getMulti($keys);
 
-            $keys = array_map(array($this, 'encodeKey'), array_keys($values));
+            $keys = array_map(array($this, 'encode'), array_keys($values));
             $this->client->setMulti(array_fill_keys($keys, ''), time() - 1);
 
             $return = array();
             foreach ($keys as $key) {
-                $key = $this->decodeKey($key);
+                $key = $this->decode($key);
                 $return[$key] = array_key_exists($key, $values);
             }
 
             return $return;
         }
 
-        $keys = array_map(array($this, 'encodeKey'), $keys);
+        $keys = array_map(array($this, 'encode'), $keys);
         $result = (array) $this->client->deleteMulti($keys);
-        $keys = array_map(array($this, 'decodeKey'), array_keys($result));
+        $keys = array_map(array($this, 'decode'), array_keys($result));
         $result = array_combine($keys, $result);
 
         /*
@@ -164,7 +161,7 @@ class Memcached implements KeyValueStore
      */
     public function add($key, $value, $expire = 0)
     {
-        $key = $this->encodeKey($key);
+        $key = $this->encode($key);
 
         return $this->client->add($key, $value, $expire);
     }
@@ -174,7 +171,7 @@ class Memcached implements KeyValueStore
      */
     public function replace($key, $value, $expire = 0)
     {
-        $key = $this->encodeKey($key);
+        $key = $this->encode($key);
 
         return $this->client->replace($key, $value, $expire);
     }
@@ -188,7 +185,7 @@ class Memcached implements KeyValueStore
             return false;
         }
 
-        $key = $this->encodeKey($key);
+        $key = $this->encode($key);
 
         return $this->client->cas($token, $key, $value, $expire);
     }
@@ -261,43 +258,15 @@ class Memcached implements KeyValueStore
      */
     public function flush()
     {
-        if ($this->namespace !== '') {
-            $this->client->setOption(\Memcached::OPT_PREFIX_KEY, '');
-            $success = $this->increment($this->namespace);
-            $this->setNamespace($this->namespace);
-            return $success !== false;
-        } else {
-            return $this->client->flush();
-        }
+        return $this->client->flush();
     }
 
     /**
      * {@inheritdoc}
      */
-    public function setNamespace($namespace = '')
+    public function collection($name)
     {
-        $this->client->setOption(\Memcached::OPT_PREFIX_KEY, '');
-
-        // global namespace, nothing special left to take care of!
-        if ($namespace === '') {
-            $this->namespace = '';
-            return;
-        }
-
-        /*
-         * Non-global namespace: it's easy enough to just set a prefix to be
-         * used, but we can not only clear a prefix!
-         * Instead, we'll generate a unique prefix key, based on the namespace.
-         * If we want to flush, we just create a new prefix and use that one.
-         */
-        $this->namespace = 'ns:'.$namespace;
-        $idx = $this->get($this->namespace);
-
-        if ($idx === false) {
-            $idx = $this->increment($this->namespace);
-        }
-
-        $this->client->setOption(\Memcached::OPT_PREFIX_KEY, $this->namespace.':'.$idx.':');
+        return new Collection($this, $name);
     }
 
     /**
@@ -328,7 +297,7 @@ class Memcached implements KeyValueStore
         $value += $offset;
         // value can never be lower than 0
         $value = max(0, $value);
-        $key = $this->encodeKey($key);
+        $key = $this->encode($key);
         $success = $this->client->cas($token, $key, $value, $expire);
 
         return $success ? $value : false;
@@ -351,7 +320,7 @@ class Memcached implements KeyValueStore
      *
      * @throws InvalidKey
      */
-    protected function encodeKey($key)
+    protected function encode($key)
     {
         $regex = '/[^\x21\x22\x24\x26-\x39\x3b-\x7e]+/';
         $key = preg_replace_callback($regex, function ($match) {
@@ -368,16 +337,16 @@ class Memcached implements KeyValueStore
     }
 
     /**
-     * Decode a key encoded with encodeKey().
+     * Decode a key encoded with encode().
      *
      * @param string $key
      *
      * @return string
      */
-    protected function decodeKey($key)
+    protected function decode($key)
     {
         // matches %20, %7F, ... but not %21, %22, ...
-        // (=the encoded versions for those encoded in encodeKey)
+        // (=the encoded versions for those encoded in encode)
         $regex = '/%(?!2[1246789]|3[0-9]|3[B-F]|[4-6][0-9A-F]|5[0-9A-E])[0-9A-Z]{2}/i';
 
         return preg_replace_callback($regex, function ($match) {
