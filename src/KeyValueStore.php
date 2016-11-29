@@ -219,7 +219,7 @@ interface KeyValueStore
     public function touch($key, $expire);
 
     /**
-     * Clears the entire cache (or the everything for the given namespace).
+     * Clears the entire cache (or the everything for the given collection).
      *
      * Return value is a boolean true when the operation succeeds, or false on
      * failure.
@@ -229,11 +229,12 @@ interface KeyValueStore
     public function flush();
 
     /**
-     * Sets the namespace to operate on.
+     * Returns an isolated subset (collection) in which to store or fetch data
+     * from.
      *
-     * Default (no) namespace is '' (empty string)
+     * @param string $name
      *
-     * @param string
+     * @return KeyValueStore
      */
-    public function setNamespace($namespace = '');
+    public function collection($name);
 }
