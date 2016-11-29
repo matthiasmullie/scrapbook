@@ -227,7 +227,8 @@ class StampedeProtector implements KeyValueStore
     public function collection($name)
     {
         $collection = $this->cache->collection($name);
-        return new StampedeProtector($collection);
+
+        return new static($collection);
     }
 
     /**

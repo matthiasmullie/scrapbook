@@ -250,6 +250,6 @@ class TransactionalStore implements KeyValueStore
     {
         $cache = end($this->transactions);
 
-        return new TransactionalStore($cache->collection($name));
+        return new static($cache->collection($name));
     }
 }

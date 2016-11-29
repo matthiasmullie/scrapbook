@@ -199,9 +199,9 @@ class Shard implements KeyValueStore
      */
     public function collection($name)
     {
-        $shard = new Shard($this->caches[0]->collection($name));
+        $shard = new static($this->caches[0]->collection($name));
 
-        for ($i = 1; $i < count($this->caches); $i++) {
+        for ($i = 1; $i < count($this->caches); ++$i) {
             $shard->addCache($this->caches[$i]->collection($name));
         }
 

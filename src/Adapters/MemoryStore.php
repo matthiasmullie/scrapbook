@@ -255,7 +255,7 @@ class MemoryStore implements KeyValueStore
     public function collection($name)
     {
         if (!isset($this->collections[$name])) {
-            $this->collections[$name] = new MemoryStore($this->limit);
+            $this->collections[$name] = new static($this->limit);
         }
 
         return $this->collections[$name];

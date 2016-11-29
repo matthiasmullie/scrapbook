@@ -21,7 +21,7 @@ class Memcached extends PrefixKeys
 
     /**
      * @param Adapter $cache
-     * @param string $name
+     * @param string  $name
      */
     public function __construct(Adapter $cache, $name)
     {
@@ -37,6 +37,7 @@ class Memcached extends PrefixKeys
     {
         $index = $this->cache->increment($this->collection);
         $this->setPrefix($this->collection.':'.$index.':');
+
         return $index !== false;
     }
 

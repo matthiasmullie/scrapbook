@@ -16,7 +16,7 @@ class Apc extends PrefixKeys
 {
     /**
      * @param Adapter $cache
-     * @param string $name
+     * @param string  $name
      */
     public function __construct(Adapter $cache, $name)
     {
@@ -41,6 +41,7 @@ class Apc extends PrefixKeys
 
         $reflection = new \ReflectionMethod($this->cache, 'apcu_delete');
         $reflection->setAccessible(true);
+
         return $reflection->invoke($this->cache, $iterator);
     }
 }
