@@ -23,7 +23,7 @@ class PrefixKeys implements KeyValueStore
 
     /**
      * @param KeyValueStore $cache
-     * @param string $prefix
+     * @param string        $prefix
      */
     public function __construct(KeyValueStore $cache, $prefix)
     {
@@ -37,6 +37,7 @@ class PrefixKeys implements KeyValueStore
     public function get($key, &$token = null)
     {
         $key = $this->prefix($key);
+
         return $this->cache->get($key, $token);
     }
 
@@ -49,6 +50,7 @@ class PrefixKeys implements KeyValueStore
         $results = $this->cache->getMulti($keys, $tokens);
         $keys = array_map(array($this, 'unfix'), array_keys($results));
         $tokens = array_combine($keys, $tokens);
+
         return array_combine($keys, $results);
     }
 
@@ -58,6 +60,7 @@ class PrefixKeys implements KeyValueStore
     public function set($key, $value, $expire = 0)
     {
         $key = $this->prefix($key);
+
         return $this->cache->set($key, $value, $expire);
     }
 
@@ -70,6 +73,7 @@ class PrefixKeys implements KeyValueStore
         $items = array_combine($keys, $items);
         $results = $this->cache->setMulti($items, $expire);
         $keys = array_map(array($this, 'unfix'), array_keys($results));
+
         return array_combine($keys, $results);
     }
 
@@ -79,6 +83,7 @@ class PrefixKeys implements KeyValueStore
     public function delete($key)
     {
         $key = $this->prefix($key);
+
         return $this->cache->delete($key);
     }
 
@@ -90,6 +95,7 @@ class PrefixKeys implements KeyValueStore
         $keys = array_map(array($this, 'prefix'), $keys);
         $results = $this->cache->deleteMulti($keys);
         $keys = array_map(array($this, 'unfix'), array_keys($results));
+
         return array_combine($keys, $results);
     }
 
@@ -99,6 +105,7 @@ class PrefixKeys implements KeyValueStore
     public function add($key, $value, $expire = 0)
     {
         $key = $this->prefix($key);
+
         return $this->cache->add($key, $value, $expire);
     }
 
@@ -108,6 +115,7 @@ class PrefixKeys implements KeyValueStore
     public function replace($key, $value, $expire = 0)
     {
         $key = $this->prefix($key);
+
         return $this->cache->replace($key, $value, $expire);
     }
 
@@ -117,6 +125,7 @@ class PrefixKeys implements KeyValueStore
     public function cas($token, $key, $value, $expire = 0)
     {
         $key = $this->prefix($key);
+
         return $this->cache->cas($token, $key, $value, $expire);
     }
 
@@ -126,6 +135,7 @@ class PrefixKeys implements KeyValueStore
     public function increment($key, $offset = 1, $initial = 0, $expire = 0)
     {
         $key = $this->prefix($key);
+
         return $this->cache->increment($key, $offset, $initial, $expire);
     }
 
@@ -135,6 +145,7 @@ class PrefixKeys implements KeyValueStore
     public function decrement($key, $offset = 1, $initial = 0, $expire = 0)
     {
         $key = $this->prefix($key);
+
         return $this->cache->decrement($key, $offset, $initial, $expire);
     }
 
@@ -144,6 +155,7 @@ class PrefixKeys implements KeyValueStore
     public function touch($key, $expire)
     {
         $key = $this->prefix($key);
+
         return $this->cache->touch($key, $expire);
     }
 

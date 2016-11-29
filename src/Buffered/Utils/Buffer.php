@@ -76,16 +76,4 @@ class Buffer extends MemoryStore
         // a known item, not returned by get, is expired
         return array_key_exists($key, $this->items);
     }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function collection($name)
-    {
-        if (!isset($this->collections[$name])) {
-            $this->collections[$name] = new Buffer($this->limit);
-        }
-
-        return $this->collections[$name];
-    }
 }

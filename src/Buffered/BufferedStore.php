@@ -221,7 +221,7 @@ class BufferedStore implements KeyValueStore
     {
         if (!isset($this->collections[$name])) {
             $collection = $this->transaction->collection($name);
-            $this->collections[$name] = new BufferedStore($collection);
+            $this->collections[$name] = new static($collection);
         }
 
         return $this->collections[$name];

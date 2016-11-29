@@ -468,7 +468,7 @@ class Transaction implements KeyValueStore
     public function collection($name)
     {
         if (!isset($this->collections[$name])) {
-            $this->collections[$name] = new Transaction(
+            $this->collections[$name] = new static(
                 $this->local->collection($name),
                 $this->cache->collection($name)
             );
