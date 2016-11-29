@@ -58,7 +58,7 @@ class Defer
      * * 1: a callable, to apply the update to cache
      * * 2: the array of data to supply to the callable
      *
-     * @var array[][]
+     * @var array[]
      */
     protected $keys = array();
 
@@ -66,14 +66,9 @@ class Defer
      * Flush is special - it's not specific to (a) key(s), so we can't store
      * it to $keys.
      *
-     * @var bool[]
+     * @var bool
      */
-    protected $flushed = array();
-
-    /**
-     * @var string
-     */
-    protected $namespace = '';
+    protected $flush = false;
 
     /**
      * @param KeyValueStore $cache
@@ -108,7 +103,7 @@ class Defer
             'value' => $value,
             'expire' => $expire,
         );
-        $this->keys[$this->namespace][$key] = array(__FUNCTION__, array($this->cache, __FUNCTION__), $args);
+        $this->keys[$key] = array(__FUNCTION__, array($this->cache, __FUNCTION__), $args);
     }
 
     /**
@@ -128,7 +123,7 @@ class Defer
     public function delete($key)
     {
         $args = array('key' => $key);
-        $this->keys[$this->namespace][$key] = array(__FUNCTION__, array($this->cache, __FUNCTION__), $args);
+        $this->keys[$key] = array(__FUNCTION__, array($this->cache, __FUNCTION__), $args);
     }
 
     /**
@@ -153,7 +148,7 @@ class Defer
             'value' => $value,
             'expire' => $expire,
         );
-        $this->keys[$this->namespace][$key] = array(__FUNCTION__, array($this->cache, __FUNCTION__), $args);
+        $this->keys[$key] = array(__FUNCTION__, array($this->cache, __FUNCTION__), $args);
     }
 
     /**
@@ -168,7 +163,7 @@ class Defer
             'value' => $value,
             'expire' => $expire,
         );
-        $this->keys[$this->namespace][$key] = array(__FUNCTION__, array($this->cache, __FUNCTION__), $args);
+        $this->keys[$key] = array(__FUNCTION__, array($this->cache, __FUNCTION__), $args);
     }
 
     /**
@@ -187,12 +182,9 @@ class Defer
          * applies on top op that change. We can just fold it in there & update
          * the value we set initially.
          */
-        if (
-            isset($this->keys[$this->namespace][$key]) &&
-            in_array($this->keys[$this->namespace][$key][0], array('set', 'add', 'replace', 'cas'))
-        ) {
-            $this->keys[$this->namespace][$key][2]['value'] = $value;
-            $this->keys[$this->namespace][$key][2]['expire'] = $expire;
+        if (isset($this->keys[$key]) && in_array($this->keys[$key][0], array('set', 'add', 'replace', 'cas'))) {
+            $this->keys[$key][2]['value'] = $value;
+            $this->keys[$key][2]['expire'] = $expire;
 
             return;
         }
@@ -230,7 +222,7 @@ class Defer
             'value' => $value,
             'expire' => $expire,
         );
-        $this->keys[$this->namespace][$key] = array(__FUNCTION__, $callback, $args);
+        $this->keys[$key] = array(__FUNCTION__, $callback, $args);
     }
 
     /**
@@ -264,51 +256,51 @@ class Defer
      */
     protected function doIncrement($operation, $key, $offset, $initial, $expire)
     {
-        if (isset($this->keys[$this->namespace][$key])) {
-            if (in_array($this->keys[$this->namespace][$key][0], array('set', 'add', 'replace', 'cas'))) {
+        if (isset($this->keys[$key])) {
+            if (in_array($this->keys[$key][0], array('set', 'add', 'replace', 'cas'))) {
                 // we're trying to increment a key that's only just being stored
                 // in this transaction - might as well combine those
-                $symbol = $this->keys[$this->namespace][$key][1] === 'increment' ? 1 : -1;
-                $this->keys[$this->namespace][$key][2]['value'] += $symbol * $offset;
-                $this->keys[$this->namespace][$key][2]['expire'] = $expire;
-            } elseif (in_array($this->keys[$this->namespace][$key][0], array('increment', 'decrement'))) {
+                $symbol = $this->keys[$key][1] === 'increment' ? 1 : -1;
+                $this->keys[$key][2]['value'] += $symbol * $offset;
+                $this->keys[$key][2]['expire'] = $expire;
+            } elseif (in_array($this->keys[$key][0], array('increment', 'decrement'))) {
                 // we're trying to increment a key that's already being incremented
                 // or decremented in this transaction - might as well combine those
 
                 // we may be combining an increment with a decrement
                 // we must carefully figure out how these 2 apply against each other
-                $symbol = $this->keys[$this->namespace][$key][0] === 'increment' ? 1 : -1;
-                $previous = $symbol * $this->keys[$this->namespace][$key][2]['offset'];
+                $symbol = $this->keys[$key][0] === 'increment' ? 1 : -1;
+                $previous = $symbol * $this->keys[$key][2]['offset'];
 
                 $symbol = $operation === 'increment' ? 1 : -1;
                 $current = $symbol * $offset;
 
                 $offset = $previous + $current;
 
-                $this->keys[$this->namespace][$key][2]['offset'] = abs($offset);
+                $this->keys[$key][2]['offset'] = abs($offset);
                 // initial value must also be adjusted to include the new offset
-                $this->keys[$this->namespace][$key][2]['initial'] += $current;
-                $this->keys[$this->namespace][$key][2]['expire'] = $expire;
+                $this->keys[$key][2]['initial'] += $current;
+                $this->keys[$key][2]['expire'] = $expire;
 
                 // adjust operation - it might just have switched from increment to
                 // decrement or vice versa
                 $operation = $offset >= 0 ? 'increment' : 'decrement';
-                $this->keys[$this->namespace][$key][0] = $operation;
-                $this->keys[$this->namespace][$key][1] = array($this->cache, $operation);
+                $this->keys[$key][0] = $operation;
+                $this->keys[$key][1] = array($this->cache, $operation);
             } else {
                 // touch & delete become useless if incrementing/decrementing after
-                unset($this->keys[$this->namespace][$key]);
+                unset($this->keys[$key]);
             }
         }
 
-        if (!isset($this->keys[$this->namespace][$key])) {
+        if (!isset($this->keys[$key])) {
             $args = array(
                 'key' => $key,
                 'offset' => $offset,
                 'initial' => $initial,
                 'expire' => $expire,
             );
-            $this->keys[$this->namespace][$key] = array($operation, array($this->cache, $operation), $args);
+            $this->keys[$key] = array($operation, array($this->cache, $operation), $args);
         }
     }
 
@@ -318,33 +310,25 @@ class Defer
      */
     public function touch($key, $expire)
     {
-        if (isset($this->keys[$this->namespace][$key][2]['expire'])) {
+        if (isset($this->keys[$key]) && isset($this->keys[$key][2]['expire'])) {
             // changing expiration time of a value we're already storing in
             // this transaction - might as well just set new expiration time
             // right away
-            $this->keys[$this->namespace][$key][2]['expire'] = $expire;
+            $this->keys[$key][2]['expire'] = $expire;
         } else {
             $args = array(
                 'key' => $key,
                 'expire' => $expire,
             );
-            $this->keys[$this->namespace][$key] = array(__FUNCTION__, array($this->cache, __FUNCTION__), $args);
+            $this->keys[$key] = array(__FUNCTION__, array($this->cache, __FUNCTION__), $args);
         }
     }
 
     public function flush()
     {
         // clear all scheduled updates, they'll be wiped out after this anyway
-        $this->keys[$this->namespace] = array();
-        $this->flushed[$this->namespace] = true;
-    }
-
-    /**
-     * @param string $namespace
-     */
-    public function setNamespace($namespace = '')
-    {
-        $this->namespace = $namespace;
+        $this->keys = array();
+        $this->flush = true;
     }
 
     /**
@@ -353,7 +337,7 @@ class Defer
     public function clear()
     {
         $this->keys = array();
-        $this->flushed = array();
+        $this->flush = false;
     }
 
     /**
@@ -367,23 +351,19 @@ class Defer
      */
     public function commit()
     {
-        foreach ($this->keys as $namespace => $data) {
-            $this->cache->setNamespace($namespace);
+        list($old, $new) = $this->generateRollback();
+        $updates = $this->generateUpdates();
+        $updates = $this->combineUpdates($updates);
+        usort($updates, array($this, 'sortUpdates'));
 
-            list($old, $new) = $this->generateRollback($namespace);
-            $updates = $this->generateUpdates($namespace);
-            $updates = $this->combineUpdates($updates);
-            usort($updates, array($this, 'sortUpdates'));
+        foreach ($updates as $update) {
+            // apply update to cache & receive a simple bool to indicate
+            // success (true) or failure (false)
+            $success = call_user_func_array($update[1], $update[2]);
+            if ($success === false) {
+                $this->rollback($old, $new);
 
-            foreach ($updates as $update) {
-                // apply update to cache & receive a simple bool to indicate
-                // success (true) or failure (false)
-                $success = call_user_func_array($update[1], $update[2]);
-                if ($success === false) {
-                    $this->rollback($old, $new);
-
-                    return false;
-                }
+                return false;
             }
         }
 
@@ -432,35 +412,30 @@ class Defer
      * But it could still happen, so we should fetch the current values for all
      * unsafe operations. If the transaction fails, we can then restore them.
      *
-     * @param string $namespace
-     *
-     * @return array[] Array of 2 [namespace => [key => value]] maps: current & scheduled data
+     * @return array[] Array of 2 [key => value] maps: current & scheduled data
      */
-    protected function generateRollback($namespace)
+    protected function generateRollback()
     {
         $keys = array();
         $new = array();
-        $current = array();
 
-        if (isset($this->keys[$namespace])) {
-            foreach ($this->keys[$namespace] as $key => $data) {
-                $operation = $data[0];
+        foreach ($this->keys as $key => $data) {
+            $operation = $data[0];
 
-                // we only need values for cas & replace - recovering from an 'add'
-                // is just deleting the value...
-                if (in_array($operation, array('cas', 'replace'))) {
-                    $keys[] = $key;
-                    $new[$key] = $data[2]['value'];
-                }
+            // we only need values for cas & replace - recovering from an 'add'
+            // is just deleting the value...
+            if (in_array($operation, array('cas', 'replace'))) {
+                $keys[] = $key;
+                $new[$key] = $data[2]['value'];
             }
-
-            if (empty($keys)) {
-                return array(array(), array());
-            }
-
-            // fetch the existing data & return the planned new data as well
-            $current = $this->cache->getMulti($keys);
         }
+
+        if (empty($keys)) {
+            return array(array(), array());
+        }
+
+        // fetch the existing data & return the planned new data as well
+        $current = $this->cache->getMulti($keys);
 
         return array($current, $new);
     }
@@ -470,22 +445,18 @@ class Defer
      * redundant operations on a per-key basis. Now we'll turn those into
      * actual updates.
      *
-     * @param string $namespace
-     *
      * @return array
      */
-    protected function generateUpdates($namespace)
+    protected function generateUpdates()
     {
         $updates = array();
 
-        if ($this->isFlushed($namespace)) {
+        if ($this->flush) {
             $updates[] = array('flush', array($this->cache, 'flush'), array());
         }
 
-        if (isset($this->keys[$namespace])) {
-            foreach ($this->keys[$namespace] as $key => $data) {
-                $updates[] = $data;
-            }
+        foreach ($this->keys as $key => $data) {
+            $updates[] = $data;
         }
 
         return $updates;
@@ -610,20 +581,5 @@ class Defer
         }
 
         return array_search($a[0], $updateOrder) < array_search($b[0], $updateOrder) ? -1 : 1;
-    }
-
-    /**
-     * @param string $namespace
-     * @return bool
-     */
-    protected function isFlushed($namespace)
-    {
-        if (isset($this->flushed['']) && $this->flushed['']) {
-            return true;
-        } elseif (isset($this->flushed[$namespace]) && $this->flushed[$namespace]) {
-            return true;
-        }
-
-        return false;
     }
 }

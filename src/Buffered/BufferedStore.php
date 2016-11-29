@@ -39,6 +39,11 @@ class BufferedStore implements KeyValueStore
     protected $local;
 
     /**
+     * @var BufferedStore[]
+     */
+    protected $collections = array();
+
+    /**
      * @param KeyValueStore $cache The real cache we'll buffer for
      */
     public function __construct(KeyValueStore $cache)
@@ -199,6 +204,10 @@ class BufferedStore implements KeyValueStore
      */
     public function flush()
     {
+        foreach ($this->collections as $collection) {
+            $collection->flush();
+        }
+
         $result = $this->transaction->flush();
         $this->transaction->commit();
 
@@ -208,8 +217,13 @@ class BufferedStore implements KeyValueStore
     /**
      * {@inheritdoc}
      */
-    public function setNamespace($namespace = '')
+    public function collection($name)
     {
-        $this->transaction->setNamespace($namespace);
+        if (!isset($this->collections[$name])) {
+            $collection = $this->transaction->collection($name);
+            $this->collections[$name] = new BufferedStore($collection);
+        }
+
+        return $this->collections[$name];
     }
 }
