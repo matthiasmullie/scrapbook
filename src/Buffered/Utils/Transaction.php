@@ -57,14 +57,14 @@ class Transaction implements KeyValueStore
      * has not yet been committed. In that case, we don't want to fall back to
      * real cache values, because they're about to be flushed.
      *
-     * @var bool[]
+     * @var bool
      */
-    protected $flushed = array();
+    protected $suspend = false;
 
     /**
-     * @var string
+     * @var Transaction[]
      */
-    protected $namespace = '';
+    protected $collections = array();
 
     /**
      * @param Buffer        $local
@@ -89,7 +89,7 @@ class Transaction implements KeyValueStore
         $value = $this->local->get($key, $token);
 
         // short-circuit reading from real cache if we have an uncommitted flush
-        if ($this->isFlushed($this->namespace) && $token === null) {
+        if ($this->suspend && $token === null) {
             // flush hasn't been committed yet, don't read from real cache!
             return false;
         }
@@ -124,7 +124,7 @@ class Transaction implements KeyValueStore
          * one particular request - which it is.
          */
         $token = uniqid();
-        $this->tokens[$this->namespace][$token] = serialize($value);
+        $this->tokens[$token] = serialize($value);
 
         return $value;
     }
@@ -139,7 +139,7 @@ class Transaction implements KeyValueStore
         $tokens = array();
 
         // short-circuit reading from real cache if we have an uncommitted flush
-        if (!$this->isFlushed($this->namespace)) {
+        if (!$this->suspend) {
             // figure out which missing key we need to get from real cache
             $keys = array_diff($keys, array_keys($values));
             foreach ($keys as $i => $key) {
@@ -161,7 +161,7 @@ class Transaction implements KeyValueStore
         foreach ($values as $key => $value) {
             $token = uniqid();
             $tokens[$key] = $token;
-            $this->tokens[$this->namespace][$token] = serialize($value);
+            $this->tokens[$token] = serialize($value);
         }
 
         return $values;
@@ -327,7 +327,7 @@ class Transaction implements KeyValueStore
      */
     public function cas($token, $key, $value, $expire = 0)
     {
-        $originalValue = isset($this->tokens[$this->namespace][$token]) ? $this->tokens[$this->namespace][$token] : null;
+        $originalValue = isset($this->tokens[$token]) ? $this->tokens[$token] : null;
 
         // value is no longer the same as what we used for token
         if (serialize($this->get($key)) !== $originalValue) {
@@ -442,16 +442,20 @@ class Transaction implements KeyValueStore
      */
     public function flush()
     {
+        foreach ($this->collections as $collection) {
+            $collection->flush();
+        }
+
         $success = $this->local->flush();
         if ($success === false) {
             return false;
         }
 
         // clear all buffered writes, flush wipes them out anyway
-        $this->clear($this->namespace);
+        $this->clear();
 
         // make sure that reads, from now on until commit, don't read from cache
-        $this->flushed[$this->namespace] = true;
+        $this->suspend = true;
 
         $this->defer->flush();
 
@@ -461,12 +465,16 @@ class Transaction implements KeyValueStore
     /**
      * {@inheritdoc}
      */
-    public function setNamespace($namespace = '')
+    public function collection($name)
     {
-        $this->namespace = $namespace;
-        $this->local->setNamespace($namespace);
-        $this->cache->setNamespace($namespace);
-        $this->defer->setNamespace($namespace);
+        if (!isset($this->collections[$name])) {
+            $this->collections[$name] = new Transaction(
+                $this->local->collection($name),
+                $this->cache->collection($name)
+            );
+        }
+
+        return $this->collections[$name];
     }
 
     /**
@@ -497,32 +505,10 @@ class Transaction implements KeyValueStore
 
     /**
      * Clears all transaction-related data stored in memory.
-     *
-     * @param string $namespace
      */
-    protected function clear($namespace = '')
+    protected function clear()
     {
-        if ($namespace) {
-            $this->tokens[$namespace] = array();
-            $this->flushed[$namespace] = array();
-        } else {
-            $this->tokens = array();
-            $this->flushed = array();
-        }
-    }
-
-    /**
-     * @param string $namespace
-     * @return bool
-     */
-    protected function isFlushed($namespace)
-    {
-        if (isset($this->flushed['']) && $this->flushed['']) {
-            return true;
-        } elseif (isset($this->flushed[$namespace]) && $this->flushed[$namespace]) {
-            return true;
-        }
-
-        return false;
+        $this->tokens = array();
+        $this->suspend = false;
     }
 }

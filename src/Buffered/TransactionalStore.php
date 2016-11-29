@@ -246,10 +246,10 @@ class TransactionalStore implements KeyValueStore
     /**
      * {@inheritdoc}
      */
-    public function setNamespace($namespace = '')
+    public function collection($name)
     {
         $cache = end($this->transactions);
 
-        $cache->setNamespace($namespace);
+        return new TransactionalStore($cache->collection($name));
     }
 }

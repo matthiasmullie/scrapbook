@@ -36,21 +36,18 @@ class Buffer extends MemoryStore
      */
     protected function exists($key)
     {
-        if (
-            !isset($this->items[$this->namespace]) ||
-            !array_key_exists($key, $this->items[$this->namespace])
-        ) {
+        if (!array_key_exists($key, $this->items)) {
             // key not in cache
             return false;
         }
 
-        $expire = $this->items[$this->namespace][$key][1];
+        $expire = $this->items[$key][1];
         if ($expire !== 0 && $expire < time()) {
             // not permanent & already expired
             return false;
         }
 
-        $this->lru($this->namespace, $key);
+        $this->lru($key);
 
         return true;
     }
@@ -77,6 +74,18 @@ class Buffer extends MemoryStore
         }
 
         // a known item, not returned by get, is expired
-        return isset($this->items[$this->namespace]) && array_key_exists($key, $this->items[$this->namespace]);
+        return array_key_exists($key, $this->items);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function collection($name)
+    {
+        if (!isset($this->collections[$name])) {
+            $this->collections[$name] = new Buffer($this->limit);
+        }
+
+        return $this->collections[$name];
     }
 }
