@@ -26,7 +26,6 @@ class AdapterTestCase extends PHPUnit_Framework_TestCase implements AdapterProvi
 
     public function tearDown()
     {
-        $this->cache->setNamespace();
         $this->cache->flush();
     }
 }

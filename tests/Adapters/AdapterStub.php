@@ -89,7 +89,7 @@ class AdapterStub implements KeyValueStore
         throw $this->exception;
     }
 
-    public function setNamespace($namespace = '')
+    public function collection($name)
     {
         throw $this->exception;
     }
