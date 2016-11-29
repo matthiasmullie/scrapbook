@@ -293,7 +293,7 @@ class Couchbase implements KeyValueStore
     /**
      * {@inheritdoc}
      */
-    public function setNamespace($namespace = '')
+    public function collection($name)
     {
         // @todo implement this
     }
