@@ -197,11 +197,15 @@ class Shard implements KeyValueStore
     /**
      * {@inheritdoc}
      */
-    public function setNamespace($namespace = '')
+    public function collection($name)
     {
-        foreach ($this->caches as $cache) {
-            $cache->setNamespace($namespace);
+        $shard = new Shard($this->caches[0]->collection($name));
+
+        for ($i = 1; $i < count($this->caches); $i++) {
+            $shard->addCache($this->caches[$i]->collection($name));
         }
+
+        return $shard;
     }
 
     /**
