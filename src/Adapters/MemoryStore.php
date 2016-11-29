@@ -34,14 +34,9 @@ class MemoryStore implements KeyValueStore
     protected $size = 0;
 
     /**
-     * @var string
+     * @var KeyValueStore[]
      */
-    protected $namespace = '';
-
-    /**
-     * @var string
-     */
-    public $lru = array(); // @todo protected
+    protected $collections = array();
 
     /**
      * @param int|string $limit Memory limit in bytes (defaults to 10% of memory_limit)
@@ -71,7 +66,7 @@ class MemoryStore implements KeyValueStore
             return false;
         }
 
-        $value = $this->items[$this->namespace][$key][0];
+        $value = $this->items[$key][0];
 
         // use serialized version of stored value as CAS token
         $token = $value;
@@ -105,14 +100,14 @@ class MemoryStore implements KeyValueStore
      */
     public function set($key, $value, $expire = 0)
     {
-        $this->size -= isset($this->items[$this->namespace][$key]) ? strlen($this->items[$this->namespace][$key][0]) : 0;
+        $this->size -= isset($this->items[$key]) ? strlen($this->items[$key][0]) : 0;
 
         $value = serialize($value);
         $expire = $this->normalizeTime($expire);
-        $this->items[$this->namespace][$key] = array($value, $expire);
+        $this->items[$key] = array($value, $expire);
 
         $this->size += strlen($value);
-        $this->lru($this->namespace, $key);
+        $this->lru($key);
         $this->evict();
 
         return true;
@@ -139,11 +134,8 @@ class MemoryStore implements KeyValueStore
         $exists = $this->exists($key);
 
         if ($exists) {
-            $this->size -= strlen($this->items[$this->namespace][$key][0]);
-            unset($this->items[$this->namespace][$key]);
-            if (empty($this->items[$this->namespace])) {
-                unset($this->items[$this->namespace]);
-            }
+            $this->size -= strlen($this->items[$key][0]);
+            unset($this->items[$key]);
         }
 
         return $exists;
@@ -246,15 +238,12 @@ class MemoryStore implements KeyValueStore
      */
     public function flush()
     {
-        if ($this->namespace === '') {
-            $this->size = 0;
-            $this->items = array();
-        } elseif(isset($this->items[$this->namespace])) {
-            foreach ($this->items[$this->namespace] as $key => $data) {
-                $this->size -= strlen($data[0]);
-            }
+        $this->items = array();
 
-            $this->items[$this->namespace] = array();
+        $this->size = 0;
+
+        foreach ($this->collections as $collection) {
+            $collection->flush();
         }
 
         return true;
@@ -263,9 +252,13 @@ class MemoryStore implements KeyValueStore
     /**
      * {@inheritdoc}
      */
-    public function setNamespace($namespace = '')
+    public function collection($name)
     {
-        $this->namespace = $namespace;
+        if (!isset($this->collections[$name])) {
+            $this->collections[$name] = new MemoryStore($this->limit);
+        }
+
+        return $this->collections[$name];
     }
 
     /**
@@ -277,27 +270,21 @@ class MemoryStore implements KeyValueStore
      */
     protected function exists($key)
     {
-        if (
-            !isset($this->items[$this->namespace]) ||
-            !array_key_exists($key, $this->items[$this->namespace])
-        ) {
+        if (!array_key_exists($key, $this->items)) {
             // key not in cache
             return false;
         }
 
-        $expire = $this->items[$this->namespace][$key][1];
+        $expire = $this->items[$key][1];
         if ($expire !== 0 && $expire < time()) {
             // not permanent & already expired
-            $this->size -= strlen($this->items[$this->namespace][$key][0]);
-            unset($this->items[$this->namespace][$key]);
-            if (empty($this->items[$this->namespace])) {
-                unset($this->items[$this->namespace]);
-            }
+            $this->size -= strlen($this->items[$key][0]);
+            unset($this->items[$key]);
 
             return false;
         }
 
-        $this->lru($this->namespace, $key);
+        $this->lru($key);
 
         return true;
     }
@@ -366,20 +353,13 @@ class MemoryStore implements KeyValueStore
     /**
      * This cache uses least recently used algorithm. This is to be called
      * with the key to be marked as just used.
-     *
-     * @param string $namespace
-     * @param string $key
      */
-    protected function lru($namespace, $key)
+    protected function lru($key)
     {
-        // if we've already used a key, we want to get rid of it and reposition
-        // it to the back of the array - we've just used it again, it can't be
-        // evicted!
-        $i = array_search(array($namespace, $key), $this->lru);
-        if ($i !== false) {
-            unset($this->lru[$i]);
-        }
-        $this->lru[] = array($namespace, $key);
+        // move key that has just been used to last position in the array
+        $value = $this->items[$key];
+        unset($this->items[$key]);
+        $this->items[$key] = $value;
     }
 
     /**
@@ -388,11 +368,9 @@ class MemoryStore implements KeyValueStore
      */
     protected function evict()
     {
-        while ($this->size > $this->limit && !empty($this->lru)) {
-            list($namespace, $key) = array_shift($this->lru);
-            $item = $this->items[$namespace][$key];
+        while ($this->size > $this->limit && !empty($this->items)) {
+            $item = array_shift($this->items);
             $this->size -= strlen($item[0]);
-            unset($this->items[$namespace][$key]);
         }
     }
 
