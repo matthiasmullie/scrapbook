@@ -33,6 +33,12 @@ class SimpleCache implements CacheInterface
      */
     public function get($key, $default = null)
     {
+        if (!is_string($key)) {
+            throw new InvalidArgumentException(
+                'Invalid key: '.serialize($key).'. Must be string.'
+            );
+        }
+
         // KeyValueStore::get returns false for cache misses (which could also
         // be confused for a `false` value), so we'll check existence with getMulti
         $multi = $this->store->getMulti(array($key));
@@ -45,6 +51,12 @@ class SimpleCache implements CacheInterface
      */
     public function set($key, $value, $ttl = null)
     {
+        if (!is_string($key)) {
+            throw new InvalidArgumentException(
+                'Invalid key: '.serialize($key).'. Must be string.'
+            );
+        }
+
         $ttl = $this->ttl($ttl);
 
         return $this->store->set($key, $value, $ttl);
@@ -55,7 +67,13 @@ class SimpleCache implements CacheInterface
      */
     public function delete($key)
     {
-        $this->store->delete($key);
+        if (!is_string($key)) {
+            throw new InvalidArgumentException(
+                'Invalid key: '.serialize($key).'. Must be string.'
+            );
+        }
+
+        return $this->store->delete($key);
     }
 
     /**
@@ -63,23 +81,29 @@ class SimpleCache implements CacheInterface
      */
     public function clear()
     {
-        $this->store->flush();
+        return $this->store->flush();
     }
 
     /**
      * {@inheritdoc}
      */
-    public function getMultiple($keys)
+    public function getMultiple($keys, $default = null)
     {
         if ($keys instanceof Traversable) {
             $keys = iterator_to_array($keys);
         }
 
+        if (!is_array($keys) || array_filter($keys, 'is_string') !== $keys) {
+            throw new InvalidArgumentException(
+                'Invalid keys: '.serialize($keys).'. Must be array of strings.'
+            );
+        }
+
         $results = $this->store->getMulti($keys);
 
         // KeyValueStore omits values that are not in cache, while PSR-16 will
-        // have them with null as value
-        $nulls = array_fill_keys($keys, null);
+        // have them with a default value
+        $nulls = array_fill_keys($keys, $default);
         $results = array_merge($nulls, $results);
 
         return $results;
@@ -90,6 +114,17 @@ class SimpleCache implements CacheInterface
      */
     public function setMultiple($items, $ttl = null)
     {
+        if ($items instanceof Traversable) {
+            $items = iterator_to_array($items);
+        }
+
+        $keys = array_keys($items);
+        if (!is_array($keys) || array_filter($keys, 'is_string') !== $keys) {
+            throw new InvalidArgumentException(
+                'Invalid keys: '.serialize($keys).'. Must be array of strings.'
+            );
+        }
+
         $ttl = $this->ttl($ttl);
         $success = $this->store->setMulti($items, $ttl);
 
@@ -101,7 +136,19 @@ class SimpleCache implements CacheInterface
      */
     public function deleteMultiple($keys)
     {
-        $this->store->deleteMulti($keys);
+        if ($keys instanceof Traversable) {
+            $keys = iterator_to_array($keys);
+        }
+
+        if (!is_array($keys) || array_filter($keys, 'is_string') !== $keys) {
+            throw new InvalidArgumentException(
+                'Invalid keys: '.serialize($keys).'. Must be array of strings.'
+            );
+        }
+
+        $success = $this->store->deleteMulti($keys);
+
+        return !in_array(false, $success);
     }
 
     /**
@@ -109,6 +156,12 @@ class SimpleCache implements CacheInterface
      */
     public function has($key)
     {
+        if (!is_string($key)) {
+            throw new InvalidArgumentException(
+                'Invalid key: '.serialize($key).'. Must be string.'
+            );
+        }
+
         // KeyValueStore::get returns false for cache misses (which could also
         // be confused for a `false` value), so we'll check existence with getMulti
         $multi = $this->store->getMulti(array($key));

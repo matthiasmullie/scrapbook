@@ -5,6 +5,8 @@
 ### Added
 - Added $default param to PSR-16's `get()`
 - Added APCu support
+- Strict argument checks for PSR-16 methods
+- Return a boolean for PSR-16 delete, clear & deleteMulti
 
 ### Changed
 - Treat all PSR-16 TTL's as relative

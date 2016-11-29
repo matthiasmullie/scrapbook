@@ -2,10 +2,12 @@
 
 namespace MatthiasMullie\Scrapbook\Tests\Psr16;
 
+use ArrayIterator;
 use DateInterval;
 use MatthiasMullie\Scrapbook\Psr16\SimpleCache;
 use MatthiasMullie\Scrapbook\Tests\AdapterTestCase;
 use MatthiasMullie\Scrapbook\KeyValueStore;
+use Psr\SimpleCache\InvalidArgumentException;
 
 class SimpleCacheTest extends AdapterTestCase
 {
@@ -38,6 +40,14 @@ class SimpleCacheTest extends AdapterTestCase
         $this->assertSame('default', $this->simplecache->get('key', 'default'));
     }
 
+    /**
+     * @expectedException InvalidArgumentException
+     */
+    public function testGetException()
+    {
+        $this->simplecache->get(array());
+    }
+
     public function testSet()
     {
         $success = $this->simplecache->set('key', 'value');
@@ -46,6 +56,14 @@ class SimpleCacheTest extends AdapterTestCase
         // check both cache & simplecache interface to confirm delete
         $this->assertSame('value', $this->cache->get('key'));
         $this->assertSame('value', $this->simplecache->get('key'));
+    }
+
+    /**
+     * @expectedException InvalidArgumentException
+     */
+    public function testSetException()
+    {
+        $this->simplecache->set(5, 5);
     }
 
     public function testSetExpired()
@@ -87,11 +105,20 @@ class SimpleCacheTest extends AdapterTestCase
         // set value in cache, delete via simplecache interface & confirm it's
         // been deleted
         $this->cache->set('key', 'value');
-        $this->simplecache->delete('key');
+        $success = $this->simplecache->delete('key');
 
         // check both cache & simplecache interface to confirm delete
+        $this->assertSame(true, $success);
         $this->assertSame(false, $this->cache->get('key'));
         $this->assertSame(null, $this->simplecache->get('key'));
+    }
+
+    /**
+     * @expectedException InvalidArgumentException
+     */
+    public function testDeleteException()
+    {
+        $this->simplecache->delete(new \stdClass());
     }
 
     public function testClear()
@@ -100,10 +127,11 @@ class SimpleCacheTest extends AdapterTestCase
         $this->cache->set('key', 'value');
         $this->simplecache->set('key2', 'value');
 
-        $this->simplecache->clear();
+        $success = $this->simplecache->clear();
 
         // check both cache & simplecache interface to confirm everything's been
         // wiped out
+        $this->assertSame(true, $success);
         $this->assertSame(false, $this->cache->get('key'));
         $this->assertSame(null, $this->simplecache->get('key'));
         $this->assertSame(false, $this->cache->get('key2'));
@@ -117,6 +145,27 @@ class SimpleCacheTest extends AdapterTestCase
         $this->assertSame(array('key' => 'value', 'key2' => 'value', 'key3' => null), $results);
     }
 
+    public function testGetMultipleDefault()
+    {
+        $this->assertSame(array('key' => 'default'), $this->simplecache->getMultiple(array('key'), 'default'));
+    }
+
+    public function testGetMultipleTraversable()
+    {
+        $this->cache->setMulti(array('key' => 'value', 'key2' => 'value'));
+        $iterator = new ArrayIterator(array('key', 'key2', 'key3'));
+        $results = $this->simplecache->getMultiple($iterator);
+        $this->assertSame(array('key' => 'value', 'key2' => 'value', 'key3' => null), $results);
+    }
+
+    /**
+     * @expectedException InvalidArgumentException
+     */
+    public function testGetMultipleException()
+    {
+        $this->simplecache->getMultiple(null);
+    }
+
     public function testSetMultiple()
     {
         $success = $this->simplecache->setMultiple(array('key' => 'value', 'key2' => 'value'));
@@ -126,11 +175,47 @@ class SimpleCacheTest extends AdapterTestCase
         $this->assertSame(array('key' => 'value', 'key2' => 'value'), $results);
     }
 
+    public function testSetMultipleTraversable()
+    {
+        $iterator = new ArrayIterator(array('key' => 'value', 'key2' => 'value'));
+        $success = $this->simplecache->setMultiple($iterator);
+        $this->assertSame(true, $success);
+
+        $results = $this->cache->getMulti(array('key', 'key2'));
+        $this->assertSame(array('key' => 'value', 'key2' => 'value'), $results);
+    }
+
+    /**
+     * @expectedException InvalidArgumentException
+     */
+    public function testSetMultipleException()
+    {
+        $this->simplecache->delete(array(123.456 => 789));
+    }
+
     public function testDeleteMultiple()
     {
         $this->cache->setMulti(array('key' => 'value', 'key2' => 'value'));
-        $this->simplecache->deleteMultiple(array('key', 'key2'));
+        $success = $this->simplecache->deleteMultiple(array('key', 'key2'));
+        $this->assertSame(true, $success);
         $this->assertSame(array(), $this->cache->getMulti(array('key', 'key2')));
+    }
+
+    public function testDeleteMultipleTraversable()
+    {
+        $this->cache->setMulti(array('key' => 'value', 'key2' => 'value'));
+        $iterator = new ArrayIterator(array('key\', \'key2'));
+        $success = $this->simplecache->deleteMultiple($iterator);
+        $this->assertSame(true, $success);
+        $this->assertSame(array(), $this->cache->getMulti(array('key', 'key2')));
+    }
+
+    /**
+     * @expectedException InvalidArgumentException
+     */
+    public function testDeleteMultipleException()
+    {
+        $this->simplecache->deleteMultiple(123);
     }
 
     public function testHas()
@@ -139,5 +224,13 @@ class SimpleCacheTest extends AdapterTestCase
 
         $this->assertSame(true, $this->simplecache->has('key'));
         $this->assertSame(false, $this->simplecache->has('key2'));
+    }
+
+    /**
+     * @expectedException InvalidArgumentException
+     */
+    public function testHasException()
+    {
+        $this->simplecache->has(true);
     }
 }
