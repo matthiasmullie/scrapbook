@@ -12,6 +12,9 @@
 - Treat all PSR-16 TTL's as relative
 - Renamed PSR-16 `exists()` to `has()`
 
+### Fixed
+- Fixed Redis handling of non-expiring ttls
+
 ### Removed
 - Removed PSR-16 CounterInterface & its methods
 

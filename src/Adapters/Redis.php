@@ -164,7 +164,7 @@ class Redis implements KeyValueStore
             return array_fill_keys(array_keys($items), true);
         }
 
-        if ($ttl === 0) {
+        if ($ttl === null) {
             $success = $this->client->mset($items);
 
             return array_fill_keys(array_keys($items), $success);
@@ -238,7 +238,7 @@ class Redis implements KeyValueStore
             return true;
         }
 
-        if ($ttl === 0) {
+        if ($ttl === null) {
             return $this->client->setnx($key, $value);
         }
 
@@ -451,16 +451,20 @@ class Redis implements KeyValueStore
      *
      * @param int $expire
      *
-     * @return int TTL in seconds
+     * @return int|null TTL in seconds, or `null` for no expiration
      */
     protected function ttl($expire)
     {
-        // relative time in seconds, <30 days
-        if ($expire < 30 * 24 * 60 * 60) {
-            $expire += time();
+        if ($expire === 0) {
+            return null;
         }
 
-        return $expire ? $expire - time() : 0;
+        // relative time in seconds, <30 days
+        if ($expire > 30 * 24 * 60 * 60) {
+            return $expire - time();
+        }
+
+        return $expire;
     }
 
     /**
