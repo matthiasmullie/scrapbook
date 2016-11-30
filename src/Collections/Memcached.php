@@ -6,7 +6,7 @@ use MatthiasMullie\Scrapbook\Adapters\Memcached as Adapter;
 use MatthiasMullie\Scrapbook\Collections\Utils\PrefixKeys;
 
 /**
- * APC adapter for a subset of data, accomplished by prefixing keys.
+ * Memcached adapter for a subset of data, accomplished by prefixing keys.
  *
  * @author Matthias Mullie <scrapbook@mullie.eu>
  * @copyright Copyright (c) 2014, Matthias Mullie. All rights reserved
