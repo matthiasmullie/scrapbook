@@ -4,13 +4,13 @@ namespace MatthiasMullie\Scrapbook\Tests;
 
 use MatthiasMullie\Scrapbook\Exception\Exception;
 use MatthiasMullie\Scrapbook\KeyValueStore;
-use MatthiasMullie\Scrapbook\Tests\Adapters\AdapterInterface;
-use MatthiasMullie\Scrapbook\Tests\Adapters\AdapterStub;
+use MatthiasMullie\Scrapbook\Tests\Providers\AdapterProvider;
+use MatthiasMullie\Scrapbook\Tests\Providers\AdapterStub;
 use PHPUnit_Framework_TestCase;
 use PHPUnit_Framework_TestSuite;
 use ReflectionClass;
 
-class AdapterProvider
+class AdapterTestProvider
 {
     /**
      * @var KeyValueStore[]
@@ -32,7 +32,7 @@ class AdapterProvider
         if (!$testCase instanceof AdapterProviderTestInterface) {
             $class = get_class($testCase);
             throw new Exception(
-                "AdapterProvider can't be used with a class ($class) that ".
+                "AdapterTestProvider can't be used with a class ($class) that ".
                 "doesn't implement AdapterProviderTestInterface."
             );
         }
@@ -48,7 +48,7 @@ class AdapterProvider
         $suite = new \PHPUnit_Framework_TestSuite('Test integration');
 
         $i = 0;
-        foreach ($this->getAdapters() as $name => $adapter) {
+        foreach ($this->getAdapterProviders() as $name => $adapterProvider) {
             $class = new ReflectionClass(get_class($this->testCase));
             $tests = new PHPUnit_Framework_TestSuite($class);
 
@@ -58,7 +58,7 @@ class AdapterProvider
             static::injectGroup($tests, $name);
 
             // and let's make sure to inject the specific adapter into the test
-            static::injectAdapter($tests, $adapter);
+            static::injectAdapter($tests, $adapterProvider);
 
             // let's add all of the integrations tests for every adapter
             $suite->addTest($tests);
@@ -75,15 +75,17 @@ class AdapterProvider
      * that we must unwrap in order to assign the adapter.
      *
      * @param \PHPUnit_Framework_TestSuite $suite
-     * @param KeyValueStore                $adapter
+     * @param AdapterProvider              $adapterProvider
      */
-    protected function injectAdapter(\PHPUnit_Framework_TestSuite $suite, KeyValueStore $adapter)
+    protected function injectAdapter(\PHPUnit_Framework_TestSuite $suite, AdapterProvider $adapterProvider)
     {
         foreach ($suite as $test) {
             if ($test instanceof \PHPUnit_Framework_TestSuite) {
-                $this->injectAdapter($test, $adapter);
+                $this->injectAdapter($test, $adapterProvider);
             } else {
-                $test->setAdapter($adapter);
+                /* @var AdapterTestCase $test */
+                $test->setAdapter($adapterProvider->getAdapter());
+                $test->setCollectionName($adapterProvider->getCollectionName());
             }
         }
     }
@@ -109,9 +111,9 @@ class AdapterProvider
     }
 
     /**
-     * @return KeyValueStore[]
+     * @return AdapterProvider[]
      */
-    public function getAdapters()
+    public function getAdapterProviders()
     {
         // re-use adapters across tests - if we keep initializing clients, they
         // may fail because of too much connections (and it's just overhead...)
@@ -119,16 +121,16 @@ class AdapterProvider
             return static::$adapters;
         }
 
-        $adapters = $this->getAllAdapters();
+        $adapters = $this->getAllAdapterProviders();
         foreach ($adapters as $class) {
             try {
-                /* @var AdapterInterface $adapter */
-                $fqcn = "\\MatthiasMullie\\Scrapbook\\Tests\\Adapters\\{$class}Test";
+                /* @var AdapterProvider $adapter */
+                $fqcn = "\\MatthiasMullie\\Scrapbook\\Tests\\Providers\\{$class}Provider";
                 $adapter = new $fqcn();
 
-                static::$adapters[$class] = $adapter->get();
+                static::$adapters[$class] = $adapter;
             } catch (\Exception $e) {
-                static::$adapters[$class] = new AdapterStub($e);
+                static::$adapters[$class] = new AdapterProvider(new AdapterStub($e));
             }
         }
 
@@ -138,14 +140,15 @@ class AdapterProvider
     /**
      * @return string[]
      */
-    protected function getAllAdapters()
+    protected function getAllAdapterProviders()
     {
-        $files = glob(__DIR__.'/Adapters/*Test.php');
+        $files = glob(__DIR__.'/Providers/*Provider.php');
+        $files = glob(__DIR__.'/Providers/RedisProvider.php');
 
         // since we're PSR-4, just stripping .php from the filename = classnames
-        // also strip "Test" suffix, which will again be appended later
+        // also strip "Provider" suffix, which will again be appended later
         $adapters = array_map(function ($file) {
-            return basename($file, 'Test.php');
+            return basename($file, 'Provider.php');
         }, $files);
 
         return $adapters;

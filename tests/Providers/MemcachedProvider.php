@@ -1,16 +1,12 @@
 <?php
 
-namespace MatthiasMullie\Scrapbook\Tests\Adapters;
+namespace MatthiasMullie\Scrapbook\Tests\Providers;
 
 use MatthiasMullie\Scrapbook\Exception\Exception;
 
-/**
- * @group default
- * @group Memcached
- */
-class MemcachedTest implements AdapterInterface
+class MemcachedProvider extends AdapterProvider
 {
-    public function get()
+    public function __construct()
     {
         if (!class_exists('Memcached')) {
             throw new Exception('ext-memcached is not installed.');
@@ -19,6 +15,6 @@ class MemcachedTest implements AdapterInterface
         $client = new \Memcached();
         $client->addServer('localhost', 11211);
 
-        return new \MatthiasMullie\Scrapbook\Adapters\Memcached($client);
+        parent::__construct(new \MatthiasMullie\Scrapbook\Adapters\Memcached($client));
     }
 }

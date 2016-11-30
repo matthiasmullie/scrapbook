@@ -18,4 +18,11 @@ interface AdapterProviderTestInterface
      * @param KeyValueStore $adapter
      */
     public function setAdapter(KeyValueStore $adapter);
+
+    /**
+     * This is where AdapterProvider will inject the adapter to.
+     *
+     * @param string $name
+     */
+    public function setCollectionName($name);
 }

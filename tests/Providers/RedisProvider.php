@@ -1,16 +1,12 @@
 <?php
 
-namespace MatthiasMullie\Scrapbook\Tests\Adapters;
+namespace MatthiasMullie\Scrapbook\Tests\Providers;
 
 use MatthiasMullie\Scrapbook\Exception\Exception;
 
-/**
- * @group default
- * @group Redis
- */
-class RedisTest implements AdapterInterface
+class RedisProvider extends AdapterProvider
 {
-    public function get()
+    public function __construct()
     {
         if (!class_exists('Redis')) {
             throw new Exception('ext-redis is not installed.');
@@ -19,6 +15,7 @@ class RedisTest implements AdapterInterface
         $client = new \Redis();
         $client->connect('127.0.0.1');
 
-        return new \MatthiasMullie\Scrapbook\Adapters\Redis($client);
+        // Redis databases are numeric
+        parent::__construct(new \MatthiasMullie\Scrapbook\Adapters\Redis($client), 1);
     }
 }

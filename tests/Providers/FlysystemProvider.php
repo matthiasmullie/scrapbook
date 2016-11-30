@@ -1,18 +1,14 @@
 <?php
 
-namespace MatthiasMullie\Scrapbook\Tests\Adapters;
+namespace MatthiasMullie\Scrapbook\Tests\Providers;
 
 use League\Flysystem\Adapter\Local;
 use League\Flysystem\Filesystem;
 use MatthiasMullie\Scrapbook\Exception\Exception;
 
-/**
- * @group default
- * @group Flysystem
- */
-class FlysystemTest implements AdapterInterface
+class FlysystemProvider extends AdapterProvider
 {
-    public function get()
+    public function __construct()
     {
         $path = '/tmp/cache';
 
@@ -27,6 +23,6 @@ class FlysystemTest implements AdapterInterface
         $adapter = new Local($path, LOCK_EX);
         $filesystem = new Filesystem($adapter);
 
-        return new \MatthiasMullie\Scrapbook\Adapters\Flysystem($filesystem);
+        parent::__construct(new \MatthiasMullie\Scrapbook\Adapters\Flysystem($filesystem));
     }
 }

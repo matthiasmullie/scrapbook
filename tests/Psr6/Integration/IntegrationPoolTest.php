@@ -5,7 +5,7 @@ namespace MatthiasMullie\Scrapbook\Tests\Psr6\Integration;
 use Cache\IntegrationTests\CachePoolTest;
 use MatthiasMullie\Scrapbook\KeyValueStore;
 use MatthiasMullie\Scrapbook\Psr6\Pool;
-use MatthiasMullie\Scrapbook\Tests\AdapterProvider;
+use MatthiasMullie\Scrapbook\Tests\AdapterTestProvider;
 use MatthiasMullie\Scrapbook\Tests\AdapterProviderTestInterface;
 
 class IntegrationPoolTest extends CachePoolTest implements AdapterProviderTestInterface
@@ -16,11 +16,16 @@ class IntegrationPoolTest extends CachePoolTest implements AdapterProviderTestIn
     protected $adapter;
 
     /**
+     * @var string
+     */
+    protected $collectionName;
+
+    /**
      * {@inheritdoc}
      */
     public static function suite()
     {
-        $provider = new AdapterProvider(new static());
+        $provider = new AdapterTestProvider(new static());
 
         return $provider->getSuite();
     }
@@ -31,6 +36,14 @@ class IntegrationPoolTest extends CachePoolTest implements AdapterProviderTestIn
     public function setAdapter(KeyValueStore $adapter)
     {
         $this->adapter = $adapter;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setCollectionName($name)
+    {
+        $this->collectionName = $name;
     }
 
     /**

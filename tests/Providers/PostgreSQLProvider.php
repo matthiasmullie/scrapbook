@@ -1,16 +1,12 @@
 <?php
 
-namespace MatthiasMullie\Scrapbook\Tests\Adapters;
+namespace MatthiasMullie\Scrapbook\Tests\Providers;
 
 use MatthiasMullie\Scrapbook\Exception\Exception;
 
-/**
- * @group default
- * @group PostgreSQL
- */
-class PostgreSQLTest implements AdapterInterface
+class PostgreSQLProvider extends AdapterProvider
 {
-    public function get()
+    public function __construct()
     {
         if (!class_exists('PDO')) {
             throw new Exception('ext-pdo is not installed.');
@@ -18,6 +14,6 @@ class PostgreSQLTest implements AdapterInterface
 
         $client = new \PDO('pgsql:host=127.0.0.1;dbname=cache', 'postgres', '');
 
-        return new \MatthiasMullie\Scrapbook\Adapters\PostgreSQL($client);
+        parent::__construct(new \MatthiasMullie\Scrapbook\Adapters\PostgreSQL($client));
     }
 }
