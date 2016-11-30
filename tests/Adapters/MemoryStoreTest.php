@@ -8,13 +8,8 @@ use PHPUnit_Framework_TestCase;
  * @group default
  * @group MemoryStore
  */
-class MemoryStoreTest extends PHPUnit_Framework_TestCase implements AdapterInterface
+class MemoryStoreTest extends PHPUnit_Framework_TestCase
 {
-    public function get()
-    {
-        return new \MatthiasMullie\Scrapbook\Adapters\MemoryStore();
-    }
-
     public function testLRU()
     {
         // all of the below 'valueX' have a (serialized) size of 13b

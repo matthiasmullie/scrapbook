@@ -9,7 +9,7 @@ use MatthiasMullie\Scrapbook\Adapters\MemoryStore;
 use MatthiasMullie\Scrapbook\Adapters\Redis;
 use MatthiasMullie\Scrapbook\Adapters\SQL;
 use MatthiasMullie\Scrapbook\KeyValueStore;
-use MatthiasMullie\Scrapbook\Tests\AdapterProvider;
+use MatthiasMullie\Scrapbook\Tests\AdapterTestProvider;
 use MatthiasMullie\Scrapbook\Tests\AdapterTestCase;
 
 class StampedeProtectorTest extends AdapterTestCase
@@ -217,9 +217,9 @@ class StampedeProtectorTest extends AdapterTestCase
 
         // Now we know $cache will be just fine when forked, but we may be
         // running tests against multiple adapters & not all of them may be fine
-        $provider = new AdapterProvider(new static());
-        foreach ($provider->getAdapters() as $adapter) {
-            if (!$this->forkableAdapter($adapter)) {
+        $provider = new AdapterTestProvider(new static());
+        foreach ($provider->getAdapterProviders() as $adapter) {
+            if (!$this->forkableAdapter($adapter->getAdapter())) {
                 return false;
             }
         }

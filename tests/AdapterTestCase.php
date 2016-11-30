@@ -12,9 +12,14 @@ class AdapterTestCase extends PHPUnit_Framework_TestCase implements AdapterProvi
      */
     protected $cache;
 
+    /**
+     * @var string
+     */
+    protected $collectionName;
+
     public static function suite()
     {
-        $provider = new AdapterProvider(new static());
+        $provider = new AdapterTestProvider(new static());
 
         return $provider->getSuite();
     }
@@ -22,6 +27,11 @@ class AdapterTestCase extends PHPUnit_Framework_TestCase implements AdapterProvi
     public function setAdapter(KeyValueStore $adapter)
     {
         $this->cache = $adapter;
+    }
+
+    public function setCollectionName($name)
+    {
+        $this->collectionName = $name;
     }
 
     public function tearDown()
