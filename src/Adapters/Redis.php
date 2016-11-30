@@ -2,6 +2,8 @@
 
 namespace MatthiasMullie\Scrapbook\Adapters;
 
+use MatthiasMullie\Scrapbook\Collections\Redis as Collection;
+use MatthiasMullie\Scrapbook\Exception\InvalidCollection;
 use MatthiasMullie\Scrapbook\KeyValueStore;
 
 /**
@@ -451,7 +453,41 @@ class Redis implements KeyValueStore
      */
     public function collection($name)
     {
-        // @todo implement this
+        if (!is_numeric($name)) {
+            throw new InvalidCollection(
+                'Redis database names must be numeric. '.serialize($name).' given.'
+            );
+        }
+
+        // we can't reuse $this->client in a different object, because it'll
+        // operate on a different database
+        $client = new \Redis();
+
+        if ($this->client->getPersistentID() !== null) {
+            $client->pconnect(
+                $this->client->getHost(),
+                $this->client->getPort(),
+                $this->client->getTimeout()
+            );
+        } else {
+            $client->connect(
+                $this->client->getHost(),
+                $this->client->getPort(),
+                $this->client->getTimeout()
+            );
+        }
+
+        $auth = $this->client->getAuth();
+        if ($auth !== null) {
+            $client->auth($auth);
+        }
+
+        $readTimeout = $this->client->getReadTimeout();
+        if ($readTimeout) {
+            $client->setOption(\Redis::OPT_READ_TIMEOUT, $this->client->getReadTimeout());
+        }
+
+        return new Collection($client, $name);
     }
 
     /**
