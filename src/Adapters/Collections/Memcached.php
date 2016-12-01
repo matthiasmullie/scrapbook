@@ -1,9 +1,9 @@
 <?php
 
-namespace MatthiasMullie\Scrapbook\Collections;
+namespace MatthiasMullie\Scrapbook\Adapters\Collections;
 
 use MatthiasMullie\Scrapbook\Adapters\Memcached as Adapter;
-use MatthiasMullie\Scrapbook\Collections\Utils\PrefixKeys;
+use MatthiasMullie\Scrapbook\Adapters\Collections\Utils\PrefixKeys;
 
 /**
  * Memcached adapter for a subset of data, accomplished by prefixing keys.

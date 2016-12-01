@@ -1,9 +1,9 @@
 <?php
 
-namespace MatthiasMullie\Scrapbook\Collections;
+namespace MatthiasMullie\Scrapbook\Adapters\Collections;
 
 use MatthiasMullie\Scrapbook\Adapters\Apc as Adapter;
-use MatthiasMullie\Scrapbook\Collections\Utils\PrefixKeys;
+use MatthiasMullie\Scrapbook\Adapters\Collections\Utils\PrefixKeys;
 
 /**
  * APC adapter for a subset of data, accomplished by prefixing keys.

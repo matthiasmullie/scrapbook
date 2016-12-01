@@ -4,7 +4,7 @@ namespace MatthiasMullie\Scrapbook\Adapters;
 
 use APCIterator;
 use APCuIterator;
-use MatthiasMullie\Scrapbook\Collections\Apc as Collection;
+use MatthiasMullie\Scrapbook\Adapters\Collections\Apc as Collection;
 use MatthiasMullie\Scrapbook\Exception\Exception;
 use MatthiasMullie\Scrapbook\KeyValueStore;
 
