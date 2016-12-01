@@ -373,7 +373,7 @@ class Apc implements KeyValueStore
     /**
      * {@inheritdoc}
      */
-    public function collection($name)
+    public function getCollection($name)
     {
         return new Collection($this, $name);
     }

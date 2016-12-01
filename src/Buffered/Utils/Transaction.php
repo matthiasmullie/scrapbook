@@ -465,12 +465,12 @@ class Transaction implements KeyValueStore
     /**
      * {@inheritdoc}
      */
-    public function collection($name)
+    public function getCollection($name)
     {
         if (!isset($this->collections[$name])) {
             $this->collections[$name] = new static(
-                $this->local->collection($name),
-                $this->cache->collection($name)
+                $this->local->getCollection($name),
+                $this->cache->getCollection($name)
             );
         }
 

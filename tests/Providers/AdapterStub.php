@@ -89,7 +89,7 @@ class AdapterStub implements KeyValueStore
         throw $this->exception;
     }
 
-    public function collection($name)
+    public function getCollection($name)
     {
         throw $this->exception;
     }

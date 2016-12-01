@@ -236,5 +236,5 @@ interface KeyValueStore
      *
      * @return KeyValueStore
      */
-    public function collection($name);
+    public function getCollection($name);
 }
