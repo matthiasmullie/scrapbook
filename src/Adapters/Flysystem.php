@@ -5,7 +5,7 @@ namespace MatthiasMullie\Scrapbook\Adapters;
 use League\Flysystem\FileNotFoundException;
 use League\Flysystem\FileExistsException;
 use League\Flysystem\Filesystem;
-use MatthiasMullie\Scrapbook\Collections\Flysystem as Collection;
+use MatthiasMullie\Scrapbook\Adapters\Collections\Flysystem as Collection;
 use MatthiasMullie\Scrapbook\KeyValueStore;
 
 /**

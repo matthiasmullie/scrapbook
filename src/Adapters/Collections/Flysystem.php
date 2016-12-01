@@ -1,6 +1,6 @@
 <?php
 
-namespace MatthiasMullie\Scrapbook\Collections;
+namespace MatthiasMullie\Scrapbook\Adapters\Collections;
 
 use League\Flysystem\FileNotFoundException;
 use League\Flysystem\Filesystem;

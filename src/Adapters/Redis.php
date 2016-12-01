@@ -2,7 +2,7 @@
 
 namespace MatthiasMullie\Scrapbook\Adapters;
 
-use MatthiasMullie\Scrapbook\Collections\Redis as Collection;
+use MatthiasMullie\Scrapbook\Adapters\Collections\Redis as Collection;
 use MatthiasMullie\Scrapbook\Exception\InvalidCollection;
 use MatthiasMullie\Scrapbook\KeyValueStore;
 

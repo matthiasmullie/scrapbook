@@ -1,6 +1,6 @@
 <?php
 
-namespace MatthiasMullie\Scrapbook\Collections\Utils;
+namespace MatthiasMullie\Scrapbook\Adapters\Collections\Utils;
 
 use MatthiasMullie\Scrapbook\KeyValueStore;
 

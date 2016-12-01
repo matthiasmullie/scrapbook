@@ -2,7 +2,7 @@
 
 namespace MatthiasMullie\Scrapbook\Adapters;
 
-use MatthiasMullie\Scrapbook\Collections\Memcached as Collection;
+use MatthiasMullie\Scrapbook\Adapters\Collections\Memcached as Collection;
 use MatthiasMullie\Scrapbook\Exception\InvalidKey;
 use MatthiasMullie\Scrapbook\KeyValueStore;
 
