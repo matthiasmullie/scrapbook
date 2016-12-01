@@ -4,8 +4,6 @@ namespace MatthiasMullie\Scrapbook\Tests;
 
 use MatthiasMullie\Scrapbook\Exception\Exception;
 use MatthiasMullie\Scrapbook\KeyValueStore;
-use MatthiasMullie\Scrapbook\Tests\Providers\AdapterProvider;
-use MatthiasMullie\Scrapbook\Tests\Providers\AdapterStub;
 use PHPUnit_Framework_TestCase;
 use PHPUnit_Framework_TestSuite;
 use ReflectionClass;
