@@ -5,6 +5,7 @@ namespace MatthiasMullie\Scrapbook\Adapters;
 use League\Flysystem\FileNotFoundException;
 use League\Flysystem\FileExistsException;
 use League\Flysystem\Filesystem;
+use MatthiasMullie\Scrapbook\Collections\Flysystem as Collection;
 use MatthiasMullie\Scrapbook\KeyValueStore;
 
 /**
@@ -301,10 +302,14 @@ class Flysystem implements KeyValueStore
         $files = $this->filesystem->listContents();
         foreach ($files as $file) {
             try {
-                $this->filesystem->delete($file['path']);
+                if ($file['type'] === 'dir') {
+                    $this->filesystem->deleteDir($file['path']);
+                } else {
+                    $this->filesystem->delete($file['path']);
+                }
             } catch (FileNotFoundException $e) {
                 // don't care if we failed to unlink something, might have
-                // been deleted by other process in the meantime...
+                // been deleted by another process in the meantime...
             }
         }
 
@@ -316,7 +321,18 @@ class Flysystem implements KeyValueStore
      */
     public function collection($name)
     {
-        // @todo implement this
+        /*
+         * A better solution could be to simply construct a new object for a
+         * subfolder, but we can't reliably create a new
+         * `League\Flysystem\Filesystem` object for a subfolder from the
+         * `$this->filesystem` object we have. I could `->getAdapter` and fetch
+         * the path from there, but only if we can assume that the adapter is
+         * `League\Flysystem\Adapter\Local`, which it may not be.
+         * But I can just create a new object that changes the path to write at,
+         * by prefixing it with a subfolder!
+         */
+        $this->filesystem->createDir($name);
+        return new Collection($this->filesystem, $name);
     }
 
     /**
