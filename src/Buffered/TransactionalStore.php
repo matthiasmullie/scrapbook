@@ -246,10 +246,10 @@ class TransactionalStore implements KeyValueStore
     /**
      * {@inheritdoc}
      */
-    public function collection($name)
+    public function getCollection($name)
     {
         $cache = end($this->transactions);
 
-        return new static($cache->collection($name));
+        return new static($cache->getCollection($name));
     }
 }

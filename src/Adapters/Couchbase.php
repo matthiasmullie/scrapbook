@@ -294,7 +294,7 @@ class Couchbase implements KeyValueStore
     /**
      * {@inheritdoc}
      */
-    public function collection($name)
+    public function getCollection($name)
     {
         // @todo implement this
     }

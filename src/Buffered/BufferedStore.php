@@ -217,10 +217,10 @@ class BufferedStore implements KeyValueStore
     /**
      * {@inheritdoc}
      */
-    public function collection($name)
+    public function getCollection($name)
     {
         if (!isset($this->collections[$name])) {
-            $collection = $this->transaction->collection($name);
+            $collection = $this->transaction->getCollection($name);
             $this->collections[$name] = new static($collection);
         }
 

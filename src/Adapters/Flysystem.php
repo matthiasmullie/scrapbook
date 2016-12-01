@@ -319,7 +319,7 @@ class Flysystem implements KeyValueStore
     /**
      * {@inheritdoc}
      */
-    public function collection($name)
+    public function getCollection($name)
     {
         /*
          * A better solution could be to simply construct a new object for a

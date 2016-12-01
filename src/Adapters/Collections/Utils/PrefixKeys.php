@@ -170,9 +170,9 @@ class PrefixKeys implements KeyValueStore
     /**
      * {@inheritdoc}
      */
-    public function collection($name)
+    public function getCollection($name)
     {
-        return $this->cache->collection($name);
+        return $this->cache->getCollection($name);
     }
 
     /**

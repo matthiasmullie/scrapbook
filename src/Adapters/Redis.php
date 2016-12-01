@@ -451,7 +451,7 @@ class Redis implements KeyValueStore
     /**
      * {@inheritdoc}
      */
-    public function collection($name)
+    public function getCollection($name)
     {
         if (!is_numeric($name)) {
             throw new InvalidCollection(

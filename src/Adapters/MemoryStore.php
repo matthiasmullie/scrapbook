@@ -252,7 +252,7 @@ class MemoryStore implements KeyValueStore
     /**
      * {@inheritdoc}
      */
-    public function collection($name)
+    public function getCollection($name)
     {
         if (!isset($this->collections[$name])) {
             $this->collections[$name] = new static($this->limit);

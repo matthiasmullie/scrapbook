@@ -12,7 +12,7 @@ class CollectionsAdapterTest extends AdapterTest
 
         // I'll do this here instead of in setAdapter, because that runs before
         // the test suite, but I want a new collection for every single test
-        $this->cache = $this->cache->collection($this->collectionName);
+        $this->cache = $this->cache->getCollection($this->collectionName);
     }
 
     public function testCollectionGetParentKey()

@@ -475,7 +475,7 @@ class AdapterTest extends AdapterTestCase
 
     public function testCollectionGetParentKey()
     {
-        $collection = $this->cache->collection($this->collectionName);
+        $collection = $this->cache->getCollection($this->collectionName);
 
         $this->cache->set('key', 'value');
 
@@ -485,7 +485,7 @@ class AdapterTest extends AdapterTestCase
 
     public function testCollectionGetCollectionKey()
     {
-        $collection = $this->cache->collection($this->collectionName);
+        $collection = $this->cache->getCollection($this->collectionName);
 
         $collection->set('key', 'value');
 
@@ -497,7 +497,7 @@ class AdapterTest extends AdapterTestCase
 
     public function testCollectionSetSameKey()
     {
-        $collection = $this->cache->collection($this->collectionName);
+        $collection = $this->cache->getCollection($this->collectionName);
 
         $this->cache->set('key', 'value');
         $collection->set('key', 'other-value');
@@ -510,7 +510,7 @@ class AdapterTest extends AdapterTestCase
 
     public function testCollectionFlushParent()
     {
-        $collection = $this->cache->collection($this->collectionName);
+        $collection = $this->cache->getCollection($this->collectionName);
 
         $this->cache->set('key', 'value');
         $collection->set('key', 'other-value');
@@ -525,7 +525,7 @@ class AdapterTest extends AdapterTestCase
 
     public function testCollectionFlushCollection()
     {
-        $collection = $this->cache->collection($this->collectionName);
+        $collection = $this->cache->getCollection($this->collectionName);
 
         $this->cache->set('key', 'value');
         $collection->set('key', 'other-value');

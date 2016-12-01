@@ -371,7 +371,7 @@ abstract class SQL implements KeyValueStore
     /**
      * {@inheritdoc}
      */
-    public function collection($name)
+    public function getCollection($name)
     {
         // @todo implement this
     }
