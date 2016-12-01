@@ -3,6 +3,7 @@
 namespace MatthiasMullie\Scrapbook\Tests\Providers;
 
 use MatthiasMullie\Scrapbook\Exception\Exception;
+use MatthiasMullie\Scrapbook\Tests\AdapterProvider;
 
 class PostgreSQLProvider extends AdapterProvider
 {

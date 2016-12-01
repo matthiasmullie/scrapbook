@@ -2,6 +2,8 @@
 
 namespace MatthiasMullie\Scrapbook\Tests\Providers;
 
+use MatthiasMullie\Scrapbook\Tests\AdapterProvider;
+
 class MemoryStoreProvider extends AdapterProvider
 {
     public function __construct()

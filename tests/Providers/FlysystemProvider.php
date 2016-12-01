@@ -5,6 +5,7 @@ namespace MatthiasMullie\Scrapbook\Tests\Providers;
 use League\Flysystem\Adapter\Local;
 use League\Flysystem\Filesystem;
 use MatthiasMullie\Scrapbook\Exception\Exception;
+use MatthiasMullie\Scrapbook\Tests\AdapterProvider;
 
 class FlysystemProvider extends AdapterProvider
 {

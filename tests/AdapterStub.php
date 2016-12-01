@@ -1,6 +1,6 @@
 <?php
 
-namespace MatthiasMullie\Scrapbook\Tests\Providers;
+namespace MatthiasMullie\Scrapbook\Tests;
 
 use Exception;
 use MatthiasMullie\Scrapbook\KeyValueStore;
