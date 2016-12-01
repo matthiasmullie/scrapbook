@@ -2,6 +2,7 @@
 
 namespace MatthiasMullie\Scrapbook\Adapters;
 
+use MatthiasMullie\Scrapbook\Adapters\Collections\Couchbase as Collection;
 use MatthiasMullie\Scrapbook\Exception\ServerUnhealthy;
 use MatthiasMullie\Scrapbook\KeyValueStore;
 
@@ -296,7 +297,7 @@ class Couchbase implements KeyValueStore
      */
     public function getCollection($name)
     {
-        // @todo implement this
+        return new Collection($this, $name);
     }
 
     /**
