@@ -4,6 +4,7 @@ namespace MatthiasMullie\Scrapbook\Adapters;
 
 use PDO;
 use MatthiasMullie\Scrapbook\KeyValueStore;
+use MatthiasMullie\Scrapbook\Adapters\Collections\SQL as Collection;
 
 /**
  * SQL adapter. Basically just a wrapper over \PDO, but in an exchangeable
@@ -373,7 +374,7 @@ abstract class SQL implements KeyValueStore
      */
     public function getCollection($name)
     {
-        // @todo implement this
+        return new Collection($this, $this->client, $this->table, $name);
     }
 
     /**
