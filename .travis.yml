@@ -27,7 +27,7 @@ services:
 before_script:
   - pip install --user codecov
   - tests/.travis/$ADAPTER.sh
-  - composer self-update && composer install --dev
+  - composer self-update && composer install --dev --prefer-source
 
 script:
   - ./vendor/bin/phpunit --group "${ADAPTER}"
