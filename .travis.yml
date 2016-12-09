@@ -45,8 +45,6 @@ matrix:
     - php: 7.0
       env: ADAPTER=Couchbase
     - php: hhvm
-      env: ADAPTER=Apc
-    - php: hhvm
       env: ADAPTER=Redis
     - php: hhvm
       env: ADAPTER=Couchbase
