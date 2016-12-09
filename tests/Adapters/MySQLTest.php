@@ -16,7 +16,7 @@ class MySQLTest implements AdapterInterface
             throw new Exception('ext-pdo is not installed.');
         }
 
-        $client = new \PDO('mysql:host=127.0.0.1;dbname=cache', 'root', '');
+        $client = new \PDO('mysql:host=127.0.0.1;port=3307;dbname=cache', 'root', '');
 
         return new \MatthiasMullie\Scrapbook\Adapters\MySQL($client);
     }
