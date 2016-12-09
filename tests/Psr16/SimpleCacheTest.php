@@ -7,7 +7,6 @@ use DateInterval;
 use MatthiasMullie\Scrapbook\Psr16\SimpleCache;
 use MatthiasMullie\Scrapbook\Tests\AdapterTestCase;
 use MatthiasMullie\Scrapbook\KeyValueStore;
-use Psr\SimpleCache\InvalidArgumentException;
 
 class SimpleCacheTest extends AdapterTestCase
 {
@@ -41,7 +40,7 @@ class SimpleCacheTest extends AdapterTestCase
     }
 
     /**
-     * @expectedException InvalidArgumentException
+     * @expectedException \Psr\SimpleCache\InvalidArgumentException
      */
     public function testGetException()
     {
@@ -59,7 +58,7 @@ class SimpleCacheTest extends AdapterTestCase
     }
 
     /**
-     * @expectedException InvalidArgumentException
+     * @expectedException \Psr\SimpleCache\InvalidArgumentException
      */
     public function testSetException()
     {
@@ -114,7 +113,7 @@ class SimpleCacheTest extends AdapterTestCase
     }
 
     /**
-     * @expectedException InvalidArgumentException
+     * @expectedException \Psr\SimpleCache\InvalidArgumentException
      */
     public function testDeleteException()
     {
@@ -159,7 +158,7 @@ class SimpleCacheTest extends AdapterTestCase
     }
 
     /**
-     * @expectedException InvalidArgumentException
+     * @expectedException \Psr\SimpleCache\InvalidArgumentException
      */
     public function testGetMultipleException()
     {
@@ -186,7 +185,7 @@ class SimpleCacheTest extends AdapterTestCase
     }
 
     /**
-     * @expectedException InvalidArgumentException
+     * @expectedException \Psr\SimpleCache\InvalidArgumentException
      */
     public function testSetMultipleException()
     {
@@ -211,7 +210,7 @@ class SimpleCacheTest extends AdapterTestCase
     }
 
     /**
-     * @expectedException InvalidArgumentException
+     * @expectedException \Psr\SimpleCache\InvalidArgumentException
      */
     public function testDeleteMultipleException()
     {
@@ -227,7 +226,7 @@ class SimpleCacheTest extends AdapterTestCase
     }
 
     /**
-     * @expectedException InvalidArgumentException
+     * @expectedException \Psr\SimpleCache\InvalidArgumentException
      */
     public function testHasException()
     {
