@@ -1,7 +1,7 @@
 # Changelog
 
 
-## [1.3.1] - 2016-11-28
+## [1.3.1] - 2016-12-09
 ### Added
 - Added $default param to PSR-16's `get()`
 - Added APCu support
