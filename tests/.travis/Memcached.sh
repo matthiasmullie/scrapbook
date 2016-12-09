@@ -1,4 +1,3 @@
-INI_PATH=~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
 PHP_VERSION=`php -r "echo phpversion();"`
 
 sudo kill -9 `sudo lsof -t -i:11211` # kill listeners on required port
@@ -22,6 +21,7 @@ then
         make
         sudo make install
 
+        INI_PATH=~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
         echo 'extension="memcached.so"' >> $INI_PATH
     else # PHP<7.0
         pecl uninstall memcached
