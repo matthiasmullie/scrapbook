@@ -1,4 +1,4 @@
-INI_PATH=`php -r "echo php_ini_loaded_file();"`
+INI_PATH=~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
 PHP_VERSION=`php -r "echo phpversion();"`
 
 if [[ $PHP_VERSION != *"hhvm" ]]
