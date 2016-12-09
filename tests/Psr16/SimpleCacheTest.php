@@ -203,7 +203,7 @@ class SimpleCacheTest extends AdapterTestCase
     public function testDeleteMultipleTraversable()
     {
         $this->cache->setMulti(array('key' => 'value', 'key2' => 'value'));
-        $iterator = new ArrayIterator(array('key\', \'key2'));
+        $iterator = new ArrayIterator(array('key', 'key2'));
         $success = $this->simplecache->deleteMultiple($iterator);
         $this->assertSame(true, $success);
         $this->assertSame(array(), $this->cache->getMulti(array('key', 'key2')));
