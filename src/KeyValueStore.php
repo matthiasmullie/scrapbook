@@ -232,9 +232,23 @@ interface KeyValueStore
      * Returns an isolated subset (collection) in which to store or fetch data
      * from.
      *
+     * A new KeyValueStore object will be returned, one that will only have
+     * access to this particular subset of data. Exact implementation can vary
+     * between adapters (e.g. separate database, prefixed keys, ...), but it
+     * will only ever provide access to data within this collection.
+     *
+     * It is not possible to set/fetch data across collections.
+     * Setting the same key in 2 different collections will store 2 different
+     * values, that can only be retrieved from their respective collections.
+     * Flushing a collection will only flush those specific keys and will leave
+     * keys in other collections untouched.
+     * Flushing the server, however, will wipe out everything, including data in
+     * any of the collections on that server.
+     *
      * @param string $name
      *
-     * @return KeyValueStore
+     * @return KeyValueStore A new KeyValueStore instance representing only a
+     *                       subset of data on this server
      */
     public function getCollection($name);
 }
