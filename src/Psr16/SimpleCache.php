@@ -112,13 +112,13 @@ class SimpleCache implements CacheInterface
     /**
      * {@inheritdoc}
      */
-    public function setMultiple($items, $ttl = null)
+    public function setMultiple($values, $ttl = null)
     {
-        if ($items instanceof Traversable) {
-            $items = iterator_to_array($items);
+        if ($values instanceof Traversable) {
+            $values = iterator_to_array($values);
         }
 
-        $keys = array_keys($items);
+        $keys = array_keys($values);
         if (!is_array($keys) || array_filter($keys, 'is_string') !== $keys) {
             throw new InvalidArgumentException(
                 'Invalid keys: '.serialize($keys).'. Must be array of strings.'
@@ -126,7 +126,7 @@ class SimpleCache implements CacheInterface
         }
 
         $ttl = $this->ttl($ttl);
-        $success = $this->store->setMulti($items, $ttl);
+        $success = $this->store->setMulti($values, $ttl);
 
         return !in_array(false, $success);
     }
