@@ -50,4 +50,3 @@ matrix:
       env: ADAPTER=Redis
     - php: hhvm
       env: ADAPTER=Couchbase
-    - php: 7.1
