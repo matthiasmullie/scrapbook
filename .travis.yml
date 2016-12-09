@@ -38,6 +38,8 @@ after_success:
 matrix:
   fast_finish: true
   allow_failures:
+    - php: 7.1
+      env: ADAPTER=Memcached
     - php: 7.0
       env: ADAPTER=Memcached
     - php: 7.0
