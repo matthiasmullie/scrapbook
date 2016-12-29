@@ -24,5 +24,5 @@ then
     sudo wget -O- http://packages.couchbase.com/ubuntu/couchbase.key | sudo apt-key add -
     sudo apt-get update
     sudo apt-get install -y libcouchbase2-libevent libcouchbase-dev
-    pecl install couchbase
+    pecl install pcs-1.3.1 couchbase --alldeps
 fi
