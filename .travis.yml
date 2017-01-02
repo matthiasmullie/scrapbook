@@ -27,10 +27,11 @@ services:
 before_script:
   - pip install --user codecov
   - tests/.travis/$ADAPTER.sh
-  - composer self-update && composer install --dev --prefer-source
+  - composer self-update && composer install --dev --prefer-source --ignore-platform-reqs
 
 script:
-  - ./vendor/bin/phpunit --group "${ADAPTER}"
+  - ./vendor/bin/phpunit --testsuite scrapbook --group "${ADAPTER}"
+  - if [[ `php-config --vernum` -ge 50500 ]]; then ./vendor/bin/phpunit --testsuite integration --group "${ADAPTER}"; fi
 
 after_success:
   - codecov
