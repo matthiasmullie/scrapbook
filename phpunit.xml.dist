@@ -1,8 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <phpunit colors="true" bootstrap="tests/bootstrap.php">
 	<testsuites>
-		<testsuite name="Test suite">
+		<testsuite name="scrapbook">
 			<directory suffix="Test.php">tests</directory>
+			<exclude>tests/Psr6/Integration</exclude>
+		</testsuite>
+		<testsuite name="integration">
+			<!-- cache/integration-tests depends on cache/tag-interop, which has a 5.5 minimum requirement -->
+			<directory suffix="Test.php" phpVersion="5.5.0" phpVersionOperator=">=">tests/Psr6/Integration</directory>
 		</testsuite>
 	</testsuites>
 	<logging>
