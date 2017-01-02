@@ -332,6 +332,7 @@ class Flysystem implements KeyValueStore
          * by prefixing it with a subfolder!
          */
         $this->filesystem->createDir($name);
+
         return new Collection($this->filesystem, $name);
     }
 

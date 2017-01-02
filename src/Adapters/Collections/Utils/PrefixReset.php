@@ -18,7 +18,7 @@ class PrefixReset extends PrefixKeys
 
     /**
      * @param KeyValueStore $cache
-     * @param string  $name
+     * @param string        $name
      */
     public function __construct(KeyValueStore $cache, $name)
     {

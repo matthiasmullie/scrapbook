@@ -22,7 +22,7 @@ class Flysystem extends Adapter
 
     /**
      * @param Filesystem $filesystem
-     * @param string $collection
+     * @param string     $collection
      */
     public function __construct(Filesystem $filesystem, $collection)
     {
