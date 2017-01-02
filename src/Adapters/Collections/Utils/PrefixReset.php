@@ -23,7 +23,7 @@ class PrefixReset extends PrefixKeys
     public function __construct(KeyValueStore $cache, $name)
     {
         $this->cache = $cache;
-        $this->collection = 'collection:'.$name;
+        $this->collection = $name;
         parent::__construct($cache, $this->getPrefix());
     }
 
