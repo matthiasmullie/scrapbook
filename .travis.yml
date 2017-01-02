@@ -42,8 +42,6 @@ matrix:
       env: ADAPTER=Memcached
     - php: 7.0
       env: ADAPTER=Memcached
-    - php: 7.0
-      env: ADAPTER=Couchbase
     - php: hhvm
       env: ADAPTER=Redis
     - php: hhvm
