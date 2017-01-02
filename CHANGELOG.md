@@ -1,9 +1,12 @@
 # Changelog
 
 
-## [1.4.0] - 2016-12-09
+## [1.4.0] - 2017-01-02
 ### Added
 - Added support for collections
+
+### Changed
+- Officialize psr/simple-cache support
 
 
 ## [1.3.1] - 2016-12-09
