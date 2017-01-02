@@ -70,18 +70,19 @@ class Couchbase implements KeyValueStore
             return array();
         }
 
+        $values = array();
         $tokens = array();
-        foreach ($results as $key => $value) {
-            if ($value->error) {
-                unset($results[$key]);
+        foreach ($keys as $key) {
+            if (!isset($results[$key]) || $results[$key]->error) {
                 continue;
             }
 
-            $results[$key] = $this->unserialize($value->value);
+            $value = $results[$key];
+            $values[$key] = $this->unserialize($value->value);
             $tokens[$key] = $value->cas;
         }
 
-        return $results;
+        return $values;
     }
 
     /**
