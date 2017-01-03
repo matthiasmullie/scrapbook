@@ -8,6 +8,7 @@
 		<testsuite name="integration">
 			<!-- cache/integration-tests depends on cache/tag-interop, which has a 5.5 minimum requirement -->
 			<directory suffix="Test.php" phpVersion="5.5.0" phpVersionOperator=">=">tests/Psr6/Integration</directory>
+			<directory suffix="Test.php">tests/Psr16/Integration</directory>
 		</testsuite>
 	</testsuites>
 	<logging>
