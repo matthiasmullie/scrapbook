@@ -52,7 +52,7 @@ abstract class SimpleCacheTestCase extends \PHPUnit_Framework_TestCase
      *
      * @return array
      */
-    public static function invalidKeyProvider()
+    protected static function invalidKeyProvider()
     {
         return [
             [true],
@@ -80,11 +80,13 @@ abstract class SimpleCacheTestCase extends \PHPUnit_Framework_TestCase
      */
     public static function invalidSingleKeyProvider()
     {
-        return [
+        $keys = static::invalidKeyProvider();
+
+        return array_merge($keys, [
             [null],
             [new \stdClass()],
             [['array']],
-        ];
+        ]);
     }
 
     /**
@@ -95,13 +97,14 @@ abstract class SimpleCacheTestCase extends \PHPUnit_Framework_TestCase
      */
     public static function invalidMultiKeyProvider()
     {
-        // null & an object are also invalid input...
-        $return = [
-            [null],
-            [new \stdClass()]
-        ];
-
         $keys = static::invalidKeyProvider();
+
+        // null & an object are also invalid input...
+        $return = array_merge($keys, [
+            [null],
+            [new \stdClass()],
+        ]);
+
         foreach ($keys as $input) {
             $key = $input[0];
             $return[] = [[$key]];
@@ -119,13 +122,14 @@ abstract class SimpleCacheTestCase extends \PHPUnit_Framework_TestCase
      */
     public static function invalidMultiKeyValueProvider()
     {
-        // null & an object are also invalid input...
-        $return = [
-            [null],
-            [new \stdClass()]
-        ];
-
         $keys = static::invalidKeyProvider();
+
+        // null & an object are also invalid input...
+        $return = array_merge($keys, [
+            [null],
+            [new \stdClass()],
+        ]);
+
         foreach ($keys as $input) {
             $key = $input[0];
             $return[] = [[$key => 'value']];
@@ -174,7 +178,6 @@ abstract class SimpleCacheTestCase extends \PHPUnit_Framework_TestCase
     /**
      * Test invalid keys for `get`.
      *
-     * @dataProvider invalidKeyProvider
      * @dataProvider invalidSingleKeyProvider
      *
      * @expectedException \Psr\SimpleCache\InvalidArgumentException
@@ -187,7 +190,6 @@ abstract class SimpleCacheTestCase extends \PHPUnit_Framework_TestCase
     /**
      * Test invalid keys for `set`.
      *
-     * @dataProvider invalidKeyProvider
      * @dataProvider invalidSingleKeyProvider
      *
      * @expectedException \Psr\SimpleCache\InvalidArgumentException
@@ -274,7 +276,6 @@ abstract class SimpleCacheTestCase extends \PHPUnit_Framework_TestCase
     /**
      * Test invalid keys for `delete`.
      *
-     * @dataProvider invalidKeyProvider
      * @dataProvider invalidSingleKeyProvider
      *
      * @expectedException \Psr\SimpleCache\InvalidArgumentException
@@ -383,7 +384,6 @@ abstract class SimpleCacheTestCase extends \PHPUnit_Framework_TestCase
     /**
      * Test invalid keys for `getMultiple`.
      *
-     * @dataProvider invalidKeyProvider
      * @dataProvider invalidMultiKeyProvider
      *
      * @expectedException \Psr\SimpleCache\InvalidArgumentException
@@ -421,7 +421,6 @@ abstract class SimpleCacheTestCase extends \PHPUnit_Framework_TestCase
     /**
      * Test invalid keys for `setMultiple`.
      *
-     * @dataProvider invalidKeyProvider
      * @dataProvider invalidMultiKeyValueProvider
      *
      * @expectedException \Psr\SimpleCache\InvalidArgumentException
@@ -508,7 +507,6 @@ abstract class SimpleCacheTestCase extends \PHPUnit_Framework_TestCase
     /**
      * Test invalid keys for `deleteMultiple`.
      *
-     * @dataProvider invalidKeyProvider
      * @dataProvider invalidMultiKeyProvider
      *
      * @expectedException \Psr\SimpleCache\InvalidArgumentException
@@ -539,7 +537,6 @@ abstract class SimpleCacheTestCase extends \PHPUnit_Framework_TestCase
     /**
      * Test invalid keys for `has`.
      *
-     * @dataProvider invalidKeyProvider
      * @dataProvider invalidSingleKeyProvider
      *
      * @expectedException \Psr\SimpleCache\InvalidArgumentException
