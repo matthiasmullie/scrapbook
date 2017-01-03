@@ -189,7 +189,7 @@ class SimpleCacheTest extends AdapterTestCase
      */
     public function testSetMultipleException()
     {
-        $this->simplecache->delete(array(123.456 => 789));
+        $this->simplecache->setMultiple(array(123.456 => 789));
     }
 
     public function testDeleteMultiple()
