@@ -1,6 +1,12 @@
 # Changelog
 
 
+## [1.4.1] - 2017-01-03
+### Fixed
+- Return value of PSR-16 delete should always be true
+- Improved PSR-16 checks for invalid (characters in) keys
+
+
 ## [1.4.0] - 2017-01-02
 ### Added
 - Added support for collections
@@ -216,3 +222,4 @@
 [1.3.0]: https://github.com/matthiasmullie/scrapbook/compare/1.2.2...1.3.0
 [1.3.1]: https://github.com/matthiasmullie/scrapbook/compare/1.3.0...1.3.1
 [1.4.0]: https://github.com/matthiasmullie/scrapbook/compare/1.3.1...1.4.0
+[1.4.1]: https://github.com/matthiasmullie/scrapbook/compare/1.4.0...1.4.1

@@ -16,6 +16,13 @@ use Traversable;
 class SimpleCache implements CacheInterface
 {
     /**
+     * List of invalid (or reserved) key characters.
+     *
+     * @var string
+     */
+    const KEY_INVALID_CHARACTERS = '{}()/\@:';
+
+    /**
      * @var KeyValueStore
      */
     protected $store;
@@ -33,11 +40,7 @@ class SimpleCache implements CacheInterface
      */
     public function get($key, $default = null)
     {
-        if (!is_string($key)) {
-            throw new InvalidArgumentException(
-                'Invalid key: '.serialize($key).'. Must be string.'
-            );
-        }
+        $this->assertValidKey($key);
 
         // KeyValueStore::get returns false for cache misses (which could also
         // be confused for a `false` value), so we'll check existence with getMulti
@@ -51,12 +54,7 @@ class SimpleCache implements CacheInterface
      */
     public function set($key, $value, $ttl = null)
     {
-        if (!is_string($key)) {
-            throw new InvalidArgumentException(
-                'Invalid key: '.serialize($key).'. Must be string.'
-            );
-        }
-
+        $this->assertValidKey($key);
         $ttl = $this->ttl($ttl);
 
         return $this->store->set($key, $value, $ttl);
@@ -67,13 +65,13 @@ class SimpleCache implements CacheInterface
      */
     public function delete($key)
     {
-        if (!is_string($key)) {
-            throw new InvalidArgumentException(
-                'Invalid key: '.serialize($key).'. Must be string.'
-            );
-        }
+        $this->assertValidKey($key);
 
-        return $this->store->delete($key);
+        $this->store->delete($key);
+
+        // as long as the item is gone from the cache (even if it never existed
+        // and delete failed because of that), we should return `true`
+        return true;
     }
 
     /**
@@ -93,11 +91,12 @@ class SimpleCache implements CacheInterface
             $keys = iterator_to_array($keys);
         }
 
-        if (!is_array($keys) || array_filter($keys, 'is_string') !== $keys) {
+        if (!is_array($keys)) {
             throw new InvalidArgumentException(
-                'Invalid keys: '.serialize($keys).'. Must be array of strings.'
+                'Invalid keys: '.var_export($keys, true).'. Keys should be an array of strings.'
             );
         }
+        array_map(array($this, 'assertValidKey'), $keys);
 
         $results = $this->store->getMulti($keys);
 
@@ -118,13 +117,14 @@ class SimpleCache implements CacheInterface
             $values = iterator_to_array($values);
         }
 
-        $keys = array_keys($values);
-        if (!is_array($keys) || array_filter($keys, 'is_string') !== $keys) {
+        if (!is_array($values)) {
             throw new InvalidArgumentException(
-                'Invalid keys: '.serialize($keys).'. Must be array of strings.'
+                'Invalid values: '.var_export($values, true).'. Values should be an array with strings as keys.'
             );
         }
 
+        $keys = array_keys($values);
+        array_map(array($this, 'assertValidKey'), $keys);
         $ttl = $this->ttl($ttl);
         $success = $this->store->setMulti($values, $ttl);
 
@@ -140,11 +140,12 @@ class SimpleCache implements CacheInterface
             $keys = iterator_to_array($keys);
         }
 
-        if (!is_array($keys) || array_filter($keys, 'is_string') !== $keys) {
+        if (!is_array($keys)) {
             throw new InvalidArgumentException(
-                'Invalid keys: '.serialize($keys).'. Must be array of strings.'
+                'Invalid keys: '.var_export($keys, true).'. Keys should be an array of strings.'
             );
         }
+        array_map(array($this, 'assertValidKey'), $keys);
 
         $success = $this->store->deleteMulti($keys);
 
@@ -156,17 +157,38 @@ class SimpleCache implements CacheInterface
      */
     public function has($key)
     {
-        if (!is_string($key)) {
-            throw new InvalidArgumentException(
-                'Invalid key: '.serialize($key).'. Must be string.'
-            );
-        }
+        $this->assertValidKey($key);
 
         // KeyValueStore::get returns false for cache misses (which could also
         // be confused for a `false` value), so we'll check existence with getMulti
         $multi = $this->store->getMulti(array($key));
 
         return isset($multi[$key]);
+    }
+
+    /**
+     * Throws an exception if $key is invalid.
+     *
+     * @param string $key
+     *
+     * @throws InvalidArgumentException
+     */
+    protected function assertValidKey($key)
+    {
+        if (!is_string($key)) {
+            throw new InvalidArgumentException(
+                'Invalid key: '.var_export($key, true).'. Key should be a string.'
+            );
+        }
+
+        // valid key according to PSR-16 rules
+        $invalid = preg_quote(static::KEY_INVALID_CHARACTERS, '/');
+        if (preg_match('/['.$invalid.']/', $key)) {
+            throw new InvalidArgumentException(
+                'Invalid key: '.$key.'. Contains (a) character(s) reserved '.
+                'for future extension: '.static::KEY_INVALID_CHARACTERS
+            );
+        }
     }
 
     /**
