@@ -9,7 +9,7 @@ use Psr\SimpleCache\CacheInterface;
 abstract class SimpleCacheTestCase extends \PHPUnit_Framework_TestCase
 {
     /**
-     * @type CacheInterface
+     * @var CacheInterface
      */
     private $cache;
 
@@ -168,7 +168,7 @@ abstract class SimpleCacheTestCase extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * Test retrieving a default value (for when nothing in cache is found)
+     * Test retrieving a default value (for when nothing in cache is found).
      */
     public function testGetDefault()
     {

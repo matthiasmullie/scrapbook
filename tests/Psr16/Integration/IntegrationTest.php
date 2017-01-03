@@ -7,7 +7,7 @@ use MatthiasMullie\Scrapbook\Psr16\SimpleCache;
 use MatthiasMullie\Scrapbook\Tests\AdapterTestProvider;
 use MatthiasMullie\Scrapbook\Tests\AdapterProviderTestInterface;
 
-class IntegrationPoolTest extends SimpleCacheTestCase implements AdapterProviderTestInterface
+class IntegrationTest extends SimpleCacheTestCase implements AdapterProviderTestInterface
 {
     /**
      * @var KeyValueStore
