@@ -183,7 +183,9 @@ class SimpleCache implements CacheInterface
      */
     protected function assertValidKey($key)
     {
-        if (!is_string($key)) {
+        // $key is also allowed to be an array, since ['0' => ...] will
+        // automatically convert to [0 => ...]
+        if (!is_string($key) && !is_int($key)) {
             throw new InvalidArgumentException(
                 'Invalid key: '.var_export($key, true).'. Key should be a string.'
             );
