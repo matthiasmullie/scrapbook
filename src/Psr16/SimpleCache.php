@@ -155,9 +155,11 @@ class SimpleCache implements CacheInterface
         }
         array_map(array($this, 'assertValidKey'), $keys);
 
-        $success = $this->store->deleteMulti($keys);
+        $this->store->deleteMulti($keys);
 
-        return !in_array(false, $success);
+        // as long as the item is gone from the cache (even if it never existed
+        // and delete failed because of that), we should return `true`
+        return true;
     }
 
     /**

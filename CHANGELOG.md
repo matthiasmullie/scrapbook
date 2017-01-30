@@ -6,6 +6,7 @@
 - Stricter handling of invalid keys in Traversables passed to PSR-16
 - Allow integers to be used as keys for PSR-16
 - Treat a TTL of 0 as expired for PSR-16
+- Always return true for PSR-16 deleteMultiple, even when item didn't exist
 
 
 ## [1.4.1] - 2017-01-03
