@@ -1,6 +1,11 @@
 # Changelog
 
 
+## [1.4.2] - 2017-01-30
+### Fixed
+- Stricter handling of invalid keys in Traversables passed to PSR-16
+
+
 ## [1.4.1] - 2017-01-03
 ### Fixed
 - Return value of PSR-16 delete should always be true
@@ -223,3 +228,4 @@
 [1.3.1]: https://github.com/matthiasmullie/scrapbook/compare/1.3.0...1.3.1
 [1.4.0]: https://github.com/matthiasmullie/scrapbook/compare/1.3.1...1.4.0
 [1.4.1]: https://github.com/matthiasmullie/scrapbook/compare/1.4.0...1.4.1
+[1.4.2]: https://github.com/matthiasmullie/scrapbook/compare/1.4.1...1.4.2

@@ -88,7 +88,7 @@ class SimpleCache implements CacheInterface
     public function getMultiple($keys, $default = null)
     {
         if ($keys instanceof Traversable) {
-            $keys = iterator_to_array($keys);
+            $keys = iterator_to_array($keys, false);
         }
 
         if (!is_array($keys)) {
@@ -114,7 +114,15 @@ class SimpleCache implements CacheInterface
     public function setMultiple($values, $ttl = null)
     {
         if ($values instanceof Traversable) {
-            $values = iterator_to_array($values);
+            // we also need the keys, and an array is stricter about what it can
+            // have as keys than a Traversable is, so we can't use
+            // iterator_to_array...
+            $array = array();
+            foreach ($values as $key => $value) {
+                $this->assertValidKey($key);
+                $array[$key] = $value;
+            }
+            $values = $array;
         }
 
         if (!is_array($values)) {
@@ -137,7 +145,7 @@ class SimpleCache implements CacheInterface
     public function deleteMultiple($keys)
     {
         if ($keys instanceof Traversable) {
-            $keys = iterator_to_array($keys);
+            $keys = iterator_to_array($keys, false);
         }
 
         if (!is_array($keys)) {
