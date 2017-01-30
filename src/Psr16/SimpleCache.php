@@ -217,6 +217,15 @@ class SimpleCache implements CacheInterface
             return 0;
         } elseif (is_int($ttl)) {
             /*
+             * PSR-16 specifies that if `0` is provided, it must be treated as
+             * expired, whereas KeyValueStore will interpret 0 to mean "expires
+             * this second, but not at this exact time" (could vary a few ms).
+             */
+            if ($ttl === 0) {
+                return -1;
+            }
+
+            /*
              * PSR-16 only accepts relative timestamps, whereas KeyValueStore
              * accepts both relative & absolute, depending on what the timestamp
              * is. We'll have to convert all ttls here to absolute, to make sure
