@@ -93,7 +93,7 @@ class SimpleCache implements CacheInterface
 
         if (!is_array($keys)) {
             throw new InvalidArgumentException(
-                'Invalid keys: '.var_export($keys, true).'. Keys should be an array of strings.'
+                'Invalid keys: '.var_export($keys, true).'. Keys should be an array or Traversable of strings.'
             );
         }
         array_map(array($this, 'assertValidKey'), $keys);
@@ -119,7 +119,11 @@ class SimpleCache implements CacheInterface
             // iterator_to_array...
             $array = array();
             foreach ($values as $key => $value) {
-                $this->assertValidKey($key);
+                if (!is_string($key) && !is_int($key)) {
+                    throw new InvalidArgumentException(
+                        'Invalid values: '.var_export($values, true).'. Only strings are allowed as keys.'
+                    );
+                }
                 $array[$key] = $value;
             }
             $values = $array;
@@ -127,12 +131,17 @@ class SimpleCache implements CacheInterface
 
         if (!is_array($values)) {
             throw new InvalidArgumentException(
-                'Invalid values: '.var_export($values, true).'. Values should be an array with strings as keys.'
+                'Invalid values: '.var_export($values, true).'. Values should be an array or Traversable with strings as keys.'
             );
         }
 
-        $keys = array_keys($values);
-        array_map(array($this, 'assertValidKey'), $keys);
+        foreach ($values as $key => $value) {
+            // $key is also allowed to be an integer, since ['0' => ...] will
+            // automatically convert to [0 => ...]
+            $key = is_int($key) ? (string) $key : $key;
+            $this->assertValidKey($key);
+        }
+
         $ttl = $this->ttl($ttl);
         $success = $this->store->setMulti($values, $ttl);
 
@@ -150,7 +159,7 @@ class SimpleCache implements CacheInterface
 
         if (!is_array($keys)) {
             throw new InvalidArgumentException(
-                'Invalid keys: '.var_export($keys, true).'. Keys should be an array of strings.'
+                'Invalid keys: '.var_export($keys, true).'. Keys should be an array or Traversable of strings.'
             );
         }
         array_map(array($this, 'assertValidKey'), $keys);
@@ -185,11 +194,15 @@ class SimpleCache implements CacheInterface
      */
     protected function assertValidKey($key)
     {
-        // $key is also allowed to be an array, since ['0' => ...] will
-        // automatically convert to [0 => ...]
-        if (!is_string($key) && !is_int($key)) {
+        if (!is_string($key)) {
             throw new InvalidArgumentException(
                 'Invalid key: '.var_export($key, true).'. Key should be a string.'
+            );
+        }
+
+        if ($key === '') {
+            throw new InvalidArgumentException(
+                'Invalid key. Key should not be empty.'
             );
         }
 
