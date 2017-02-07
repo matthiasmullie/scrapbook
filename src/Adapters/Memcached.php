@@ -85,6 +85,14 @@ class Memcached implements KeyValueStore
      */
     public function set($key, $value, $expire = 0)
     {
+        // Memcached seems to not timely purge items the way it should when
+        // storing it with an expired timestamp
+        if ($expire < 0 || ($expire > 2592000 && $expire < time())) {
+            $this->delete($key);
+
+            return true;
+        }
+
         $key = $this->encode($key);
 
         return $this->client->set($key, $value, $expire);
@@ -97,6 +105,15 @@ class Memcached implements KeyValueStore
     {
         if (empty($items)) {
             return array();
+        }
+
+        // Memcached seems to not timely purge items the way it should when
+        // storing it with an expired timestamp
+        if ($expire < 0 || ($expire > 2592000 && $expire < time())) {
+            $keys = array_keys($items);
+            $this->deleteMulti($keys);
+
+            return array_fill_keys($keys, true);
         }
 
         $keys = array_map(array($this, 'encode'), array_keys($items));

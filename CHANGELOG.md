@@ -12,6 +12,7 @@
 - Make sure SQLite treats numerical keys as strings, not numbers
 - Support numerical keys with Couchbase
 - Fix how Couchbase (failed to) handle negative TTLs
+- Make Memcached delete-by-expiration more reliable
 
 
 ## [1.4.2] - 2017-02-07
