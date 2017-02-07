@@ -1,7 +1,7 @@
 # Changelog
 
 
-## [1.4.2] - 2017-01-30
+## [1.4.2] - 2017-02-07
 ### Fixed
 - Stricter handling of invalid keys in Traversables passed to PSR-16
 - Allow integers to be used as keys for PSR-16
