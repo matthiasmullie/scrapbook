@@ -124,6 +124,22 @@ class AdapterTest extends AdapterTestCase
         $this->assertEquals('value2', $this->cache->get('key2'));
     }
 
+
+    public function testSetMultiIntegerKeys()
+    {
+        $items = array(
+            '0' => 'value',
+            '1' => 'value2',
+        );
+
+        $return = $this->cache->setMulti($items);
+
+        $expect = array_fill_keys(array_keys($items), true);
+        $this->assertEquals($expect, $return);
+        $this->assertEquals('value', $this->cache->get('0'));
+        $this->assertEquals('value2', $this->cache->get('1'));
+    }
+
     public function testSetMultiExpired()
     {
         $items = array(

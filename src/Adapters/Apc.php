@@ -594,6 +594,25 @@ class Apc implements KeyValueStore
      */
     protected function apcu_store($key, $var, $ttl = 0)
     {
+        /*
+         * $key can also be a [$key => $value] array, where key is numerical,
+         * but got cast to int by PHP. APC doesn't seem to store such numerical
+         * key, so we'll have to take care of those one by one.
+         */
+        if (is_array($key)) {
+            $integers = array_filter(array_keys($key), 'is_int');
+            if ($integers) {
+                $success = [];
+                $integers = array_intersect_key($key, array_fill_keys($integers, null));
+                foreach ($integers as $k => $v) {
+                    $success[$k] = $this->apcu_store((string) $k, $v, $ttl);
+                }
+
+                $key = array_diff_key($key, $integers);
+                return array_merge($success, $this->apcu_store($key, $var, $ttl));
+            }
+        }
+
         if (function_exists('apcu_store')) {
             return apcu_store($key, $var, $ttl);
         } else {

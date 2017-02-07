@@ -5,6 +5,9 @@
 ### Added
 - Include cache/integration-tests test suite for PSR-16
 
+### Fixed
+- Made APC store setMulti with integer keys
+
 
 ## [1.4.2] - 2017-02-07
 ### Fixed
