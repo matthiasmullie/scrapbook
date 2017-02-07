@@ -1,6 +1,11 @@
 # Changelog
 
 
+## [1.4.3] - 2016-02-07
+### Added
+- Include cache/integration-tests test suite for PSR-16
+
+
 ## [1.4.2] - 2017-02-07
 ### Fixed
 - Stricter handling of invalid keys in Traversables passed to PSR-16
@@ -86,7 +91,7 @@
 ## [1.0.9] - 2016-01-14
 ### Added
 - Add cache/taggable-cache implementation that works for all PSR-6 libraries
-- Include cache/integration-tests test suite
+- Include cache/integration-tests test suite for PSR-6
 
 ### Changed
 - Revamped unit tests: no longer use dataProvider, but provide grouped suites
@@ -232,3 +237,4 @@
 [1.4.0]: https://github.com/matthiasmullie/scrapbook/compare/1.3.1...1.4.0
 [1.4.1]: https://github.com/matthiasmullie/scrapbook/compare/1.4.0...1.4.1
 [1.4.2]: https://github.com/matthiasmullie/scrapbook/compare/1.4.1...1.4.2
+[1.4.2]: https://github.com/matthiasmullie/scrapbook/compare/1.4.2...1.4.3
