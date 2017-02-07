@@ -4,23 +4,9 @@ namespace MatthiasMullie\Scrapbook\Tests\Psr16;
 
 use ArrayIterator;
 use DateInterval;
-use MatthiasMullie\Scrapbook\Psr16\SimpleCache;
-use MatthiasMullie\Scrapbook\Tests\AdapterTestCase;
-use MatthiasMullie\Scrapbook\KeyValueStore;
 
-class SimpleCacheTest extends AdapterTestCase
+class SimpleCacheTest extends Psr16TestCase
 {
-    /**
-     * @var SimpleCache
-     */
-    protected $simplecache;
-
-    public function setAdapter(KeyValueStore $adapter)
-    {
-        $this->cache = $adapter;
-        $this->simplecache = new SimpleCache($adapter);
-    }
-
     public function testGet()
     {
         // set value in cache directly & test if it can be get from simplecache
@@ -189,7 +175,7 @@ class SimpleCacheTest extends AdapterTestCase
      */
     public function testSetMultipleException()
     {
-        $this->simplecache->setMultiple(array(123.456 => 789));
+        $this->simplecache->setMultiple(123.456);
     }
 
     public function testDeleteMultiple()
