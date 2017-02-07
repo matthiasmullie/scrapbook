@@ -94,6 +94,14 @@ class Couchbase implements KeyValueStore
      */
     public function set($key, $value, $expire = 0)
     {
+        // Couchbase seems to not properly purge items the way it should when
+        // storing it with an expired timestamp
+        if ($expire < 0 || ($expire > 2592000 && $expire < time())) {
+            $this->delete($key);
+
+            return true;
+        }
+
         $value = $this->serialize($value);
         try {
             $result = $this->client->upsert($key, $value, array('expiry' => $expire));
@@ -111,6 +119,15 @@ class Couchbase implements KeyValueStore
     {
         if (empty($items)) {
             return array();
+        }
+
+        // Couchbase seems to not properly purge items the way it should when
+        // storing it with an expired timestamp
+        if ($expire < 0 || ($expire > 2592000 && $expire < time())) {
+            $keys = array_keys($items);
+            $this->deleteMulti($keys);
+
+            return array_fill_keys($keys, true);
         }
 
         // attempting to insert integer keys (e.g. '0' as key is automatically
