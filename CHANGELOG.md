@@ -7,6 +7,7 @@
 
 ### Fixed
 - Made APC store setMulti with integer keys
+- Let APC getMulti return values for numerical keys
 - Short-circuit getting/setting/deleting multiple keys
 - Make sure SQLite treats numerical keys as strings, not numbers
 - Support numerical keys with Couchbase

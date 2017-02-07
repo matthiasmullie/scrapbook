@@ -590,6 +590,30 @@ class Apc implements KeyValueStore
      */
     protected function apcu_fetch($key, &$success = null)
     {
+        /*
+         * $key can also be numeric, in which case APC is able to retrieve it,
+         * but will have an invalid $key in the results array, and trying to
+         * locate it by its $key in that array will fail with `undefined index`.
+         * I'll work around this by requesting those values 1 by 1.
+         */
+        if (is_array($key)) {
+            $nums = array_filter($key, 'is_numeric');
+            if ($nums) {
+                $values = [];
+                foreach ($nums as $k) {
+                    $values[$k] = $this->apcu_fetch((string) $k, $success);
+                }
+
+                $remaining = array_diff($key, $nums);
+                if ($remaining) {
+                    $values += $this->apcu_fetch($remaining, $success2);
+                    $success &= $success2;
+                }
+
+                return $values;
+            }
+        }
+
         if (function_exists('apcu_fetch')) {
             return apcu_fetch($key, $success);
         } else {
@@ -607,21 +631,25 @@ class Apc implements KeyValueStore
     protected function apcu_store($key, $var, $ttl = 0)
     {
         /*
-         * $key can also be a [$key => $value] array, where key is numerical,
+         * $key can also be a [$key => $value] array, where key is numeric,
          * but got cast to int by PHP. APC doesn't seem to store such numerical
          * key, so we'll have to take care of those one by one.
          */
         if (is_array($key)) {
-            $integers = array_filter(array_keys($key), 'is_int');
-            if ($integers) {
+            $nums = array_filter(array_keys($key), 'is_numeric');
+            if ($nums) {
                 $success = [];
-                $integers = array_intersect_key($key, array_fill_keys($integers, null));
-                foreach ($integers as $k => $v) {
+                $nums = array_intersect_key($key, array_fill_keys($nums, null));
+                foreach ($nums as $k => $v) {
                     $success[$k] = $this->apcu_store((string) $k, $v, $ttl);
                 }
 
-                $key = array_diff_key($key, $integers);
-                return array_merge($success, $this->apcu_store($key, $var, $ttl));
+                $remaining = array_diff_key($key, $nums);
+                if ($remaining) {
+                    $success += $this->apcu_store($remaining, $var, $ttl);
+                }
+
+                return $success;
             }
         }
 
