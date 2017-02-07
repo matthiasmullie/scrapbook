@@ -94,7 +94,7 @@ class Couchbase implements KeyValueStore
      */
     public function set($key, $value, $expire = 0)
     {
-        // Couchbase seems to not properly purge items the way it should when
+        // Couchbase seems to not timely purge items the way it should when
         // storing it with an expired timestamp
         if ($expire < 0 || ($expire > 2592000 && $expire < time())) {
             $this->delete($key);
@@ -121,7 +121,7 @@ class Couchbase implements KeyValueStore
             return array();
         }
 
-        // Couchbase seems to not properly purge items the way it should when
+        // Couchbase seems to not timely purge items the way it should when
         // storing it with an expired timestamp
         if ($expire < 0 || ($expire > 2592000 && $expire < time())) {
             $keys = array_keys($items);
@@ -277,7 +277,7 @@ class Couchbase implements KeyValueStore
      */
     public function touch($key, $expire)
     {
-        if ($expire - time() < 0) {
+        if ($expire < 0 || ($expire > 2592000 && $expire < time())) {
             return $this->delete($key);
         }
 
