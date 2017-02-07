@@ -86,7 +86,7 @@ class SQLite extends MySQL
     {
         $this->client->exec(
             "CREATE TABLE IF NOT EXISTS $this->table (
-                k VARBINARY(255) NOT NULL PRIMARY KEY,
+                k VARCHAR(255) NOT NULL PRIMARY KEY,
                 v BLOB,
                 e TIMESTAMP NULL DEFAULT NULL,
                 KEY e

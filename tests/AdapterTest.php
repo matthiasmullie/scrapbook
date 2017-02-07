@@ -12,6 +12,17 @@ class AdapterTest extends AdapterTestCase
         $this->assertEquals('value', $this->cache->get('test key'));
     }
 
+    public function testGetVeryLongKeys()
+    {
+        $return = $this->cache->set('this-is-turning-out-to-be-a-rather-unusually-long-key', 'value');
+        $this->assertEquals(true, $return);
+        $this->assertEquals('value', $this->cache->get('this-is-turning-out-to-be-a-rather-unusually-long-key'));
+
+        $return = $this->cache->set('12345678901234567890123456789012345678901234567890', 'value');
+        $this->assertEquals(true, $return);
+        $this->assertEquals('value', $this->cache->get('12345678901234567890123456789012345678901234567890'));
+    }
+
     public function testGetFail()
     {
         $this->assertEquals(false, $this->cache->get('test key'));
@@ -124,7 +135,6 @@ class AdapterTest extends AdapterTestCase
         $this->assertEquals('value2', $this->cache->get('key2'));
     }
 
-
     public function testSetMultiIntegerKeys()
     {
         $items = array(
@@ -153,6 +163,18 @@ class AdapterTest extends AdapterTestCase
         $this->assertEquals($expect, $return);
         $this->assertEquals(false, $this->cache->get('test key'));
         $this->assertEquals(false, $this->cache->get('key2'));
+    }
+
+    public function testGetAndSetMultiVeryLongKeys()
+    {
+        $items = array(
+            'this-is-turning-out-to-be-a-rather-unusually-long-key' => 'value',
+            '12345678901234567890123456789012345678901234567890' => 'value',
+        );
+
+        $this->cache->setMulti($items);
+
+        $this->assertEquals($items, $this->cache->getMulti(array_keys($items)));
     }
 
     public function testDelete()
