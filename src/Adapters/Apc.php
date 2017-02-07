@@ -67,6 +67,10 @@ class Apc implements KeyValueStore
      */
     public function getMulti(array $keys, array &$tokens = null)
     {
+        if (empty($keys)) {
+            return array();
+        }
+
         // check for values that were just stored in this request but have
         // actually expired by now
         foreach ($keys as $i => $key) {
@@ -116,6 +120,10 @@ class Apc implements KeyValueStore
      */
     public function setMulti(array $items, $expire = 0)
     {
+        if (empty($items)) {
+            return array();
+        }
+
         $ttl = $this->ttl($expire);
 
         // negative TTLs don't always seem to properly treat the key as deleted
@@ -168,6 +176,10 @@ class Apc implements KeyValueStore
      */
     public function deleteMulti(array $keys)
     {
+        if (empty($keys)) {
+            return array();
+        }
+
         // attempt to get locks for all items
         $locked = $this->lock($keys);
         $failed = array_diff($keys, $locked);

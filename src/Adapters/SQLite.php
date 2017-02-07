@@ -17,6 +17,10 @@ class SQLite extends MySQL
      */
     public function setMulti(array $items, $expire = 0)
     {
+        if (empty($items)) {
+            return array();
+        }
+
         $expire = $this->expire($expire);
 
         // SQLite < 3.7.11 doesn't support multi-insert/replace!

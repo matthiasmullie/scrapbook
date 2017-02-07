@@ -76,6 +76,10 @@ class Redis implements KeyValueStore
      */
     public function getMulti(array $keys, array &$tokens = null)
     {
+        if (empty($keys)) {
+            return array();
+        }
+
         $this->client->multi();
 
         $this->client->mget($keys);
@@ -153,6 +157,10 @@ class Redis implements KeyValueStore
      */
     public function setMulti(array $items, $expire = 0)
     {
+        if (empty($items)) {
+            return array();
+        }
+
         $ttl = $this->ttl($expire);
 
         /*
@@ -207,6 +215,10 @@ class Redis implements KeyValueStore
      */
     public function deleteMulti(array $keys)
     {
+        if (empty($keys)) {
+            return array();
+        }
+
         /*
          * del will only return the amount of deleted entries, but we also want
          * to know which failed. Deletes will only fail for items that don't

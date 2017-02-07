@@ -7,6 +7,7 @@
 
 ### Fixed
 - Made APC store setMulti with integer keys
+- Short-circuit getting/setting/deleting multiple keys
 
 
 ## [1.4.2] - 2017-02-07

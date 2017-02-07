@@ -87,6 +87,10 @@ abstract class SQL implements KeyValueStore
      */
     public function getMulti(array $keys, array &$tokens = null)
     {
+        if (empty($keys)) {
+            return array();
+        }
+
         // escape input, can't bind multiple params for IN()
         $quoted = array();
         foreach ($keys as $key) {

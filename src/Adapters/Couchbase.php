@@ -64,6 +64,10 @@ class Couchbase implements KeyValueStore
      */
     public function getMulti(array $keys, array &$tokens = null)
     {
+        if (empty($keys)) {
+            return array();
+        }
+
         try {
             $results = $this->client->get($keys);
         } catch (\CouchbaseException $e) {
@@ -105,6 +109,10 @@ class Couchbase implements KeyValueStore
      */
     public function setMulti(array $items, $expire = 0)
     {
+        if (empty($items)) {
+            return array();
+        }
+
         foreach ($items as $key => $value) {
             $items[$key] = array(
                 'value' => $this->serialize($value),
@@ -145,6 +153,10 @@ class Couchbase implements KeyValueStore
      */
     public function deleteMulti(array $keys)
     {
+        if (empty($keys)) {
+            return array();
+        }
+
         try {
             $results = $this->client->remove($keys);
         } catch (\CouchbaseException $e) {

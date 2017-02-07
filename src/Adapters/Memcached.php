@@ -63,6 +63,10 @@ class Memcached implements KeyValueStore
      */
     public function getMulti(array $keys, array &$tokens = null)
     {
+        if (empty($keys)) {
+            return array();
+        }
+
         $keys = array_map(array($this, 'encode'), $keys);
         $return = $this->client->getMulti($keys, $tokens);
         $keys = array_map(array($this, 'decode'), array_keys($return));
@@ -91,6 +95,10 @@ class Memcached implements KeyValueStore
      */
     public function setMulti(array $items, $expire = 0)
     {
+        if (empty($items)) {
+            return array();
+        }
+
         $keys = array_map(array($this, 'encode'), array_keys($items));
         $items = array_combine($keys, $items);
         $success = $this->client->setMulti($items, $expire);
@@ -114,6 +122,10 @@ class Memcached implements KeyValueStore
      */
     public function deleteMulti(array $keys)
     {
+        if (empty($keys)) {
+            return array();
+        }
+
         if (!method_exists($this->client, 'deleteMulti')) {
             /*
              * HHVM doesn't support deleteMulti, so I'll hack around it by

@@ -40,6 +40,10 @@ class MySQL extends SQL
      */
     public function setMulti(array $items, $expire = 0)
     {
+        if (empty($items)) {
+            return array();
+        }
+
         $i = 1;
         $query = array();
         $params = array();
