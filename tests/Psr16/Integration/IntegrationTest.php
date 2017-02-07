@@ -11,6 +11,14 @@ use MatthiasMullie\Scrapbook\Tests\AdapterProviderTestInterface;
 class IntegrationTest extends SimpleCacheTest implements AdapterProviderTestInterface
 {
     /**
+     * {@inheritdoc}
+     */
+    protected $skippedTests = [
+        'testSetInvalidTtl' => 'Skipping test because this is not defined in PSR-16',
+        'testSetMultipleInvalidTtl' => 'Skipping test because this is not defined in PSR-16',
+    ];
+
+    /**
      * @var KeyValueStore
      */
     protected $adapter;
