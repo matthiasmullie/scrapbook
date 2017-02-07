@@ -76,12 +76,12 @@ class Couchbase implements KeyValueStore
 
         $values = array();
         $tokens = array();
-        foreach ($keys as $key) {
-            if (!isset($results[$key]) || $results[$key]->error) {
+
+        foreach ($results as $key => $value) {
+            if (!in_array($key, $keys) || $value->error) {
                 continue;
             }
 
-            $value = $results[$key];
             $values[$key] = $this->unserialize($value->value);
             $tokens[$key] = $value->cas;
         }
@@ -111,6 +111,21 @@ class Couchbase implements KeyValueStore
     {
         if (empty($items)) {
             return array();
+        }
+
+        // attempting to insert integer keys (e.g. '0' as key is automatically
+        // cast to int, if it's an array key) fails with a segfault, so we'll
+        // have to do those piecemeal
+        $integers = array_filter(array_keys($items), 'is_int');
+        if ($integers) {
+            $success = [];
+            $integers = array_intersect_key($items, array_fill_keys($integers, null));
+            foreach ($integers as $k => $v) {
+                $success[$k] = $this->set((string) $k, $v, $expire);
+            }
+
+            $items = array_diff_key($items, $integers);
+            return array_merge($success, $this->setMulti($items, $expire));
         }
 
         foreach ($items as $key => $value) {
