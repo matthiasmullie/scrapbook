@@ -25,7 +25,7 @@ class AdapterTestProvider
      *
      * @throws Exception
      */
-    public function __construct(TestCase $testCase)
+    public function __construct(/* TestCase|\PHPUnit_Framework_TestCase */ $testCase)
     {
         if (!$testCase instanceof AdapterProviderTestInterface) {
             $class = get_class($testCase);
@@ -75,7 +75,7 @@ class AdapterTestProvider
      * @param TestSuite $suite
      * @param AdapterProvider              $adapterProvider
      */
-    protected function injectAdapter(TestSuite $suite, AdapterProvider $adapterProvider)
+    protected function injectAdapter(/* TestSuite|\PHPUnit_Framework_TestSuite */ $suite, AdapterProvider $adapterProvider)
     {
         foreach ($suite as $test) {
             /*
@@ -104,7 +104,7 @@ class AdapterTestProvider
      * @param TestSuite $suite
      * @param string$group
      */
-    protected function injectGroup(TestSuite $suite, $group)
+    protected function injectGroup(/* TestSuite|\PHPUnit_Framework_TestSuite */ $suite, $group)
     {
         $tests = $suite->tests();
         $suite->setGroupDetails(array('default' => $tests, $group => $tests));
