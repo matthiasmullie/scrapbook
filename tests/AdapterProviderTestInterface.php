@@ -3,12 +3,12 @@
 namespace MatthiasMullie\Scrapbook\Tests;
 
 use MatthiasMullie\Scrapbook\KeyValueStore;
-use PHPUnit_Framework_TestSuite;
+use PHPUnit\Framework\TestSuite;
 
 interface AdapterProviderTestInterface
 {
     /**
-     * @return PHPUnit_Framework_TestSuite
+     * @return TestSuite
      */
     public static function suite();
 

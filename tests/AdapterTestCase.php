@@ -3,9 +3,9 @@
 namespace MatthiasMullie\Scrapbook\Tests;
 
 use MatthiasMullie\Scrapbook\KeyValueStore;
-use PHPUnit_Framework_TestCase;
+use PHPUnit\Framework\TestCase;
 
-class AdapterTestCase extends PHPUnit_Framework_TestCase implements AdapterProviderTestInterface
+class AdapterTestCase extends TestCase implements AdapterProviderTestInterface
 {
     /**
      * @var KeyValueStore

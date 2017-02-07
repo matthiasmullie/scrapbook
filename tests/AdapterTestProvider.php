@@ -4,8 +4,8 @@ namespace MatthiasMullie\Scrapbook\Tests;
 
 use MatthiasMullie\Scrapbook\Exception\Exception;
 use MatthiasMullie\Scrapbook\KeyValueStore;
-use PHPUnit_Framework_TestCase;
-use PHPUnit_Framework_TestSuite;
+use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\TestSuite;
 use ReflectionClass;
 
 class AdapterTestProvider
@@ -16,16 +16,16 @@ class AdapterTestProvider
     protected static $adapters = array();
 
     /**
-     * @var PHPUnit_Framework_TestCase
+     * @var TestCase
      */
     protected $testCase;
 
     /**
-     * @param PHPUnit_Framework_TestCase $testCase
+     * @param TestCase $testCase
      *
      * @throws Exception
      */
-    public function __construct(PHPUnit_Framework_TestCase $testCase)
+    public function __construct(TestCase $testCase)
     {
         if (!$testCase instanceof AdapterProviderTestInterface) {
             $class = get_class($testCase);
@@ -39,16 +39,16 @@ class AdapterTestProvider
     }
 
     /**
-     * @return PHPUnit_Framework_TestSuite
+     * @return TestSuite
      */
     public function getSuite()
     {
-        $suite = new \PHPUnit_Framework_TestSuite('Test integration');
+        $suite = new TestSuite('Test integration');
 
         $i = 0;
         foreach ($this->getAdapterProviders() as $name => $adapterProvider) {
             $class = new ReflectionClass(get_class($this->testCase));
-            $tests = new PHPUnit_Framework_TestSuite($class);
+            $tests = new TestSuite($class);
 
             // we can't use --filter to narrow down on specific adapters
             // (because we're not using dataProvider), but we can make sure it's
@@ -72,13 +72,21 @@ class AdapterTestProvider
      * that get input from dataProviders, so they're wrapped in another class
      * that we must unwrap in order to assign the adapter.
      *
-     * @param \PHPUnit_Framework_TestSuite $suite
+     * @param TestSuite $suite
      * @param AdapterProvider              $adapterProvider
      */
-    protected function injectAdapter(\PHPUnit_Framework_TestSuite $suite, AdapterProvider $adapterProvider)
+    protected function injectAdapter(TestSuite $suite, AdapterProvider $adapterProvider)
     {
         foreach ($suite as $test) {
-            if ($test instanceof \PHPUnit_Framework_TestSuite) {
+            /*
+             * Testing for both current (namespace) and old (underscored)
+             * PHPUnit class names, because (even though we stub this class)
+             * $test may be a child of TestSuite/PHPUnit_Framework_TestSuite,
+             * which the stub can't account for.
+             * The PHPUnit_Framework_TestSuite part can be removed when support
+             * for PHPUnit<6.0 is removed
+             */
+            if ($test instanceof TestSuite || $test instanceof \PHPUnit_Framework_TestSuite) {
                 $this->injectAdapter($test, $adapterProvider);
             } else {
                 /* @var AdapterTestCase $test */
@@ -93,16 +101,24 @@ class AdapterTestProvider
      * make sure that the groups are recursively assigned to each suite until we
      * reach the child.
      *
-     * @param \PHPUnit_Framework_TestSuite $suite
+     * @param TestSuite $suite
      * @param string$group
      */
-    protected function injectGroup(\PHPUnit_Framework_TestSuite $suite, $group)
+    protected function injectGroup(TestSuite $suite, $group)
     {
         $tests = $suite->tests();
         $suite->setGroupDetails(array('default' => $tests, $group => $tests));
 
         foreach ($suite->tests() as $test) {
-            if ($test instanceof \PHPUnit_Framework_TestSuite) {
+            /*
+             * Testing for both current (namespace) and old (underscored)
+             * PHPUnit class names, because (even though we stub this class)
+             * $test may be a child of TestSuite/PHPUnit_Framework_TestSuite,
+             * which the stub can't account for.
+             * The PHPUnit_Framework_TestSuite part can be removed when support
+             * for PHPUnit<6.0 is removed
+             */
+            if ($test instanceof TestSuite || $test instanceof \PHPUnit_Framework_TestSuite) {
                 $this->injectGroup($test, $group);
             }
         }

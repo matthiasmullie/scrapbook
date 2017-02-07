@@ -2,13 +2,13 @@
 
 namespace MatthiasMullie\Scrapbook\Tests\Adapters;
 
-use PHPUnit_Framework_TestCase;
+use PHPUnit\Framework\TestCase;
 
 /**
  * @group default
  * @group MemoryStore
  */
-class MemoryStoreTest extends PHPUnit_Framework_TestCase
+class MemoryStoreTest extends TestCase
 {
     public function testLRU()
     {
