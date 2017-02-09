@@ -34,8 +34,6 @@ class Memcached implements KeyValueStore
      */
     public function get($key, &$token = null)
     {
-        $key = $this->encode($key);
-
         /*
          * Wouldn't it be awesome if I just didn't use the obvious method? :)
          *
@@ -45,7 +43,7 @@ class Memcached implements KeyValueStore
          * reported, also seen it make CAS return result unreliable)
          * @see https://github.com/php-memcached-dev/php-memcached/issues/21
          */
-        $values = $this->client->getMulti(array($key), $token);
+        $values = $this->getMulti(array($key), $tokens);
 
         if (!isset($values[$key])) {
             $token = null;

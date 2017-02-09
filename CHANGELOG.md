@@ -14,6 +14,7 @@
 - Fix how Couchbase (failed to) handle negative TTLs
 - Make Memcached delete-by-expiration more reliable
 - Make HHVM work with numerical cache keys in Memcached::setMulti
+- Fix Memcached::get for keys that would get encoded
 
 
 ## [1.4.2] - 2017-02-07
