@@ -116,6 +116,30 @@ class Memcached implements KeyValueStore
             return array_fill_keys($keys, true);
         }
 
+        /*
+         * Numerical strings turn into integers when used as array keys, and
+         * HHVM (used to) reject(s) such cache keys.
+         *
+         * @see https://github.com/facebook/hhvm/pull/7654
+         */
+        if (defined('HHVM_VERSION')) {
+            $nums = array_filter(array_keys($items), 'is_numeric');
+            if ($nums) {
+                $success = [];
+                $nums = array_intersect_key($items, array_fill_keys($nums, null));
+                foreach ($nums as $k => $v) {
+                    $success[$k] = $this->set((string) $k, $v, $expire);
+                }
+
+                $remaining = array_diff_key($items, $nums);
+                if ($remaining) {
+                    $success += $this->setMulti($remaining, $expire);
+                }
+
+                return $success;
+            }
+        }
+
         $keys = array_map(array($this, 'encode'), array_keys($items));
         $items = array_combine($keys, $items);
         $success = $this->client->setMulti($items, $expire);
@@ -145,7 +169,7 @@ class Memcached implements KeyValueStore
 
         if (!method_exists($this->client, 'deleteMulti')) {
             /*
-             * HHVM doesn't support deleteMulti, so I'll hack around it by
+             * HHVM didn't always support deleteMulti, so I'll hack around it by
              * setting all items expired.
              * I could also delete() all items one by one, but that would
              * probably take more network requests (this version always takes 2)
