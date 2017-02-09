@@ -4,6 +4,7 @@
 		<testsuite name="scrapbook">
 			<directory suffix="Test.php">tests</directory>
 			<exclude>tests/Psr6/Integration</exclude>
+			<exclude>tests/Psr16/Integration</exclude>
 		</testsuite>
 		<testsuite name="integration">
 			<!-- cache/integration-tests depends on cache/tag-interop, which has a 5.5 minimum requirement -->
