@@ -51,7 +51,7 @@ class Memcached implements KeyValueStore
             return false;
         }
 
-        $token = $token[$key];
+        $token = $tokens[$key];
 
         return $values[$key];
     }
