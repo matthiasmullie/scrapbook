@@ -16,6 +16,10 @@ class IntegrationTest extends SimpleCacheTest implements AdapterProviderTestInte
     protected $skippedTests = [
         'testSetInvalidTtl' => 'Skipping test because this is not defined in PSR-16',
         'testSetMultipleInvalidTtl' => 'Skipping test because this is not defined in PSR-16',
+        // below 2 tests are unreliable until
+        // https://github.com/php-cache/integration-tests/pull/80 is merged
+        'testSetTtl' => 'Skipping unreliable test',
+        'testSetMultipleTtl' => 'Skipping unreliable test',
     ];
 
     /**
