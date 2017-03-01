@@ -61,6 +61,7 @@ class Memcached implements KeyValueStore
      */
     public function getMulti(array $keys, array &$tokens = null)
     {
+        $tokens = array();
         if (empty($keys)) {
             return array();
         }
