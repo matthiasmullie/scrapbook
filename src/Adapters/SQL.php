@@ -62,7 +62,7 @@ abstract class SQL implements KeyValueStore
         $statement = $this->client->prepare(
             "SELECT v
             FROM $this->table
-            WHERE k = :key AND (e IS NULL OR e >= :expire)"
+            WHERE k = :key AND (e IS NULL OR e > :expire)"
         );
         $statement->execute(array(
             ':key' => $key,
@@ -103,7 +103,7 @@ abstract class SQL implements KeyValueStore
             FROM $this->table
             WHERE
                 k IN (".implode(',', $quoted).') AND
-                (e IS NULL OR e >= :expire)'
+                (e IS NULL OR e > :expire)'
         );
         $statement->execute(array(':expire' => date('Y-m-d H:i:s')));
         $values = $statement->fetchAll(PDO::FETCH_ASSOC);

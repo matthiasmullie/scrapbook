@@ -1,7 +1,7 @@
 # Changelog
 
 
-## [1.4.3] - 2016-02-07
+## [1.4.3] - 2016-03-01
 ### Added
 - Include cache/integration-tests test suite for PSR-16
 
@@ -15,6 +15,7 @@
 - Make Memcached delete-by-expiration more reliable
 - Make HHVM work with numerical cache keys in Memcached::setMulti
 - Fix Memcached::get for keys that would get encoded
+- SQL adapters expire on the exact second, not one later
 
 
 ## [1.4.2] - 2017-02-07
@@ -248,4 +249,4 @@
 [1.4.0]: https://github.com/matthiasmullie/scrapbook/compare/1.3.1...1.4.0
 [1.4.1]: https://github.com/matthiasmullie/scrapbook/compare/1.4.0...1.4.1
 [1.4.2]: https://github.com/matthiasmullie/scrapbook/compare/1.4.1...1.4.2
-[1.4.2]: https://github.com/matthiasmullie/scrapbook/compare/1.4.2...1.4.3
+[1.4.3]: https://github.com/matthiasmullie/scrapbook/compare/1.4.2...1.4.3
