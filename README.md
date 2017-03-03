@@ -10,17 +10,19 @@
 Documentation: http://www.scrapbook.cash - API reference: http://docs.scrapbook.cash
 
 
-* [Installation & usage](#installation-usage)
+# Table of contents
+
+* [Installation & usage](#installation--usage)
 * [Adapters](#adapters)
   * [Memcached](#memcached)
   * [Redis](#redis)
   * [Couchbase](#couchbase)
   * [APC(u)](#apcu)
-  * [MySQL](mysql)
-  * [PostgreSQL](postgresql)
-  * [SQLite](sqlite)
-  * [Filesystem](flysystem)
-  * [Memory](memory)
+  * [MySQL](#mysql)
+  * [PostgreSQL](#postgresql)
+  * [SQLite](#sqlite)
+  * [Filesystem](#filesystem)
+  * [Memory](#memory)
 * [Features](#features)
   * [Local buffer](#local-buffer)
   * [Transactions](#transactions)
@@ -94,7 +96,7 @@ interface, features) and some example code.
 rendering.*
 
 The [PECL Memcached extension](https://pecl.php.net/package/memcached) is used
-to interface with the Memcached server. Just provide a valid \Memcached object
+to interface with the Memcached server. Just provide a valid `\Memcached` object
 to the Memcached adapter:
 
 ```php
@@ -112,7 +114,7 @@ $cache = new \MatthiasMullie\Scrapbook\Adapters\Memcached($client);
 strings, hashes, lists, sets, sorted sets, bitmaps and hyperloglogs.*
 
 The [PECL Redis extension](https://pecl.php.net/package/redis) is used
-to interface with the Redis server. Just provide a valid \Redis object
+to interface with the Redis server. Just provide a valid `\Redis` object
 to the Redis adapter:
 
 ```php
@@ -131,7 +133,7 @@ always-on availability, and data mobility requirements of mission critical
 applications.*
 
 The [PECL Couchbase extension](https://pecl.php.net/package/couchbase) is used
-to interface with the Couchbase server. Just provide a valid \CouchbaseBucket
+to interface with the Couchbase server. Just provide a valid `\CouchbaseBucket`
 object to the Couchbase adapter:
 
 
@@ -328,6 +330,7 @@ $cache->get('key'); // returns 'value'
 // now commit write operations, this will effectively propagate the update to
 // 'key' to the real cache
 $cache->commit();
+
 // ... or rollback, to discard uncommitted changes!
 $cache->rollback();
 ```
@@ -430,8 +433,8 @@ cache value (Item.)
 
 It doesn't let you do too many operations. If `get`, `set`, `delete` (and their
 *multi counterparts) and delete is all you need, you're probably better off
-using this (or psr/simplecache, see below) as this interface is also supported
-by other cache libraries.
+using this (or [psr/simplecache, see below](#psrsimplecache)) as this interface
+is also supported by other cache libraries.
 
 You can easily use psr/cache by wrapping it around any KeyValueStore object:
 
@@ -461,8 +464,8 @@ KeyValueStore, and it works very much in the same way.
 
 It doesn't let you do too many operations. If `get`, `set`, `delete` (and their
 *multi counterparts) and delete is all you need, you're probably better off
-using this (or psr/cache, see above) as this interface is also supported
-by other cache libraries.
+using this (or [psr/cache, see above](#psrcache)) as this interface is also
+supported by other cache libraries.
 
 You can easily use psr/simplecache by wrapping it around any KeyValueStore
 object:
@@ -532,7 +535,7 @@ psr/cache or psr/simplecache representations, like so:
 $articleCache = $cache->collection('articles');
 $sessionCache = $cache->collection('sessions');
 
-// create Pools object from both KeyValueStore collections
+// create Pool objects from both KeyValueStore collections
 $articlePool = new \MatthiasMullie\Scrapbook\Psr6\Pool($articleCache);
 $sessionPool = new \MatthiasMullie\Scrapbook\Psr6\Pool($sessionCache);
 ```
