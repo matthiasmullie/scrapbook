@@ -8,10 +8,6 @@ homepage: http://redis.io
 class: MatthiasMullie\Scrapbook\Adapters\Redis
 ---
 
-The [PECL Redis extension](https://pecl.php.net/package/redis) is used to
-interface with the Redis server. Just provide a valid `\Redis` object to the
-Redis adapter:
-
 ```php
 // create \Redis object pointing to your Redis server
 $client = new \Redis();
@@ -25,5 +21,9 @@ $cache->set('key', 'value'); // returns true
 // get a value
 $cache->get('key'); // returns 'value'
 ```
+
+The [PECL Redis extension](https://pecl.php.net/package/redis) is used to
+interface with the Redis server. Just provide a valid `\Redis` object to the
+Redis adapter:
 
 <hr class="sep20">

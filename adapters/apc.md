@@ -8,11 +8,6 @@ homepage: http://php.net/manual/en/book.apc.php
 class: MatthiasMullie\Scrapbook\Adapters\Apc
 ---
 
-With APC, there is no "cache server", the data is just cached on the executing
-machine and available to all PHP processes on that machine. The PECL
-[APC](https://pecl.php.net/package/APC) or [APCu](https://pecl.php.net/package/APCu)
-extensions can be used.
-
 ```php
 // create Scrapbook KeyValueStore object
 $cache = new \MatthiasMullie\Scrapbook\Adapters\Apc();
@@ -23,5 +18,10 @@ $cache->set('key', 'value'); // returns true
 // get a value
 $cache->get('key'); // returns 'value'
 ```
+
+With APC, there is no "cache server", the data is just cached on the executing
+machine and available to all PHP processes on that machine. The PECL
+[APC](https://pecl.php.net/package/APC) or [APCu](https://pecl.php.net/package/APCu)
+extensions can be used.
 
 <hr class="sep20">

@@ -8,10 +8,6 @@ homepage: http://www.couchbase.com
 class: MatthiasMullie\Scrapbook\Adapters\Couchbase
 ---
 
-The [PECL Couchbase extension](https://pecl.php.net/package/couchbase) is used
-to interface with the Couchbase server. Just provide a valid `\CouchbaseBucket`
-object to the Couchbase adapter:
-
 ```php
 // create \CouchbaseBucket object pointing to your Couchbase server
 $cluster = new \CouchbaseCluster('couchbase://localhost');
@@ -25,5 +21,9 @@ $cache->set('key', 'value'); // returns true
 // get a value
 $cache->get('key'); // returns 'value'
 ```
+
+The [PECL Couchbase extension](https://pecl.php.net/package/couchbase) is used
+to interface with the Couchbase server. Just provide a valid `\CouchbaseBucket`
+object to the Couchbase adapter:
 
 <hr class="sep20">
