@@ -159,7 +159,7 @@
 				"$client->addServer('localhost', 11211);\n" +
 				"// create Scrapbook cache object\n" +
 				"$cache = new \\MatthiasMullie\\Scrapbook\\Adapters\\Memcached($client);\n",
-			composer: ''
+			composer: 'pecl install memcached'
 		},
 
 		redis: {
@@ -168,7 +168,7 @@
 				"$client->connect('127.0.0.1');\n" +
 				"// create Scrapbook cache object\n" +
 				"$cache = new \\MatthiasMullie\\Scrapbook\\Adapters\\Redis($client);\n",
-			composer: ''
+			composer: 'pecl install redis'
 		},
 
 		couchbase: {
@@ -177,13 +177,13 @@
 				"$bucket = $cluster->openBucket('default');\n" +
 				"// create Scrapbook cache object\n" +
 				"$cache = new \\MatthiasMullie\\Scrapbook\\Adapters\\Couchbase($bucket);\n",
-			composer: ''
+			composer: 'pecl install couchbase'
 		},
 
 		apc: {
 			src: "// create Scrapbook cache object\n" +
 				"$cache = new \\MatthiasMullie\\Scrapbook\\Adapters\\Apc();\n",
-			composer: ''
+			composer: 'pecl install apcu'
 		},
 
 		mysql: {
