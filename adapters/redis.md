@@ -8,11 +8,15 @@ homepage: http://redis.io
 class: MatthiasMullie\Scrapbook\Adapters\Redis
 ---
 
+The [PECL Redis extension](https://pecl.php.net/package/redis) is used to
+interface with the Redis server. Just provide a valid `\Redis` object to the
+Redis adapter:
+
 ```php
 // create \Redis object pointing to your Redis server
 $client = new \Redis();
 $client->connect('127.0.0.1');
-// create Scrapbook cache object
+// create Scrapbook KeyValueStore object
 $cache = new \MatthiasMullie\Scrapbook\Adapters\Redis($client);
 
 // set a value

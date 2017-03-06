@@ -1,6 +1,6 @@
 ---
 layout: extra
-title: Stampede protector
+title: Stampede protection
 description: A cache stampede happens when there are a lot of requests for data that is not currently in cache, causing a lot of concurrent complex operations. Stampede protector will make sure only the first process executes and the other processes just wait, instead of crippling the server.
 weight: 2
 icon: fa fa-pause
@@ -22,7 +22,6 @@ $protector = new \MatthiasMullie\Scrapbook\Scale\StampedeProtector($cache);
 // otherwise there won't be any difference
 $protector->get('key'); // returns 'value'
 ```
-
 
 A cache stampede happens when there are a lot of requests for data that is not
 currently in cache. Examples could be:

@@ -8,10 +8,14 @@ homepage: http://www.sqlite.org
 class: MatthiasMullie\Scrapbook\Adapters\SQLite
 ---
 
+While a database is not a genuine cache, it can also serve as key-value store.
+Just don't expect the same kind of performance you'd expect from a dedicated
+cache server.
+
 ```php
 // create \PDO object pointing to your SQLite server
 $client = new PDO('sqlite:cache.db');
-// create Scrapbook cache object
+// create Scrapbook KeyValueStore object
 $cache = new \MatthiasMullie\Scrapbook\Adapters\SQLite($client);
 
 // set a value

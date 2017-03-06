@@ -6,6 +6,16 @@ weight: 2
 ---
 
 <div class="container">
+	<div class="sixteen columns">
+		<p>
+			Scrapbook supports 3 different interfaces. There's the
+			Scrapbook-specific KeyValueStore, and then there are 2 PSR
+			interfaces put forward by the PHP FIG.
+		</p>
+	</div>
+
+	<hr class="sep20">
+
 	{% assign pages_list = site.pages | sort:"weight" %}
 	{% for node in pages_list %}
 		{% if node.title != null %}

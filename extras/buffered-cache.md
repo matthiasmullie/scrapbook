@@ -1,6 +1,6 @@
 ---
 layout: extra
-title: Buffered cache
+title: Local buffer
 description: BufferedStore helps reduce requests to your real cache. If you need the request the same value more than once (from various places in your code), it can be a pain to keep that value around. Requesting it again from cache would be easier, but then you get some latency from the connection to the cache server.
 weight: 0
 icon: fa fa-rocket
@@ -32,7 +32,7 @@ but then you get some latency from the connection to the cache server.
 
 BufferedStore will keep known values (items that you've already requested or
 written yourself) in memory. Every time you need that value in the same request,
-it'll just get it from memory instead of going back to the cache server.
+it'll just get it from memory instead of going out to the cache server.
 
 BufferedStore just wraps around any KeyValueStore and is itself a KeyValueStore.
 Just use it like you would call any cache, but enjoy the reduced headaches about

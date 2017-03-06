@@ -8,11 +8,15 @@ homepage: http://memcached.org
 class: MatthiasMullie\Scrapbook\Adapters\Memcached
 ---
 
+The [PECL Memcached extension](https://pecl.php.net/package/memcached) is used
+to interface with the Memcached server.
+Just provide a valid `\Memcached` object to the Memcached adapter:
+
 ```php
 // create \Memcached object pointing to your Memcached server
 $client = new \Memcached();
 $client->addServer('localhost', 11211);
-// create Scrapbook cache object
+// create Scrapbook KeyValueStore object
 $cache = new \MatthiasMullie\Scrapbook\Adapters\Memcached($client);
 
 // set a value

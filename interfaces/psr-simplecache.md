@@ -26,15 +26,18 @@ $simplecache->set('key', 'updated-value');
 
 <hr class="sep10">
 
-[psr/simplecache](https://github.com/php-fig/fig-standards/blob/master/proposed/simplecache.md)
-is an attempt to standardize how cache is implemented across frameworks &
-libraries in the PHP landscape.
+[PSR-16](https://github.com/php-fig/fig-standards/blob/master/accepted/PSR-16-simple-cache.md)
+(a PHP-FIG standard) is a second PHP-FIG cache standard. It's a driver model
+just like KeyValueStore, and it works very much in the same way.
 
-It's a relatively simple & straightforward driver model interface. It's very
-similar to KeyValueStore, but supports fewer features (e.g. CAS is missing).
+It doesn't let you do too many operations. If `get`, `set`, `delete` (and their
+*multi counterparts) and `delete` is all you need, you're probably better off
+using this (or psr/cache) as this interface is also supported by other cache
+libraries.
 
-This project bridges the gap between KeyValueStore based adapters & extras, and
-PSR-16: any of the Scrapbook tools are accessible in a PSR-16 compatible manner.
+This interface bridges the gap between KeyValueStore based adapters & features,
+and PSR-16: any of the Scrapbook tools are accessible in a PSR-16 compatible
+manner.
 
 <hr class="sep20">
 
@@ -43,4 +46,3 @@ PSR-16: any of the Scrapbook tools are accessible in a PSR-16 compatible manner.
 <hr class="sep10">
 
 {% include psr-16-cache.html %}
-{% include psr-16-counter.html %}

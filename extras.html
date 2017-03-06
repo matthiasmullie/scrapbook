@@ -1,11 +1,24 @@
 ---
 layout: page
-title: Extras
+title: Features
 description: Scrapbook comes with some nifty features (for robustness, development ease & scalability) that build on (and wrap around) the interfaces.
 weight: 3
 ---
 
 <div class="container">
+	<div class="sixteen columns">
+		<p>
+			In addition to the default cache functionality (like
+			<code>get</code> &amp; <code>set</code>), Scrapbook comes with a
+			few neat little features. These are all implemented in their own
+			little object that implements KeyValueStore, and wraps around a
+			KeyValueStore. In other words, any feature can just be wrapped
+			inside another one or on top of any adapter.
+		</p>
+	</div>
+
+	<hr class="sep20">
+
 	{% assign pages_list = site.pages | sort:"weight" %}
 	{% for node in pages_list %}
 		{% if node.title != null %}

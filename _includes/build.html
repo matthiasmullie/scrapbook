@@ -67,7 +67,33 @@
 		</div>
 
 		<div class="two columns">
-			<h3 class="headline">Type</h3>
+			<h3 class="headline">Features</h3>
+			<span class="brd-headling"></span>
+			<div class="clearfix"></div>
+
+			<form>
+				<input type="checkbox" name="extra" value="buffered" id="extra_buffered" />
+				<label for="extra_buffered">Local buffer</label>
+
+				<br>
+
+				<input type="checkbox" name="extra" value="transactional" id="extra_transactional" />
+				<label for="extra_transactional">Transactions</label>
+
+				<br>
+
+				<input type="checkbox" name="extra" value="stampede" id="extra_stampede" />
+				<label for="extra_stampede">Stampede protection</label>
+
+				<br>
+
+				<input type="checkbox" name="extra" value="shard" id="extra_shard" />
+				<label for="extra_shard">Sharding</label>
+			</form>
+
+			<hr class="sep15">
+
+			<h3 class="headline">Interface</h3>
 			<span class="brd-headling"></span>
 			<div class="clearfix"></div>
 
@@ -78,38 +104,12 @@
 				<br>
 
 				<input type="radio" name="type" value="psr6" id="type_psr6" />
-				<label for="type_psr6">PSR-6</label>
+				<label for="type_psr6">psr/cache</label>
 
 				<br>
 
 				<input type="radio" name="type" value="psr16" id="type_psr16" />
-				<label for="type_psr16">PSR-16</label>
-			</form>
-
-			<hr class="sep15">
-
-			<h3 class="headline">Extras</h3>
-			<span class="brd-headling"></span>
-			<div class="clearfix"></div>
-
-			<form>
-				<input type="checkbox" name="extra" value="buffered" id="extra_buffered" />
-				<label for="extra_buffered">Buffered</label>
-
-				<br>
-
-				<input type="checkbox" name="extra" value="transactional" id="extra_transactional" />
-				<label for="extra_transactional">Transactional</label>
-
-				<br>
-
-				<input type="checkbox" name="extra" value="stampede" id="extra_stampede" />
-				<label for="extra_stampede">Stampede protector</label>
-
-				<br>
-
-				<input type="checkbox" name="extra" value="shard" id="extra_shard" />
-				<label for="extra_shard">Shard</label>
+				<label for="type_psr16">psr/simplecache</label>
 			</form>
 		</div>
 

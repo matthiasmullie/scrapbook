@@ -30,16 +30,20 @@ $pool->save($item);
 
 <hr class="sep10">
 
-[psr/cache](https://github.com/php-fig/fig-standards/blob/master/accepted/PSR-6-cache.md)
-is an attempt to standardize how cache is implemented across frameworks &
-libraries in the PHP landscape.
+[PSR-6](https://github.com/php-fig/fig-standards/blob/master/accepted/PSR-6-cache.md)
+(a PHP-FIG standard) is a drastically different cache model than KeyValueStore &
+psr/simplecache: instead of directly querying values from the cache, psr/cache
+basically operates on value objects (`Item`) to perform the changes, which then
+feed back to the cache (`Pool`.)
 
-It's a drastically different cache model than KeyValueStore & psr/simplecache:
-instead of directly querying values from the cache, psr/cache basically operates
-on value objects to perform the changes, which then feed back to the cache.
+It doesn't let you do too many operations. If `get`, `set`, `delete` (and their
+*multi counterparts) and `delete` is all you need, you're probably better off
+using this (or psr/simplecache) as this interface is also supported by other
+cache libraries.
 
-This project bridges the gap between KeyValueStore based adapters & extras, and
-PSR-6: any of the Scrapbook tools are accessible in a PSR-6 compatible manner.
+This interface bridges the gap between KeyValueStore based adapters & features,
+and PSR-6: any of the Scrapbook tools are accessible in a PSR-6 compatible
+manner.
 
 <hr class="sep20">
 

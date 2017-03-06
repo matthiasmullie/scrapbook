@@ -9,12 +9,16 @@ class: MatthiasMullie\Scrapbook\Adapters\Flysystem
 composer: [ 'composer require league/flysystem' ]
 ---
 
+The filesystem-based adapter uses `league\flysystem` to abstract away the file
+operations, and will work with all kinds of storage that `league\filesystem`
+provides.
+
 ```php
 // create Flysystem object
 $adapter = new \League\Flysystem\Adapter\Local('/path/to/cache', LOCK_EX);
 $filesystem = new \League\Flysystem\Filesystem($adapter);
 
-// create Scrapbook cache object
+// create Scrapbook KeyValueStore object
 $cache = new \MatthiasMullie\Scrapbook\Adapters\Flysystem($filesystem);
 
 // set a value

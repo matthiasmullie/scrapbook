@@ -131,3 +131,23 @@ failure.</p>
 <div class="clearfix"></div>
 
 <p>Clears the entire cache.</p>
+
+<h3 class="headline">getCollection(): KeyValueStore</h3>
+<span class="brd-headling"></span>
+<div class="clearfix"></div>
+
+<p>Returns an isolated subset (collection) in which to store or fetch data
+from.</p>
+
+<p>A new KeyValueStore object will be returned, one that will only have
+access to this particular subset of data. Exact implementation can vary
+between adapters (e.g. separate database, prefixed keys, ...), but it
+will only ever provide access to data within this collection.</p>
+
+<p>It is not possible to set/fetch data across collections.<br>
+Setting the same key in 2 different collections will store 2 different
+values, that can only be retrieved from their respective collections.<br>
+Flushing a collection will only flush those specific keys and will leave
+keys in other collections untouched.<br>
+Flushing the server, however, will wipe out everything, including data in
+any of the collections on that server.</p>

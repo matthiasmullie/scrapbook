@@ -8,8 +8,16 @@ homepage:
 class: MatthiasMullie\Scrapbook\Adapters\MemoryStore
 ---
 
+Stuffing values in memory is mostly useless: they'll drop out at the end of the
+request. Unless you're using these cached values more than once in the same
+request, cache will always be empty and there's little reason to use this cache.
+
+However, it is extremely useful when unittesting: you can run your entire test
+suite on this memory-based store, instead of setting up cache services and
+making sure they're in a pristine state...
+
 ```php
-// create Scrapbook cache object
+// create Scrapbook KeyValueStore object
 $cache = new \MatthiasMullie\Scrapbook\Adapters\MemoryStore();
 
 // set a value
