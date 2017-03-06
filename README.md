@@ -274,9 +274,9 @@ the same value more than once (from various places in your code), it can be a
 pain to keep that value around. Requesting it again from cache would be easier,
 but then you get some latency from the connection to the cache server.
 
-With BufferedStore, every value that was retrieved from (or written to) cache
-will also be kept in memory, so you don't need to worry about requesting the
-same value more than once: it'll just comes out of memory the second time.
+BufferedStore will keep known values (items that you've already requested or
+written yourself) in memory. Every time you need that value in the same request,
+it'll just get it from memory instead of going out to the cache server.
 
 Just wrap the BufferedStore layer around your adapter (or other features):
 
@@ -427,12 +427,14 @@ the [documentation](http://www.scrapbook.cash/interfaces/key-value-store/).
 
 ## psr/cache
 
-PSR-6 (a PHP-FIG standard) takes a different approach. It is a pool model where
-there's 1 class to interact with the cache backend (Pool) & one to represent the
-cache value (Item.)
+[PSR-6](https://github.com/php-fig/fig-standards/blob/master/accepted/PSR-6-cache.md)
+(a PHP-FIG standard) is a drastically different cache model than KeyValueStore &
+psr/simplecache: instead of directly querying values from the cache, psr/cache
+basically operates on value objects (`Item`) to perform the changes, which then
+feed back to the cache (`Pool`.)
 
 It doesn't let you do too many operations. If `get`, `set`, `delete` (and their
-*multi counterparts) and delete is all you need, you're probably better off
+*multi counterparts) and `delete` is all you need, you're probably better off
 using this (or [psr/simplecache, see below](#psrsimplecache)) as this interface
 is also supported by other cache libraries.
 
@@ -459,11 +461,12 @@ A detailed list of the PSR-6 interface & its methods can be found in the
 
 ## psr/simplecache
 
-PSR-16 is a second PHP-FIG cache standard. It's a driver model just like
-KeyValueStore, and it works very much in the same way.
+[PSR-16](https://github.com/php-fig/fig-standards/blob/master/accepted/PSR-16-simple-cache.md)
+(a PHP-FIG standard) is a second PHP-FIG cache standard. It's a driver model
+just like KeyValueStore, and it works very much in the same way.
 
 It doesn't let you do too many operations. If `get`, `set`, `delete` (and their
-*multi counterparts) and delete is all you need, you're probably better off
+*multi counterparts) and `delete` is all you need, you're probably better off
 using this (or [psr/cache, see above](#psrcache)) as this interface is also
 supported by other cache libraries.
 
