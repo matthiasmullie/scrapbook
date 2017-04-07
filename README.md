@@ -31,7 +31,7 @@ Documentation: http://www.scrapbook.cash - API reference: http://docs.scrapbook.
 * [Interfaces](#interfaces)
   * [KeyValueStore](#keyvaluestore)
   * [psr/cache](#psrcache)
-  * [psr/simplecache](#psrsimplecache)
+  * [psr/simple-cache](#psrsimple-cache)
 * [Collections](#collections)
 * [Compatibility](#compatibility)
 * [License](#license)
@@ -459,7 +459,7 @@ A detailed list of the PSR-6 interface & its methods can be found in the
 [documentation](http://www.scrapbook.cash/interfaces/psr-cache/).
 
 
-## psr/simplecache
+## psr/simple-cache
 
 [PSR-16](https://github.com/php-fig/fig-standards/blob/master/accepted/PSR-16-simple-cache.md)
 (a PHP-FIG standard) is a second PHP-FIG cache standard. It's a driver model
@@ -470,7 +470,7 @@ It doesn't let you do too many operations. If `get`, `set`, `delete` (and their
 using this (or [psr/cache, see above](#psrcache)) as this interface is also
 supported by other cache libraries.
 
-You can easily use psr/simplecache by wrapping it around any KeyValueStore
+You can easily use psr/simple-cache by wrapping it around any KeyValueStore
 object:
 
 ```php
