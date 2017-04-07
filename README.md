@@ -429,13 +429,13 @@ the [documentation](http://www.scrapbook.cash/interfaces/key-value-store/).
 
 [PSR-6](https://github.com/php-fig/fig-standards/blob/master/accepted/PSR-6-cache.md)
 (a PHP-FIG standard) is a drastically different cache model than KeyValueStore &
-psr/simplecache: instead of directly querying values from the cache, psr/cache
+psr/simple-cache: instead of directly querying values from the cache, psr/cache
 basically operates on value objects (`Item`) to perform the changes, which then
 feed back to the cache (`Pool`.)
 
 It doesn't let you do too many operations. If `get`, `set`, `delete` (and their
 *multi counterparts) and `delete` is all you need, you're probably better off
-using this (or [psr/simplecache, see below](#psrsimplecache)) as this interface
+using this (or [psr/simple-cache, see below](#psrsimple-cache)) as this interface
 is also supported by other cache libraries.
 
 You can easily use psr/cache by wrapping it around any KeyValueStore object:
@@ -532,7 +532,7 @@ $cache->flush();
 adapter & feature that may wrap around it) and also returns a KeyValueStore
 object. While it is not part of the PSR interfaces, you can create your
 collections first and then wrap all of your collections inside their own
-psr/cache or psr/simplecache representations, like so:
+psr/cache or psr/simple-cache representations, like so:
 
 ```php
 $articleCache = $cache->collection('articles');
