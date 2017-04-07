@@ -30,7 +30,7 @@ before_script:
   - composer self-update && composer install
   # not including this package in composer.json because it requires --ignore-platform-reqs
   # to run on PHP 5.5, and I don't want to ignore reqs with other dependencies
-  - if [[ `php-config --vernum` -ge 50500 ]]; then composer require --dev cache/integration-tests:dev-master cache/tag-interop:dev-master --ignore-platform-reqs; fi
+  - if [[ `php-config --vernum` -ge 50500 ]]; then composer require --dev cache/integration-tests:dev-master cache/tag-interop --ignore-platform-reqs; fi
 
 script:
   - vendor/bin/phpunit --testsuite scrapbook --group "${ADAPTER}"
