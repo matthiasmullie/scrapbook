@@ -64,7 +64,7 @@ class PostgreSQL extends SQL
                 e TIMESTAMP NULL DEFAULT NULL
             )"
         );
-        $this->client->exec("CREATE INDEX IF NOT EXISTS ON $this->table (e)");
+        $this->client->exec("CREATE INDEX IF NOT EXISTS e_index ON $this->table (e)");
     }
 
     /**
