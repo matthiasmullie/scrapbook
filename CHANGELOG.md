@@ -1,6 +1,11 @@
 # Changelog
 
 
+## [1.4.4] - 2016-05-09
+### Fixed
+- Support Memcached>=3.0 new getMulti method signature
+
+
 ## [1.4.3] - 2016-03-01
 ### Added
 - Include cache/integration-tests test suite for PSR-16
@@ -250,3 +255,4 @@
 [1.4.1]: https://github.com/matthiasmullie/scrapbook/compare/1.4.0...1.4.1
 [1.4.2]: https://github.com/matthiasmullie/scrapbook/compare/1.4.1...1.4.2
 [1.4.3]: https://github.com/matthiasmullie/scrapbook/compare/1.4.2...1.4.3
+[1.4.4]: https://github.com/matthiasmullie/scrapbook/compare/1.4.3...1.4.4

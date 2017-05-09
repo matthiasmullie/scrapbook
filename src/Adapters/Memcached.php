@@ -67,7 +67,18 @@ class Memcached implements KeyValueStore
         }
 
         $keys = array_map(array($this, 'encode'), $keys);
-        $return = $this->client->getMulti($keys, $tokens);
+
+        if (defined('\Memcached::GET_EXTENDED')) {
+            $return = $this->client->getMulti($keys, \Memcached::GET_EXTENDED);
+            foreach ($return as $key => $value) {
+                // once PHP<5.5 support is dropped, just use array_column
+                $tokens[$key] = $value['cas'];
+                $return[$key] = $value['value'];
+            }
+        } else {
+            $return = $this->client->getMulti($keys, $tokens);
+        }
+
         $keys = array_map(array($this, 'decode'), array_keys($return));
         $return = array_combine($keys, $return);
 
