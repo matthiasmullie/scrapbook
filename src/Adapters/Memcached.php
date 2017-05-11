@@ -18,7 +18,7 @@ use MatthiasMullie\Scrapbook\KeyValueStore;
 class Memcached implements KeyValueStore
 {
     /**
-     * @var Memcached
+     * @var \Memcached
      */
     protected $client;
 
@@ -138,7 +138,7 @@ class Memcached implements KeyValueStore
         if (defined('HHVM_VERSION')) {
             $nums = array_filter(array_keys($items), 'is_numeric');
             if (!empty($nums)) {
-                $this->setMultiNumericItemsForHHVM($nums, $expire);
+                $this->setMultiNumericItemsForHHVM($items, $nums, $expire);
             }
         }
 
