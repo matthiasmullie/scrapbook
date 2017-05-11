@@ -15,7 +15,7 @@ class OperationFailed extends Exception
     private $errorCode;
 
     /**
-     * @var int
+     * @var string
      */
     private $errorMessage;
 
@@ -26,7 +26,7 @@ class OperationFailed extends Exception
      *
      * @return OperationFailed
      */
-    public function setResultCode($errorCode)
+    public function setErrorCode($errorCode)
     {
         $this->errorCode = $errorCode;
 
@@ -38,7 +38,7 @@ class OperationFailed extends Exception
      *
      * @return int
      */
-    public function getResultCode()
+    public function getErrorCode()
     {
         return $this->errorCode;
     }
@@ -50,7 +50,7 @@ class OperationFailed extends Exception
      *
      * @return OperationFailed
      */
-    public function setResultMessage($errorMessage)
+    public function setErrorMessage($errorMessage)
     {
         $this->errorMessage = $errorMessage;
 
@@ -62,7 +62,7 @@ class OperationFailed extends Exception
      *
      * @return string
      */
-    public function getResultMessage()
+    public function getErrorMessage()
     {
         return $this->errorMessage;
     }

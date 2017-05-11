@@ -137,8 +137,8 @@ class Memcached implements KeyValueStore
          */
         if (defined('HHVM_VERSION')) {
             $nums = array_filter(array_keys($items), 'is_numeric');
-            if ($nums) {
-                $this->setMultiNumericForHHVM($nums, $expire);
+            if (!empty($nums)) {
+                $this->setMultiNumericItemsForHHVM($nums, $expire);
             }
         }
 
