@@ -1,9 +1,10 @@
 # Changelog
 
 
-## [1.4.4] - 2016-05-09
+## [1.4.4] - 2016-05-12
 ### Fixed
 - Support Memcached>=3.0 new getMulti method signature
+- Throw exceptions for Memcached getMulti false (= error) result
 
 
 ## [1.4.3] - 2016-03-01

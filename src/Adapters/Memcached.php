@@ -4,6 +4,7 @@ namespace MatthiasMullie\Scrapbook\Adapters;
 
 use MatthiasMullie\Scrapbook\Adapters\Collections\Memcached as Collection;
 use MatthiasMullie\Scrapbook\Exception\InvalidKey;
+use MatthiasMullie\Scrapbook\Exception\OperationFailed;
 use MatthiasMullie\Scrapbook\KeyValueStore;
 
 /**
@@ -17,7 +18,7 @@ use MatthiasMullie\Scrapbook\KeyValueStore;
 class Memcached implements KeyValueStore
 {
     /**
-     * @var Memcached
+     * @var \Memcached
      */
     protected $client;
 
@@ -34,13 +35,14 @@ class Memcached implements KeyValueStore
      */
     public function get($key, &$token = null)
     {
-        /*
-         * Wouldn't it be awesome if I just didn't use the obvious method? :)
+        /**
+         * Wouldn't it be awesome if I just used the obvious method?
          *
          * I'm going to use getMulti() instead of get() because the latter is
          * flawed in earlier versions, where it was known to mess up some
          * operations that are followed by it (increment/decrement have been
          * reported, also seen it make CAS return result unreliable)
+         *
          * @see https://github.com/php-memcached-dev/php-memcached/issues/21
          */
         $values = $this->getMulti(array($key), $tokens);
@@ -70,6 +72,7 @@ class Memcached implements KeyValueStore
 
         if (defined('\Memcached::GET_EXTENDED')) {
             $return = $this->client->getMulti($keys, \Memcached::GET_EXTENDED);
+            $this->throwExceptionOnClientCallFailure($return);
             foreach ($return as $key => $value) {
                 // once PHP<5.5 support is dropped, just use array_column
                 $tokens[$key] = $value['cas'];
@@ -77,6 +80,7 @@ class Memcached implements KeyValueStore
             }
         } else {
             $return = $this->client->getMulti($keys, $tokens);
+            $this->throwExceptionOnClientCallFailure($return);
         }
 
         $keys = array_map(array($this, 'decode'), array_keys($return));
@@ -126,27 +130,10 @@ class Memcached implements KeyValueStore
             return array_fill_keys($keys, true);
         }
 
-        /*
-         * Numerical strings turn into integers when used as array keys, and
-         * HHVM (used to) reject(s) such cache keys.
-         *
-         * @see https://github.com/facebook/hhvm/pull/7654
-         */
         if (defined('HHVM_VERSION')) {
             $nums = array_filter(array_keys($items), 'is_numeric');
-            if ($nums) {
-                $success = [];
-                $nums = array_intersect_key($items, array_fill_keys($nums, null));
-                foreach ($nums as $k => $v) {
-                    $success[$k] = $this->set((string) $k, $v, $expire);
-                }
-
-                $remaining = array_diff_key($items, $nums);
-                if ($remaining) {
-                    $success += $this->setMulti($remaining, $expire);
-                }
-
-                return $success;
+            if (!empty($nums)) {
+                return $this->setMultiNumericItemsForHHVM($items, $nums, $expire);
             }
         }
 
@@ -178,11 +165,11 @@ class Memcached implements KeyValueStore
         }
 
         if (!method_exists($this->client, 'deleteMulti')) {
-            /*
+            /**
              * HHVM didn't always support deleteMulti, so I'll hack around it by
              * setting all items expired.
              * I could also delete() all items one by one, but that would
-             * probably take more network requests (this version always takes 2)
+             * probably take more network requests (this version always takes 2).
              *
              * @see http://docs.hhvm.com/manual/en/memcached.deletemulti.php
              */
@@ -301,8 +288,9 @@ class Memcached implements KeyValueStore
             return $this->delete($key);
         }
 
-        /*
+        /**
          * HHVM doesn't support touch.
+         *
          * @see http://docs.hhvm.com/manual/en/memcached.touch.php
          *
          * PHP does, but only with \Memcached::OPT_BINARY_PROTOCOL == true,
@@ -415,5 +403,54 @@ class Memcached implements KeyValueStore
         return preg_replace_callback($regex, function ($match) {
             return rawurldecode($match[0]);
         }, $key);
+    }
+
+    /**
+     * Numerical strings turn into integers when used as array keys, and
+     * HHVM (used to) reject(s) such cache keys.
+     *
+     * @see https://github.com/facebook/hhvm/pull/7654
+     *
+     * @param array $items
+     * @param array $nums
+     * @param int   $expire
+     *
+     * @return array
+     */
+    protected function setMultiNumericItemsForHHVM(array $items, array $nums, $expire = 0)
+    {
+        $success = [];
+        $nums = array_intersect_key($items, array_fill_keys($nums, null));
+        foreach ($nums as $k => $v) {
+            $success[$k] = $this->set((string) $k, $v, $expire);
+        }
+
+        $remaining = array_diff_key($items, $nums);
+        if ($remaining) {
+            $success += $this->setMulti($remaining, $expire);
+        }
+
+        return $success;
+    }
+
+    /**
+     * Will throw an exception if the returned result from a Memcached call
+     * indicates a failure in the operation.
+     * The exception will contain debug information about the failure.
+     *
+     * @param mixed $result
+     *
+     * @throws OperationFailed
+     */
+    protected function throwExceptionOnClientCallFailure($result)
+    {
+        if ($result !== false) {
+            return;
+        }
+
+        throw new OperationFailed(
+            $this->client->getResultMessage(),
+            $this->client->getResultCode(),
+        );
     }
 }
