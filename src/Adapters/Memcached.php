@@ -450,7 +450,7 @@ class Memcached implements KeyValueStore
 
         throw new OperationFailed(
             $this->client->getResultMessage(),
-            $this->client->getResultCode(),
+            $this->client->getResultCode()
         );
     }
 }
