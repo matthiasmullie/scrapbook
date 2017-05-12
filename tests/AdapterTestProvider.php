@@ -72,8 +72,8 @@ class AdapterTestProvider
      * that get input from dataProviders, so they're wrapped in another class
      * that we must unwrap in order to assign the adapter.
      *
-     * @param TestSuite $suite
-     * @param AdapterProvider              $adapterProvider
+     * @param TestSuite       $suite
+     * @param AdapterProvider $adapterProvider
      */
     protected function injectAdapter(/* TestSuite|\PHPUnit_Framework_TestSuite */ $suite, AdapterProvider $adapterProvider)
     {

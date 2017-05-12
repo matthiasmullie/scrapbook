@@ -143,6 +143,7 @@ class Couchbase implements KeyValueStore
             }
 
             $items = array_diff_key($items, $integers);
+
             return array_merge($success, $this->setMulti($items, $expire));
         }
 

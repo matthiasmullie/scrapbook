@@ -6,7 +6,9 @@ namespace
 
     // compatibility for when cache/integration-tests are run with PHPUnit>=6.0
     if (!class_exists('PHPUnit_Framework_TestCase')) {
-        abstract class PHPUnit_Framework_TestCase extends \PHPUnit\Framework\TestCase {}
+        abstract class PHPUnit_Framework_TestCase extends \PHPUnit\Framework\TestCase
+        {
+        }
     }
 }
 
@@ -15,10 +17,14 @@ namespace PHPUnit\Framework
     // compatibility for when these tests are run with PHPUnit<6.0 (which we
     // still do because PHPUnit=6.0 stopped supporting a lot of PHP versions)
     if (!class_exists('PHPUnit\Framework\TestCase')) {
-        abstract class TestCase extends \PHPUnit_Framework_TestCase {}
+        abstract class TestCase extends \PHPUnit_Framework_TestCase
+        {
+        }
     }
     if (!class_exists('PHPUnit\Framework\TestSuite')) {
-        class TestSuite extends \PHPUnit_Framework_TestSuite {}
+        class TestSuite extends \PHPUnit_Framework_TestSuite
+        {
+        }
     }
 }
 

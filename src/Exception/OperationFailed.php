@@ -20,7 +20,7 @@ class OperationFailed extends Exception
     private $errorMessage;
 
     /**
-     * Set the error (result) code for the (last) Memcached operation
+     * Set the error (result) code for the (last) Memcached operation.
      *
      * @param int $errorCode
      *
@@ -34,7 +34,7 @@ class OperationFailed extends Exception
     }
 
     /**
-     * Get the error (result) code for the (last) Memcached operation
+     * Get the error (result) code for the (last) Memcached operation.
      *
      * @return int
      */
@@ -44,7 +44,7 @@ class OperationFailed extends Exception
     }
 
     /**
-     * Set the error (result) message for the (last) Memcached operation
+     * Set the error (result) message for the (last) Memcached operation.
      *
      * @param string $errorMessage
      *
@@ -58,7 +58,7 @@ class OperationFailed extends Exception
     }
 
     /**
-     * Get the error (result) message for the (last) Memcached operation
+     * Get the error (result) message for the (last) Memcached operation.
      *
      * @return string
      */

@@ -36,12 +36,13 @@ class Memcached implements KeyValueStore
     public function get($key, &$token = null)
     {
         /**
-         * Wouldn't it be awesome if I just didn't use the obvious method? :)
+         * Wouldn't it be awesome if I just used the obvious method?
          *
          * I'm going to use getMulti() instead of get() because the latter is
          * flawed in earlier versions, where it was known to mess up some
          * operations that are followed by it (increment/decrement have been
          * reported, also seen it make CAS return result unreliable)
+         *
          * @see https://github.com/php-memcached-dev/php-memcached/issues/21
          */
         $values = $this->getMulti(array($key), $tokens);
@@ -129,7 +130,7 @@ class Memcached implements KeyValueStore
             return array_fill_keys($keys, true);
         }
 
-        /**
+        /*
          * Numerical strings turn into integers when used as array keys, and
          * HHVM (used to) reject(s) such cache keys.
          *
@@ -155,8 +156,8 @@ class Memcached implements KeyValueStore
      *
      * @param array $items
      * @param array $nums
-     * @param int $expire
-     * 
+     * @param int   $expire
+     *
      * @return array
      */
     private function setMultiNumericItemsForHHVM(array $items, array $nums, $expire = 0)
@@ -199,7 +200,7 @@ class Memcached implements KeyValueStore
              * HHVM didn't always support deleteMulti, so I'll hack around it by
              * setting all items expired.
              * I could also delete() all items one by one, but that would
-             * probably take more network requests (this version always takes 2)
+             * probably take more network requests (this version always takes 2).
              *
              * @see http://docs.hhvm.com/manual/en/memcached.deletemulti.php
              */
@@ -222,7 +223,7 @@ class Memcached implements KeyValueStore
         $keys = array_map(array($this, 'decode'), array_keys($result));
         $result = array_combine($keys, $result);
 
-        /**
+        /*
          * Contrary to docs (http://php.net/manual/en/memcached.deletemulti.php)
          * deleteMulti returns an array of [key => true] (for successfully
          * deleted values) and [key => error code] (for failures)
@@ -279,7 +280,7 @@ class Memcached implements KeyValueStore
             return false;
         }
 
-        /**
+        /*
          * Not doing \Memcached::increment because that one:
          * * needs \Memcached::OPT_BINARY_PROTOCOL == true
          * * is prone to errors after a flush ("merges" with pruned data) in at
@@ -309,7 +310,7 @@ class Memcached implements KeyValueStore
      */
     public function touch($key, $expire)
     {
-        /**
+        /*
          * Since \Memcached has no reliable touch(), we might as well take an
          * easy approach where we can. If TTL is expired already, just delete
          * the key - this only needs 1 request.
@@ -320,6 +321,7 @@ class Memcached implements KeyValueStore
 
         /**
          * HHVM doesn't support touch.
+         *
          * @see http://docs.hhvm.com/manual/en/memcached.touch.php
          *
          * PHP does, but only with \Memcached::OPT_BINARY_PROTOCOL == true,
@@ -439,10 +441,8 @@ class Memcached implements KeyValueStore
      * indicates a failure in the operation.
      * The exception will contain debug information about the failure.
      *
-     * @param mixed $resultFromClientCall
+     * @param mixed  $resultFromClientCall
      * @param string $exceptionMessage
-     *
-     * @return void
      *
      * @throws OperationFailed
      */
