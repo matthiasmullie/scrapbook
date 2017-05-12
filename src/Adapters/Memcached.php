@@ -72,6 +72,7 @@ class Memcached implements KeyValueStore
 
         if (defined('\Memcached::GET_EXTENDED')) {
             $return = $this->client->getMulti($keys, \Memcached::GET_EXTENDED);
+            $this->throwExceptionOnClientCallFailure($return);
             foreach ($return as $key => $value) {
                 // once PHP<5.5 support is dropped, just use array_column
                 $tokens[$key] = $value['cas'];
@@ -79,9 +80,8 @@ class Memcached implements KeyValueStore
             }
         } else {
             $return = $this->client->getMulti($keys, $tokens);
+            $this->throwExceptionOnClientCallFailure($return);
         }
-
-        $this->throwExceptionOnClientCallFailure($return);
 
         $keys = array_map(array($this, 'decode'), array_keys($return));
         $return = array_combine($keys, $return);
@@ -130,16 +130,10 @@ class Memcached implements KeyValueStore
             return array_fill_keys($keys, true);
         }
 
-        /*
-         * Numerical strings turn into integers when used as array keys, and
-         * HHVM (used to) reject(s) such cache keys.
-         *
-         * @see https://github.com/facebook/hhvm/pull/7654
-         */
         if (defined('HHVM_VERSION')) {
             $nums = array_filter(array_keys($items), 'is_numeric');
             if (!empty($nums)) {
-                $this->setMultiNumericItemsForHHVM($items, $nums, $expire);
+                return $this->setMultiNumericItemsForHHVM($items, $nums, $expire);
             }
         }
 
@@ -149,31 +143,6 @@ class Memcached implements KeyValueStore
         $keys = array_map(array($this, 'decode'), array_keys($items));
 
         return array_fill_keys($keys, $success);
-    }
-
-    /**
-     * @see https://github.com/facebook/hhvm/pull/7654
-     *
-     * @param array $items
-     * @param array $nums
-     * @param int   $expire
-     *
-     * @return array
-     */
-    private function setMultiNumericItemsForHHVM(array $items, array $nums, $expire = 0)
-    {
-        $success = [];
-        $nums = array_intersect_key($items, array_fill_keys($nums, null));
-        foreach ($nums as $k => $v) {
-            $success[$k] = $this->set((string) $k, $v, $expire);
-        }
-
-        $remaining = array_diff_key($items, $nums);
-        if ($remaining) {
-            $success += $this->setMulti($remaining, $expire);
-        }
-
-        return $success;
     }
 
     /**
@@ -437,26 +406,51 @@ class Memcached implements KeyValueStore
     }
 
     /**
+     * Numerical strings turn into integers when used as array keys, and
+     * HHVM (used to) reject(s) such cache keys.
+     *
+     * @see https://github.com/facebook/hhvm/pull/7654
+     *
+     * @param array $items
+     * @param array $nums
+     * @param int   $expire
+     *
+     * @return array
+     */
+    protected function setMultiNumericItemsForHHVM(array $items, array $nums, $expire = 0)
+    {
+        $success = [];
+        $nums = array_intersect_key($items, array_fill_keys($nums, null));
+        foreach ($nums as $k => $v) {
+            $success[$k] = $this->set((string) $k, $v, $expire);
+        }
+
+        $remaining = array_diff_key($items, $nums);
+        if ($remaining) {
+            $success += $this->setMulti($remaining, $expire);
+        }
+
+        return $success;
+    }
+
+    /**
      * Will throw an exception if the returned result from a Memcached call
      * indicates a failure in the operation.
      * The exception will contain debug information about the failure.
      *
-     * @param mixed  $resultFromClientCall
-     * @param string $exceptionMessage
+     * @param mixed $result
      *
      * @throws OperationFailed
      */
-    private function throwExceptionOnClientCallFailure($resultFromClientCall, $exceptionMessage = '')
+    protected function throwExceptionOnClientCallFailure($result)
     {
-        if ($resultFromClientCall !== false) {
+        if ($result !== false) {
             return;
         }
 
-        $exception = new OperationFailed($exceptionMessage);
-        $exception
-            ->setErrorCode($this->client->getResultCode())
-            ->setErrorMessage($this->client->getResultMessage())
-        ;
-        throw $exception;
+        throw new OperationFailed(
+            $this->client->getResultMessage(),
+            $this->client->getResultCode(),
+        );
     }
 }
