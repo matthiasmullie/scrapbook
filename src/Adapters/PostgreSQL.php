@@ -19,6 +19,31 @@ class PostgreSQL extends SQL
     {
         return $this->client->exec("TRUNCATE TABLE $this->table") !== false;
     }
+    
+    /**
+     * {@inheritdoc}
+     */
+    public function set($key, $value, $expire = 0)
+    {
+        $value = $this->serialize($value);
+        $expire = $this->expire($expire);
+
+        $this->clearExpired();
+
+        $statement = $this->client->prepare(
+            "INSERT INTO $this->table (k, v, e)
+            VALUES (:key, :value, :expire) 
+            ON CONFLICT (k) DO UPDATE SET v=EXCLUDED.v, e=EXCLUDED.e"
+        );
+
+        $statement->execute([
+            ':key' => $key,
+            ':value' => $value,
+            ':expire' => $expire,
+        ]);
+
+        return $statement->rowCount() === 1;
+    }
 
     /**
      * {@inheritdoc}
