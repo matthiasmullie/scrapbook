@@ -20,6 +20,8 @@ class MySQL extends SQL
         $value = $this->serialize($value);
         $expire = $this->expire($expire);
 
+        $this->clearExpired();
+
         $statement = $this->client->prepare(
             "REPLACE INTO $this->table (k, v, e)
             VALUES (:key, :value, :expire)"
@@ -48,6 +50,8 @@ class MySQL extends SQL
         $query = array();
         $params = array();
         $expire = $this->expire($expire);
+
+        $this->clearExpired();
 
         foreach ($items as $key => $value) {
             $value = $this->serialize($value);

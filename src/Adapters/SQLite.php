@@ -23,6 +23,8 @@ class SQLite extends MySQL
 
         $expire = $this->expire($expire);
 
+        $this->clearExpired();
+
         // SQLite < 3.7.11 doesn't support multi-insert/replace!
 
         $statement = $this->client->prepare(
