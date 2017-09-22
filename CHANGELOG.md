@@ -3,7 +3,8 @@
 
 ## [1.4.5] - 2017-09-22
 ### Fixed
-- Memcached::cas $token can be int as well as float
+- Memcached::cas `$token` can be int as well as float
+- Fix obscure issue where `$value` is considered `null`
 
 
 ## [1.4.4] - 2017-05-12

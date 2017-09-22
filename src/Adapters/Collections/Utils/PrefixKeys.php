@@ -61,7 +61,11 @@ class PrefixKeys implements KeyValueStore
     {
         $key = $this->prefix($key);
 
-        return $this->cache->set($key, $value, $expire);
+        // Note: I have no idea why, but it seems to happen in some cases that
+        // `$value` is `null`, but func_get_arg(1) returns the correct value.
+        // Makes no sense, probably a very obscure edge case, but it happens.
+        // (it didn't seem to happen if `$value` was another variable name...)
+        return $this->cache->set($key, func_get_arg(1), $expire);
     }
 
     /**
@@ -106,7 +110,11 @@ class PrefixKeys implements KeyValueStore
     {
         $key = $this->prefix($key);
 
-        return $this->cache->add($key, $value, $expire);
+        // Note: I have no idea why, but it seems to happen in some cases that
+        // `$value` is `null`, but func_get_arg(1) returns the correct value.
+        // Makes no sense, probably a very obscure edge case, but it happens.
+        // (it didn't seem to happen if `$value` was another variable name...)
+        return $this->cache->add($key, func_get_arg(1), $expire);
     }
 
     /**
@@ -116,7 +124,11 @@ class PrefixKeys implements KeyValueStore
     {
         $key = $this->prefix($key);
 
-        return $this->cache->replace($key, $value, $expire);
+        // Note: I have no idea why, but it seems to happen in some cases that
+        // `$value` is `null`, but func_get_arg(1) returns the correct value.
+        // Makes no sense, probably a very obscure edge case, but it happens.
+        // (it didn't seem to happen if `$value` was another variable name...)
+        return $this->cache->replace($key, func_get_arg(1), $expire);
     }
 
     /**
@@ -126,7 +138,11 @@ class PrefixKeys implements KeyValueStore
     {
         $key = $this->prefix($key);
 
-        return $this->cache->cas($token, $key, $value, $expire);
+        // Note: I have no idea why, but it seems to happen in some cases that
+        // `$value` is `null`, but func_get_arg(2) returns the correct value.
+        // Makes no sense, probably a very obscure edge case, but it happens.
+        // (it didn't seem to happen if `$value` was another variable name...)
+        return $this->cache->cas($token, $key, func_get_arg(2), $expire);
     }
 
     /**
