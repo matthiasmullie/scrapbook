@@ -191,9 +191,4 @@ class ItemTest extends Psr6TestCase
         $item->expiresAfter(new \DateInterval('P50D'));
         $this->assertEquals(strtotime('+50 days'), $item->getExpiration(), '', 1);
     }
-
-    public function testItemGetExpiration()
-    {
-        // pointless, we've just tested this as part of the setExpiration series
-    }
 }
