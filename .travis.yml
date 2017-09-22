@@ -21,6 +21,13 @@ env:
   - ADAPTER=PostgreSQL
   - ADAPTER=Flysystem
 
+global:
+  - host-couchbase=127.0.0.1
+  - host-memcached=127.0.0.1
+  - host-mysql=127.0.0.1
+  - host-postgresql=127.0.0.1
+  - host-redis=127.0.0.1
+
 services:
   - docker
 

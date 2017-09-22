@@ -4,6 +4,24 @@ namespace
 {
     require __DIR__.'/../vendor/autoload.php';
 
+    // hostname for these servers will be in env vars
+    // if it is not, default to localhost
+    if (!getenv('host-couchbase')) {
+        putenv('host-couchbase=127.0.0.1');
+    }
+    if (!getenv('host-memcached')) {
+        putenv('host-memcached=127.0.0.1');
+    }
+    if (!getenv('host-mysql')) {
+        putenv('host-mysql=127.0.0.1');
+    }
+    if (!getenv('host-postgresql')) {
+        putenv('host-postgresql=127.0.0.1');
+    }
+    if (!getenv('host-redis')) {
+        putenv('host-redis=127.0.0.1');
+    }
+
     // compatibility for when cache/integration-tests are run with PHPUnit>=6.0
     if (!class_exists('PHPUnit_Framework_TestCase')) {
         abstract class PHPUnit_Framework_TestCase extends \PHPUnit\Framework\TestCase

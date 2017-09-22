@@ -14,7 +14,7 @@ class RedisProvider extends AdapterProvider
         }
 
         $client = new \Redis();
-        $client->connect('127.0.0.1');
+        $client->connect(getenv('host-redis'));
 
         // Redis databases are numeric
         parent::__construct(new \MatthiasMullie\Scrapbook\Adapters\Redis($client), 1);

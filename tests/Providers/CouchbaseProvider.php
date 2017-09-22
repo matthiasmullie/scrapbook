@@ -13,7 +13,7 @@ class CouchbaseProvider extends AdapterProvider
             throw new Exception('ext-couchbase is not installed.');
         }
 
-        $cluster = new \CouchbaseCluster('couchbase://localhost?detailed_errcodes=1');
+        $cluster = new \CouchbaseCluster('couchbase://'.getenv('host-couchbase').'?detailed_errcodes=1');
         $bucket = $cluster->openBucket('default');
 
         parent::__construct(new \MatthiasMullie\Scrapbook\Adapters\Couchbase($bucket));
