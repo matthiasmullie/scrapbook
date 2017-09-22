@@ -231,7 +231,7 @@ class Memcached implements KeyValueStore
      */
     public function cas($token, $key, $value, $expire = 0)
     {
-        if (!is_float($token)) {
+        if (!is_float($token) && !is_int($token)) {
             return false;
         }
 

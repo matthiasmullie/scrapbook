@@ -1,13 +1,18 @@
 # Changelog
 
 
-## [1.4.4] - 2016-05-12
+## [1.4.5] - 2017-09-22
+### Fixed
+- Memcached::cas $token can be int as well as float
+
+
+## [1.4.4] - 2017-05-12
 ### Fixed
 - Support Memcached>=3.0 new getMulti method signature
 - Throw exceptions for Memcached getMulti false (= error) result
 
 
-## [1.4.3] - 2016-03-01
+## [1.4.3] - 2017-03-01
 ### Added
 - Include cache/integration-tests test suite for PSR-16
 
@@ -257,3 +262,4 @@
 [1.4.2]: https://github.com/matthiasmullie/scrapbook/compare/1.4.1...1.4.2
 [1.4.3]: https://github.com/matthiasmullie/scrapbook/compare/1.4.2...1.4.3
 [1.4.4]: https://github.com/matthiasmullie/scrapbook/compare/1.4.3...1.4.4
+[1.4.5]: https://github.com/matthiasmullie/scrapbook/compare/1.4.4...1.4.5
