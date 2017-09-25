@@ -1,7 +1,10 @@
 # Changelog
 
 
-## [1.4.5] - 2017-09-22
+## [1.4.5] - 2017-09-25
+### Added
+- Dockerize everything needed for testing adapters & versions
+
 ### Fixed
 - Memcached::cas `$token` can be int as well as float
 - Fix obscure issue where `$value` is considered `null`

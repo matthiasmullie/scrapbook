@@ -22,11 +22,16 @@ env:
   - ADAPTER=Flysystem
 
 global:
-  - host-couchbase=127.0.0.1
-  - host-memcached=127.0.0.1
-  - host-mysql=127.0.0.1
-  - host-postgresql=127.0.0.1
-  - host-redis=127.0.0.1
+  - couchbase-host=127.0.0.1
+  - couchbase-port=11210
+  - memcached-host=127.0.0.1
+  - memcached-port=11211
+  - mysql-host=127.0.0.1
+  - mysql-port=3307
+  - postgresql-host=127.0.0.1
+  - postgresql-port=5432
+  - redis-host=127.0.0.1
+  - redis-port=6379
 
 services:
   - docker
