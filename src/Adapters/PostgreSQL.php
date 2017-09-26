@@ -13,20 +13,26 @@ namespace MatthiasMullie\Scrapbook\Adapters;
 class PostgreSQL extends SQL
 {
     /**
+     * @var bool
+     */
+    protected $conflictSupport = true;
+
+    /**
      * {@inheritdoc}
      */
     public function flush()
     {
         return $this->client->exec("TRUNCATE TABLE $this->table") !== false;
     }
-    
+
     /**
      * {@inheritdoc}
      */
     public function set($key, $value, $expire = 0)
     {
-        $value = $this->serialize($value);
-        $expire = $this->expire($expire);
+        if (!$this->conflictSupport) {
+            return parent::set($key, $value, $expire);
+        }
 
         $this->clearExpired();
 
@@ -38,9 +44,16 @@ class PostgreSQL extends SQL
 
         $statement->execute([
             ':key' => $key,
-            ':value' => $value,
-            ':expire' => $expire,
+            ':value' => $this->serialize($value),
+            ':expire' => $this->expire($expire),
         ]);
+
+        // ON CONFLICT is not supported in versions < 9.5, in which case we'll
+        // have to fall back on add/replace
+        if ($statement->errorCode() === '42601') {
+            $this->conflictSupport = false;
+            return $this->set($key, $value, $expire);
+        }
 
         return $statement->rowCount() === 1;
     }
