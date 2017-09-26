@@ -6,8 +6,9 @@ apt-get update
 
 # install PHP extensions
 apt-get install -y libcouchbase2-libevent libcouchbase-dev libmemcached-dev zlib1g-dev libpq-dev
-pecl install -f apcu pcs-1.3.3 igbinary couchbase memcached redis
-docker-php-ext-enable apcu
+pecl install -f apc apcu pcs-1.3.3 igbinary couchbase memcached redis
+docker-php-ext-enable apc # PHP 5.*
+docker-php-ext-enable apcu # PHP 7.*
 docker-php-ext-enable pcs
 docker-php-ext-enable igbinary
 docker-php-ext-enable couchbase
