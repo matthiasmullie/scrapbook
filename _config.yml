@@ -2,7 +2,7 @@
 title:            Scrapbook
 description:      'Scrapbook is a caching environment for PHP, with adapters for e.g. Memcached, Redis, Couchbase, APC(u), SQL and additional capabilities (e.g. transactions) built on top.'
 url:              http://www.scrapbook.cash
-baseurl:          /
+baseurl:          ""
 image:            public/logo.png
 
 author:
