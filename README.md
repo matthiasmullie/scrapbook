@@ -552,8 +552,9 @@ backends across these versions & platforms will be mitigated within Scrapbook
 to ensure uniform behavior.
 
 Compatibility with all of these versions & platforms is tested on
-[Travis CI](https://travis-ci.org/matthiasmullie/scrapbook), which means that
-PHP 5.3 is no longer actively being tested as it is no longer supported there.
+[Travis CI](https://travis-ci.org/matthiasmullie/scrapbook) using the official
+PHP Docker images, which means that PHP<=5.5 is no longer actively being tested
+even though these versions are supported by Scrapbook.
 
 Cache backends that do not have an implementation for a particular version or
 platform ([Flysystem](#filesystem), on older PHP versions) are obviously not

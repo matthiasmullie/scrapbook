@@ -31,35 +31,38 @@ Don't forget to add your changes to the [changelog](CHANGELOG.md).
 
 ### Running the tests
 
-To run the complete test suite, for all adapters:
+Because Scrapbook supports a wide range of PHP versions and has adapters for a
+good amount of services, testing could be laborious.
+
+Docker images has been created to set up the entire environment, or just a
+specific combination of PHP version + adapters. These can be launched from the
+command line, as configured in the makefile. Just make sure you have installed
+[Docker](https://docs.docker.com/engine/installation/) &
+[Docker-compose](https://docs.docker.com/compose/install/).
+
+To run the complete test suite, for all adapters, on the latest PHP release:
 
 ```sh
-vendor/bin/phpunit
+make test
 ```
 
 Or a specific adapter (in this case Memcached):
 
 ```sh
-vendor/bin/phpunit --group "Memcached"
+make test ADAPTER=Memcached
 ```
 
 Or a couple of adapters (in this case the SQL group):
 
 ```sh
-vendor/bin/phpunit --group "MySQL,PostgreSQL,SQLite"
+make test ADAPTER=MySQL,PostgreSQL,SQLite
 ```
 
-Some adapter rely on external services (cache server) & libraries (client-side
-APIs). If you need help to install these, take a look inside the
-[tests/.travis directory](tests/.travis), where the installation scripts for
-Travis CI are located.
+Or with a specific PHP version:
 
-A lot of them use Docker to launch the cache servers but you can always install
-the servers natively, in which case you may need to alter the adapters
-configuration (e.g. because you're running the server on a different port). This
-configuration is located in [tests/Providers](tests/Providers), in the
-`::__construct` method of every adapter. If you do need to alter these in order
-to run the tests on your machine, make sure not to commit those changes!
+```sh
+make test PHP=7.0 ADAPTER=MySQL,PostgreSQL,SQLite
+```
 
 Travis CI has been [configured](.travis.yml) to run a matrix of all supported
 PHP versions & adapters individually. Upon submitting a new pull request, that
