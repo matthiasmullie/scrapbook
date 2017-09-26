@@ -52,44 +52,46 @@ weight: 5
 		<h2>Testing</h2>
 		<hr class="sep10">
 
-
 		<h3 class="headline">Running the tests</h3>
 		<span class="brd-headling"></span>
 		<div class="clearfix"></div>
 
 		<p>
-			To run the complete test suite, for all adapters:
+			Because Scrapbook supports a wide range of PHP versions and has adapters for a
+			good amount of services, testing could be laborious.
 		</p>
 
-		<pre>vendor/bin/phpunit</pre>
+		<p>
+			Docker images has been created to set up the entire environment, or just a
+			specific combination of PHP version + adapters. These can be launched from the
+			command line, as configured in the makefile. Just make sure you have installed
+			<a href="https://docs.docker.com/engine/installation/" title="Install Docker">Docker</a> &amp;
+			<a href="https://docs.docker.com/compose/install/" title="Install Docker-compose">Docker-compose</a>.
+		</p>
+
+		<p>
+			To run the complete test suite, for all adapters, on the latest PHP release:
+		</p>
+
+		<pre>make test</pre>
 
 		<p>
 			Or a specific adapter (in this case Memcached):
 		</p>
 
-		<pre>vendor/bin/phpunit --group "Memcached"</pre>
+		<pre>make test ADAPTER=Memcached</pre>
 
 		<p>
 			Or a couple of adapters (in this case the SQL group):
 		</p>
 
-		<pre>vendor/bin/phpunit --group "MySQL,PostgreSQL,SQLite"</pre>
+		<pre>make test ADAPTER=MySQL,PostgreSQL,SQLite</pre>
 
 		<p>
-			Some adapter rely on external services (cache server) & libraries (client-side
-			APIs). If you need help to install these, take a look inside the
-			<a href="https://github.com/matthiasmullie/scrapbook/blob/master/tests/.travis" title="tests/.travis directory">tests/.travis directory</a>, where the installation scripts for
-			Travis CI are located.
+			Or with a specific PHP version:
 		</p>
 
-		<p>
-			A lot of them use Docker to launch the cache servers but you can always install
-			the servers natively, in which case you may need to alter the adapters
-			configuration (e.g. because you're running the server on a different port). This
-			configuration is located in <a href="https://github.com/matthiasmullie/scrapbook/blob/master/tests/Adapters" title="tests/Adapters">tests/Adapters</a>, in the <code>::get</code>
-			method of every adapter. If you do need to alter these in order to run the tests
-			on your machine, make sure not to commit those changes!
-		</p>
+		<pre>make test PHP=7.0 ADAPTER=MySQL,PostgreSQL,SQLite</pre>
 
 		<p>
 			Travis CI has been <a href="https://github.com/matthiasmullie/scrapbook/blob/master/.travis.yml" title="configured">configured</a> to run a matrix of all supported
