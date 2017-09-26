@@ -13,7 +13,7 @@ class PostgreSQLProvider extends AdapterProvider
             throw new Exception('ext-pdo is not installed.');
         }
 
-        $client = new \PDO('pgsql:host='.getenv('postgresql-host').';port='.getenv('postgresql-port').';dbname=cache', 'postgres', '');
+        $client = new \PDO('pgsql:host=postgresql;port=5432;dbname=cache', 'postgres', '');
 
         parent::__construct(new \MatthiasMullie\Scrapbook\Adapters\PostgreSQL($client));
     }

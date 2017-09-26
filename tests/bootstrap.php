@@ -4,39 +4,6 @@ namespace
 {
     require __DIR__.'/../vendor/autoload.php';
 
-    // hostname for these servers will be in env vars
-    // if it is not, default to localhost
-    if (!getenv('couchbase-host')) {
-        putenv('couchbase-host=127.0.0.1');
-    }
-    if (!getenv('couchbase-port')) {
-        putenv('couchbase-port=11210');
-    }
-    if (!getenv('memcached-host')) {
-        putenv('memcached-host=127.0.0.1');
-    }
-    if (!getenv('memcached-port')) {
-        putenv('memcached-port=11211');
-    }
-    if (!getenv('mysql-host')) {
-        putenv('mysql-host=127.0.0.1');
-    }
-    if (!getenv('mysql-port')) {
-        putenv('mysql-port=3306');
-    }
-    if (!getenv('postgresql-host')) {
-        putenv('postgresql-host=127.0.0.1');
-    }
-    if (!getenv('postgresql-port')) {
-        putenv('postgresql-port=5432');
-    }
-    if (!getenv('redis-host')) {
-        putenv('redis-host=127.0.0.1');
-    }
-    if (!getenv('redis-port')) {
-        putenv('redis-port=6379');
-    }
-
     // compatibility for when cache/integration-tests are run with PHPUnit>=6.0
     if (!class_exists('PHPUnit_Framework_TestCase')) {
         abstract class PHPUnit_Framework_TestCase extends \PHPUnit\Framework\TestCase

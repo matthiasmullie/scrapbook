@@ -14,7 +14,7 @@ class MemcachedProvider extends AdapterProvider
         }
 
         $client = new \Memcached();
-        $client->addServer(getenv('memcached-host'), getenv('memcached-port'));
+        $client->addServer('memcached', '11211');
 
         parent::__construct(new \MatthiasMullie\Scrapbook\Adapters\Memcached($client));
     }
