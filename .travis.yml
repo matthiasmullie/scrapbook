@@ -4,11 +4,6 @@ php:
   - 7.1
   - 7.0
   - 5.6
-  - 5.5
-  - 5.4
-  - hhvm
-
-sudo: required
 
 env:
   - ADAPTER=MemoryStore
@@ -21,44 +16,11 @@ env:
   - ADAPTER=PostgreSQL
   - ADAPTER=Flysystem
 
-global:
-  - couchbase-host=127.0.0.1
-  - couchbase-port=11210
-  - memcached-host=127.0.0.1
-  - memcached-port=11211
-  - mysql-host=127.0.0.1
-  - mysql-port=3307
-  - postgresql-host=127.0.0.1
-  - postgresql-port=5432
-  - redis-host=127.0.0.1
-  - redis-port=6379
-
 services:
   - docker
 
-before_script:
-  - pip install --user codecov
-  - tests/.travis/$ADAPTER.sh
-  - composer self-update && composer install
-  # not including this package in composer.json because it requires --ignore-platform-reqs
-  # to run on PHP 5.5, and I don't want to ignore reqs with other dependencies
-  - if [[ `php-config --vernum` -ge 50500 ]]; then composer require --dev cache/integration-tests:dev-master cache/tag-interop --ignore-platform-reqs; fi
-
 script:
-  - vendor/bin/phpunit --testsuite scrapbook --group "${ADAPTER}"
-  - if [[ `php-config --vernum` -ge 50500 ]]; then vendor/bin/phpunit --testsuite integration --group "${ADAPTER}"; fi
-
-after_success:
-  - codecov
+  - make test PHP=$(phpenv version-name) ADAPTER=$(ADAPTER)
 
 matrix:
   fast_finish: true
-  allow_failures:
-    - php: 7.1
-      env: ADAPTER=Memcached
-    - php: 7.0
-      env: ADAPTER=Memcached
-    - php: hhvm
-      env: ADAPTER=Redis
-    - php: hhvm
-      env: ADAPTER=Couchbase

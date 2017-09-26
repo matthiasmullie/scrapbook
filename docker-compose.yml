@@ -3,7 +3,7 @@ services:
   php:
     build:
       context: .
-      dockerfile: docker/Dockerfile
+      dockerfile: tests/Docker/Dockerfile
     volumes:
       - ./src:/var/www/src
       - ./tests:/var/www/tests
@@ -23,23 +23,23 @@ services:
     extends: php
     build:
       context: .
-      dockerfile: docker/Dockerfile-7.1
+      dockerfile: tests/Docker/Dockerfile-7.1
   '7.0':
     extends: php
     build:
       context: .
-      dockerfile: docker/Dockerfile-7.0
+      dockerfile: tests/Docker/Dockerfile-7.0
   '5.6':
     extends: php
     build:
       context: .
-      dockerfile: docker/Dockerfile-5.6
+      dockerfile: tests/Docker/Dockerfile-5.6
   memcached:
     image: memcached
   couchbase:
     build:
       context: .
-      dockerfile: docker/Dockerfile-Couchbase
+      dockerfile: tests/Docker/Dockerfile-Couchbase
   mysql:
     image: mysql
     environment:

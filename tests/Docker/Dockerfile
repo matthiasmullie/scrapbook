@@ -1,10 +1,10 @@
-FROM php:7.0-cli
+FROM php:cli
 
 RUN apt-get update
 
 WORKDIR /var/www
 COPY composer.json composer.json
-COPY docker docker
+COPY tests/Docker docker
 
 RUN docker/build-php.sh
 

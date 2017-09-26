@@ -31,5 +31,4 @@ ifneq (,$(findstring Redis, $(ADAPTER)))
 	docker-compose up -d redis
 endif
 	docker-compose up -d $(PHP)
-	-docker-compose run $(PHP) 'vendor/bin/phpunit --group "$(ADAPTER)"'
-	docker-compose stop
+	docker-compose run $(PHP) 'vendor/bin/phpunit --group "$(ADAPTER)"'; status=$$?; docker-compose stop; exit $$status

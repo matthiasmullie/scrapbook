@@ -1,7 +1,7 @@
 # Changelog
 
 
-## [1.4.5] - 2017-09-25
+## [1.4.5] - 2017-09-26
 ### Added
 - Dockerize everything needed for testing adapters & versions
 
