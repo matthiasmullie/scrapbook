@@ -42,11 +42,11 @@ class PostgreSQL extends SQL
             ON CONFLICT (k) DO UPDATE SET v=EXCLUDED.v, e=EXCLUDED.e"
         );
 
-        $statement->execute([
+        $statement->execute(array(
             ':key' => $key,
             ':value' => $this->serialize($value),
             ':expire' => $this->expire($expire),
-        ]);
+        ));
 
         // ON CONFLICT is not supported in versions < 9.5, in which case we'll
         // have to fall back on add/replace
