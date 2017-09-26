@@ -7,9 +7,16 @@ apt-get update
 # install PHP extensions
 apt-get install -y libcouchbase2-libevent libcouchbase-dev libmemcached-dev zlib1g-dev libpq-dev
 pecl install -f apcu pcs-1.3.3 igbinary couchbase memcached redis
-docker-php-ext-enable apcu pcs igbinary couchbase memcached redis
+docker-php-ext-enable apcu
+docker-php-ext-enable pcs
+docker-php-ext-enable igbinary
+docker-php-ext-enable couchbase
+docker-php-ext-enable memcached
+docker-php-ext-enable redis
+docker-php-ext-install pdo
+docker-php-ext-install pdo_mysql
 docker-php-ext-configure pgsql -with-pgsql=/usr/local/pgsql
-docker-php-ext-install pdo pdo_mysql pdo_pgsql
+docker-php-ext-install pdo_pgsql
 echo "apc.enable_cli=1" >> /usr/local/etc/php/php.ini
 rm -rf /tmp/pear
 
