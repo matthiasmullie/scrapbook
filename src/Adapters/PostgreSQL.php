@@ -52,6 +52,7 @@ class PostgreSQL extends SQL
         // have to fall back on add/replace
         if ($statement->errorCode() === '42601') {
             $this->conflictSupport = false;
+
             return $this->set($key, $value, $expire);
         }
 
