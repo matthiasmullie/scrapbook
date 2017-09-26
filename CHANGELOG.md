@@ -5,6 +5,9 @@
 ### Added
 - Dockerize everything needed for testing adapters & versions
 
+### Changed
+- Use more direct ON CONFLICT functionality for PostgreSQL sets
+
 ### Fixed
 - Memcached::cas `$token` can be int as well as float
 - Fix obscure issue where `$value` is considered `null`
