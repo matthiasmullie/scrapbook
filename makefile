@@ -41,19 +41,19 @@ endif
 
 down:
 ifneq (,$(findstring Couchbase, $(ADAPTER)))
-	docker-compose stop couchbase
+	docker-compose stop -t0 couchbase
 endif
 ifneq (,$(findstring Memcached, $(ADAPTER)))
-	docker-compose stop memcached
+	docker-compose stop -t0 memcached
 endif
 ifneq (,$(findstring MySQL, $(ADAPTER)))
-	docker-compose stop mysql
+	docker-compose stop -t0 mysql
 endif
 ifneq (,$(findstring PostgreSQL, $(ADAPTER)))
-	docker-compose stop postgresql
+	docker-compose stop -t0 postgresql
 endif
 ifneq (,$(findstring Redis, $(ADAPTER)))
-	docker-compose stop redis
+	docker-compose stop -t0 redis
 endif
 	docker-compose stop -t0 $(PHP)
 
