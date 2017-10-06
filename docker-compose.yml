@@ -8,17 +8,6 @@ services:
       - ./src:/var/www/src
       - ./tests:/var/www/tests
       - ./phpunit.xml.dist:/var/www/phpunit.xml.dist
-    environment:
-      - couchbase-host=couchbase
-      - couchbase-port=11210
-      - memcached-host=memcached
-      - memcached-port=11211
-      - mysql-host=mysql
-      - mysql-port=3306
-      - postgresql-host=postgresql
-      - postgresql-port=5432
-      - redis-host=redis
-      - redis-port=6379
     depends_on:
       couchbase:
         condition: service_healthy
