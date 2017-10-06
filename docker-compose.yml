@@ -29,7 +29,7 @@ services:
       test: ["CMD", "curl", "-f", "http://localhost:8091/pools/default/buckets/default"]
       interval: 1s
       timeout: 3s
-      retries: 20
+      retries: 40
   memcached:
     image: memcached
     # not sure how to properly healthcheck
@@ -43,7 +43,7 @@ services:
       test: ["CMD", "mysql" ,"-h", "mysql", "-P", "3306", "-u", "root", "-e", "SELECT 1", "cache"]
       interval: 1s
       timeout: 3s
-      retries: 5
+      retries: 10
   postgresql:
     image: postgres
     environment:
@@ -53,11 +53,11 @@ services:
       test: ["CMD", "pg_isready"]
       interval: 1s
       timeout: 3s
-      retries: 5
+      retries: 10
   redis:
     image: redis
     healthcheck:
       test: ["CMD", "redis-cli", "ping"]
       interval: 1s
       timeout: 3s
-      retries: 5
+      retries: 10
