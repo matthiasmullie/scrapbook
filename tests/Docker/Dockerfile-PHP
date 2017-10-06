@@ -1,4 +1,5 @@
-FROM php:cli
+ARG version
+FROM php:$version
 
 RUN apt-get update
 

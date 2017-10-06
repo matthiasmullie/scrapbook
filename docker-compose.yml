@@ -3,7 +3,9 @@ services:
   php:
     build:
       context: .
-      dockerfile: tests/Docker/Dockerfile
+      dockerfile: tests/Docker/Dockerfile-PHP
+      args:
+        version: cli
     volumes:
       - ./src:/var/www/src
       - ./tests:/var/www/tests

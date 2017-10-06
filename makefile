@@ -11,7 +11,7 @@ UP ?= 1
 DOWN ?= 1
 
 up:
-	docker-compose -f docker-compose.yml -f docker-compose.$(PHP).yml up --no-deps -d $(filter-out apc flysystem memorystore sqlite, $(shell echo $(ADAPTER) | tr "A-Z," "a-z ")) php
+	docker-compose -f docker-compose.yml -f tests/Docker/docker-compose.$(PHP).yml up --no-deps -d $(filter-out apc flysystem memorystore sqlite, $(shell echo $(ADAPTER) | tr "A-Z," "a-z ")) php
 
 down:
 	docker-compose stop -t0 $(filter-out apc flysystem memorystore sqlite, $(shell echo $(ADAPTER) | tr "A-Z," "a-z ")) php
