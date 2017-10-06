@@ -44,6 +44,7 @@ mv composer.phar /usr/local/bin/composer
 # install dependencies
 composer install
 
-# install flysystem (not a hard dependency since it may not be needed, but we want to test it)
+# install flysystem (not a hard dependency since it would fail to install on old
+# PHP versions and may not be needed - but we want to test it so we need it)
 mkdir /tmp/cache
 composer require league/flysystem
