@@ -33,10 +33,13 @@ docker-php-ext-install pdo_mysql
 docker-php-ext-configure pgsql -with-pgsql=/usr/local/pgsql
 docker-php-ext-install pdo_pgsql
 
+# cache dir for flysystem
+mkdir /tmp/cache
+
 rm -rf /tmp/pear
 
-# install composer and a bunch of dependencies
-apt-get install -y git curl zip unzip
+# install composer
+apt-get install -y git zip unzip
 docker-php-ext-install zip pcntl
 curl -sS https://getcomposer.org/installer | php
 mv composer.phar /usr/local/bin/composer
@@ -46,5 +49,4 @@ composer install
 
 # install flysystem (not a hard dependency since it would fail to install on old
 # PHP versions and may not be needed - but we want to test it so we need it)
-mkdir /tmp/cache
 composer require league/flysystem
