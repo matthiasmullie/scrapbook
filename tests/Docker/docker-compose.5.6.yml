@@ -1,6 +1,7 @@
 version: '2.1'
 services:
   php:
+    image: '5.6'
     build:
       args:
         version: 5.6-cli
