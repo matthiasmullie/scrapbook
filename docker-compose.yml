@@ -19,37 +19,54 @@ services:
       - postgresql-port=5432
       - redis-host=redis
       - redis-port=6379
-  '7.1':
-    extends: php
-    build:
-      context: .
-      dockerfile: tests/Docker/Dockerfile-7.1
-  '7.0':
-    extends: php
-    build:
-      context: .
-      dockerfile: tests/Docker/Dockerfile-7.0
-  '5.6':
-    extends: php
-    build:
-      context: .
-      dockerfile: tests/Docker/Dockerfile-5.6
-  memcached:
-    image: memcached
+    depends_on:
+      couchbase:
+        condition: service_healthy
+      memcached:
+        condition: service_started
+      mysql:
+        condition: service_healthy
+      postgresql:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
   couchbase:
     build:
       context: .
       dockerfile: tests/Docker/Dockerfile-Couchbase
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8091/pools/default/buckets/default"]
+      interval: 1s
+      timeout: 3s
+      retries: 20
+  memcached:
+    image: memcached
+    # not sure how to properly healthcheck
   mysql:
     image: mysql
     environment:
       - MYSQL_ALLOW_EMPTY_PASSWORD=yes
       - MYSQL_ROOT_PASSWORD=
       - MYSQL_DATABASE=cache
+    healthcheck:
+      test: ["CMD", "mysql" ,"-h", "mysql", "-P", "3306", "-u", "root", "-e", "SELECT 1", "cache"]
+      interval: 1s
+      timeout: 3s
+      retries: 5
   postgresql:
     image: postgres
     environment:
       - POSTGRES_PASSWORD=
       - POSTGRES_DB=cache
+    healthcheck:
+      test: ["CMD", "pg_isready"]
+      interval: 1s
+      timeout: 3s
+      retries: 5
   redis:
     image: redis
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 1s
+      timeout: 3s
+      retries: 5

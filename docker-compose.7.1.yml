@@ -1,0 +1,6 @@
+version: '2.1'
+services:
+  php:
+    build:
+      context: .
+      dockerfile: tests/Docker/Dockerfile-7.1
