@@ -21,5 +21,5 @@ test:
 	# make test - tests all adapters on latest PHP version
 	# make test PHP=5.6 ADAPTER=Memcached - tests Memcached on PHP 5.6
 	[ $(UP) -eq 1 ] && make up PHP=$(PHP) ADAPTER=$(ADAPTER) || true
-	$(eval cmd='docker-compose run --no-deps php "vendor/bin/phpunit --group $(ADAPTER)"')
+	$(eval cmd='docker-compose -f docker-compose.yml -f tests/Docker/docker-compose.$(PHP).yml run --no-deps php "vendor/bin/phpunit --group $(ADAPTER)"')
 	eval $(cmd); status=$$?; [ $(DOWN) -eq 1 ] && make down PHP=$(PHP) ADAPTER=$(ADAPTER); exit $$status
