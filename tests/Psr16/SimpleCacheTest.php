@@ -53,7 +53,7 @@ class SimpleCacheTest extends Psr16TestCase
 
     public function testSetExpired()
     {
-        $success = $this->simplecache->set('key', 'value', time() - 1);
+        $success = $this->simplecache->set('key', 'value', -1);
         $this->assertSame(true, $success);
 
         $interval = new DateInterval('PT1S');
@@ -70,7 +70,7 @@ class SimpleCacheTest extends Psr16TestCase
 
     public function testSetFutureExpire()
     {
-        $success = $this->simplecache->set('key', 'value', time() + 1);
+        $success = $this->simplecache->set('key', 'value', 1);
         $this->assertSame(true, $success);
 
         $success = $this->simplecache->set('key2', 'value', new DateInterval('PT1S'));
