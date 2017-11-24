@@ -5,7 +5,7 @@ namespace MatthiasMullie\Scrapbook\Buffered\Utils;
 use MatthiasMullie\Scrapbook\Adapters\Collections\MemoryStore as MemoryStoreCollection;
 
 /**
- * @todo
+ * A collection implementation for Buffer.
  *
  * @author Matthias Mullie <scrapbook@mullie.eu>
  * @copyright Copyright (c) 2014, Matthias Mullie. All rights reserved
