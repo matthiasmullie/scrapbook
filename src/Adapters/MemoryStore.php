@@ -2,6 +2,7 @@
 
 namespace MatthiasMullie\Scrapbook\Adapters;
 
+use MatthiasMullie\Scrapbook\Adapters\Collections\MemoryStore as Collection;
 use MatthiasMullie\Scrapbook\KeyValueStore;
 
 /**
@@ -32,11 +33,6 @@ class MemoryStore implements KeyValueStore
      * @var int
      */
     protected $size = 0;
-
-    /**
-     * @var KeyValueStore[]
-     */
-    protected $collections = array();
 
     /**
      * @param int|string $limit Memory limit in bytes (defaults to 10% of memory_limit)
@@ -239,12 +235,7 @@ class MemoryStore implements KeyValueStore
     public function flush()
     {
         $this->items = array();
-
         $this->size = 0;
-
-        foreach ($this->collections as $collection) {
-            $collection->flush();
-        }
 
         return true;
     }
@@ -254,11 +245,7 @@ class MemoryStore implements KeyValueStore
      */
     public function getCollection($name)
     {
-        if (!isset($this->collections[$name])) {
-            $this->collections[$name] = new static($this->limit);
-        }
-
-        return $this->collections[$name];
+        return new Collection($this, $name);
     }
 
     /**

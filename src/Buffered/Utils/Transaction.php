@@ -3,6 +3,7 @@
 namespace MatthiasMullie\Scrapbook\Buffered\Utils;
 
 use MatthiasMullie\Scrapbook\KeyValueStore;
+use MatthiasMullie\Scrapbook\Adapters\Collections\MemoryStore as BufferCollection;
 
 /**
  * This is a helper class for BufferedStore & TransactionalStore, which buffer
@@ -67,11 +68,20 @@ class Transaction implements KeyValueStore
     protected $collections = array();
 
     /**
-     * @param Buffer        $local
-     * @param KeyValueStore $cache
+     * @param Buffer|BufferCollection $local
+     * @param KeyValueStore           $cache
      */
-    public function __construct(Buffer $local, KeyValueStore $cache)
+    public function __construct(/* Buffer|BufferCollection */ $local, KeyValueStore $cache)
     {
+        // can't do double typehint, so let's manually check the type
+        if (!$local instanceof Buffer && !$local instanceof BufferCollection) {
+            $error = 'Invalid class for $local: '.get_class($local);
+            if (class_exists('\TypeError')) {
+                throw new \TypeError($error);
+            }
+            trigger_error($error, E_USER_ERROR);
+        }
+
         $this->cache = $cache;
 
         // (uncommitted) writes must never be evicted (even if that means

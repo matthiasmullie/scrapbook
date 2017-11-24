@@ -25,6 +25,15 @@ use MatthiasMullie\Scrapbook\Adapters\MemoryStore;
 class Buffer extends MemoryStore
 {
     /**
+     * Make items publicly available - if we create a collection from this,
+     * that collection will need to be able to access these items to determine
+     * if something has expired.
+     *
+     * @var array
+     */
+    public $items = array();
+
+    /**
      * Checks if a value exists in cache and is not yet expired.
      * Contrary to default MemoryStore, expired items must *not* be deleted
      * from memory: we need to remember that they were expired, so we don't
@@ -75,5 +84,13 @@ class Buffer extends MemoryStore
 
         // a known item, not returned by get, is expired
         return array_key_exists($key, $this->items);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getCollection($name)
+    {
+        return new BufferCollection($this, $name);
     }
 }
