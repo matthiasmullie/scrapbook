@@ -29,6 +29,7 @@ install:
   - docker save $(phpenv version-name) > $HOME/docker/$(phpenv version-name).tar
 
 script:
+  - sleep 10
   - make test PHP=$(phpenv version-name) ADAPTER=${ADAPTER} UP=0 DOWN=0
 
 after_success:
