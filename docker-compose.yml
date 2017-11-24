@@ -26,7 +26,7 @@ services:
       context: .
       dockerfile: tests/Docker/Dockerfile-Couchbase
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8091/pools/default/buckets/default"]
+      test: ["CMD", "curl", "-f", "http://Administrator:password@localhost:8091/pools/default/buckets/default"]
       interval: 1s
       timeout: 3s
       retries: 60

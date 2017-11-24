@@ -13,8 +13,22 @@ class CouchbaseProvider extends AdapterProvider
             throw new Exception('ext-couchbase is not installed.');
         }
 
+        $authenticator = new \Couchbase\PasswordAuthenticator();
+        $authenticator->username('Administrator')->password('password');
+
         $cluster = new \CouchbaseCluster('couchbase://couchbase:11210?detailed_errcodes=1');
+        $cluster->authenticate($authenticator);
         $bucket = $cluster->openBucket('default');
+
+        // wait 10 seconds should nodes not be healthy; they may be warming up
+        for ($i = 0; $i < 10; $i++) {
+            $info = $bucket->manager()->info();
+            foreach ($info['nodes'] as $node) {
+                if ($node['status'] !== 'healthy') {
+                    sleep(1);
+                }
+            }
+        }
 
         parent::__construct(new \MatthiasMullie\Scrapbook\Adapters\Couchbase($bucket));
     }

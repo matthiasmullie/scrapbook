@@ -12,7 +12,7 @@ untilsuccessful() {
     done
 }
 
-untilsuccessful /opt/couchbase/bin/couchbase-cli cluster-init -c localhost:8091 -u Administrator -p password --cluster-ramsize=300
-untilsuccessful /opt/couchbase/bin/couchbase-cli bucket-create -c localhost:8091 -u Administrator -p password --bucket=default --bucket-port=11211 --bucket-password= --bucket-type=memcached --bucket-ramsize=200 --bucket-replica=0 --enable-flush=1 --wait
+untilsuccessful /opt/couchbase/bin/couchbase-cli cluster-init --cluster=localhost:8091 --cluster-username=Administrator --cluster-password=password --cluster-ramsize=300
+untilsuccessful /opt/couchbase/bin/couchbase-cli bucket-create --cluster=localhost:8091 --user=Administrator --password=password --bucket=default --bucket-type=couchbase --bucket-ramsize=200 --bucket-replica=0 --enable-flush=1 --wait
 
 fg 1
