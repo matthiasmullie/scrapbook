@@ -233,8 +233,8 @@ class SimpleCache implements CacheInterface
         } elseif (is_int($ttl)) {
             /*
              * PSR-16 specifies that if `0` is provided, it must be treated as
-             * expired, whereas KeyValueStore will interpret 0 to mean "expires
-             * this second, but not at this exact time" (could vary a few ms).
+             * expired, whereas KeyValueStore will interpret 0 to mean "never
+             * expire".
              */
             if ($ttl === 0) {
                 return -1;
