@@ -243,11 +243,16 @@ class SimpleCache implements CacheInterface
             /*
              * PSR-16 only accepts relative timestamps, whereas KeyValueStore
              * accepts both relative & absolute, depending on what the timestamp
-             * is. We'll have to convert all ttls here to absolute, to make sure
-             * KeyValueStore doesn't get confused.
+             * is. We'll convert all timestamps > 30 days into absolute
+             * timestamps; the others can remain relative, as KeyValueStore will
+             * already treat those values as such.
              * @see https://github.com/dragoonis/psr-simplecache/issues/3
              */
-            return $ttl + time();
+            if ($ttl > 30 * 24 * 60 * 60) {
+                return $ttl + time();
+            }
+
+            return $ttl;
         } elseif ($ttl instanceof DateInterval) {
             // convert DateInterval to integer by adding it to a 0 DateTime
             $datetime = new DateTime();
