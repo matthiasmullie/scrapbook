@@ -20,18 +20,34 @@ class CouchbaseProvider extends AdapterProvider
         $cluster->authenticate($authenticator);
         $bucket = $cluster->openBucket('default');
 
-        // wait 10 seconds should nodes not be healthy; they may be warming up
+        $healthy = $this->waitForHealthyServer($bucket);
+
+        parent::__construct(new \MatthiasMullie\Scrapbook\Adapters\Couchbase($bucket, !$healthy));
+    }
+
+    /**
+     * Wait 10 seconds should nodes not be healthy; they may be warming up
+     *
+     * @param \CouchbaseBucket $bucket
+     *
+     * @return bool
+     */
+    protected function waitForHealthyServer(\CouchbaseBucket $bucket)
+    {
         for ($i = 0; $i < 10; $i++) {
             $healthy = true;
             $info = $bucket->manager()->info();
             foreach ($info['nodes'] as $node) {
                 $healthy = $healthy && $node['status'] === 'healthy';
             }
-            if (!$healthy) {
-                sleep(1);
+
+            if ($healthy) {
+                return true;
             }
+
+            sleep(1);
         }
 
-        parent::__construct(new \MatthiasMullie\Scrapbook\Adapters\Couchbase($bucket));
+        return false;
     }
 }

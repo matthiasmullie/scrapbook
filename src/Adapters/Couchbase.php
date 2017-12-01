@@ -26,18 +26,16 @@ class Couchbase implements KeyValueStore
 
     /**
      * @param \CouchbaseBucket $client
+     * @param bool             $assertServerHealthy
      *
      * @throws ServerUnhealthy
      */
-    public function __construct(\CouchbaseBucket $client)
+    public function __construct(\CouchbaseBucket $client, $assertServerHealthy = true)
     {
         $this->client = $client;
 
-        $info = $this->client->manager()->info();
-        foreach ($info['nodes'] as $node) {
-            if ($node['status'] !== 'healthy') {
-                throw new ServerUnhealthy('Server isn\'t ready yet');
-            }
+        if ($assertServerHealthy) {
+            $this->assertServerHealhy();
         }
     }
 
@@ -408,5 +406,20 @@ class Couchbase implements KeyValueStore
         $unserialized = @unserialize($value);
 
         return $unserialized === false ? $value : $unserialized;
+    }
+
+    /**
+     * Verify that the server is healthy.
+     *
+     * @throws ServerUnhealthy
+     */
+    protected function assertServerHealhy()
+    {
+        $info = $this->client->manager()->info();
+        foreach ($info['nodes'] as $node) {
+            if ($node['status'] !== 'healthy') {
+                throw new ServerUnhealthy('Server isn\'t ready yet');
+            }
+        }
     }
 }
