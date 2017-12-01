@@ -22,11 +22,13 @@ class CouchbaseProvider extends AdapterProvider
 
         // wait 10 seconds should nodes not be healthy; they may be warming up
         for ($i = 0; $i < 10; $i++) {
+            $healthy = true;
             $info = $bucket->manager()->info();
             foreach ($info['nodes'] as $node) {
-                if ($node['status'] !== 'healthy') {
-                    sleep(1);
-                }
+                $healthy = $healthy && $node['status'] === 'healthy';
+            }
+            if (!$healthy) {
+                sleep(1);
             }
         }
 
