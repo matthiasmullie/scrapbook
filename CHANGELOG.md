@@ -1,7 +1,7 @@
 # Changelog
 
 
-## [1.4.5] - 2017-09-26
+## [1.4.5] - 2017-12-01
 ### Added
 - Dockerize everything needed for testing adapters & versions
 
@@ -11,6 +11,8 @@
 ### Fixed
 - Memcached::cas `$token` can be int as well as float
 - Fix obscure issue where `$value` is considered `null`
+- Count MemoryStore collections towards the memory limit
+- Fix PSR SimpleCache to KeyValueStore TTL conversion logic
 
 
 ## [1.4.4] - 2017-05-12
