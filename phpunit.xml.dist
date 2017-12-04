@@ -12,6 +12,11 @@
 			<directory suffix="Test.php" phpVersion="5.5.0" phpVersionOperator=">=">tests/Psr16/Integration</directory>
 		</testsuite>
 	</testsuites>
+	<filter>
+		<whitelist>
+			<directory suffix=".php">src</directory>
+		</whitelist>
+	</filter>
 	<logging>
 		<log type="coverage-clover" target="build/logs/clover.xml"/>
 	</logging>

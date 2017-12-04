@@ -1,6 +1,7 @@
 version: '2.1'
 services:
   php:
+    tty: true
     build:
       context: .
       dockerfile: tests/Docker/Dockerfile-PHP
@@ -9,6 +10,7 @@ services:
     volumes:
       - ./src:/var/www/src
       - ./tests:/var/www/tests
+      - ./build:/var/www/build
       - ./phpunit.xml.dist:/var/www/phpunit.xml.dist
     depends_on:
       couchbase:

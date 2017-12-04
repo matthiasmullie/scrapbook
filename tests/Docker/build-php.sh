@@ -7,6 +7,7 @@ apt-get update
 apt-get install -y libcouchbase2-libevent libcouchbase-dev libmemcached-dev zlib1g-dev libpq-dev
 
 # install PHP extensions
+pecl install -f xdebug
 pecl install -f pcs-1.3.3
 pecl install -f igbinary
 pecl install -f couchbase
@@ -23,6 +24,7 @@ fi
 
 docker-php-ext-enable apcu
 echo "apc.enable_cli=1" >> /usr/local/etc/php/php.ini
+docker-php-ext-enable xdebug
 docker-php-ext-enable pcs
 docker-php-ext-enable igbinary
 docker-php-ext-enable couchbase

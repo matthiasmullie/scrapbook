@@ -28,13 +28,14 @@ before_install:
 
 install:
   - make up PHP=$(phpenv version-name) ADAPTER=${ADAPTER}
+  # give services some time to be fully up & running
   - sleep 60
 
 script:
   - make test PHP=$(phpenv version-name) ADAPTER=${ADAPTER} UP=0 DOWN=0
 
 after_success:
-  - docker-compose -f docker-compose.yml -f tests/Docker/docker-compose.$(phpenv version-name).yml exec php /bin/bash -c "/bin/bash <(curl -s https://codecov.io/bash)"
+  - bash <(curl -s https://codecov.io/bash)
 
 after_script:
   - make down PHP=$(phpenv version-name) ADAPTER=${ADAPTER}
