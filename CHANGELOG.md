@@ -1,7 +1,7 @@
 # Changelog
 
 
-## [1.4.5] - 2017-12-01
+## [1.4.5] - 2017-12-05
 ### Added
 - Dockerize everything needed for testing adapters & versions
 - Add test support for Couchbase 5.0
