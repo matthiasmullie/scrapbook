@@ -76,7 +76,9 @@ class SimpleCacheTest extends Psr16TestCase
         $success = $this->simplecache->set('key2', 'value', new DateInterval('PT1S'));
         $this->assertSame(true, $success);
 
-        sleep(2);
+        // sleeping for 2 seconds should do (the 1 second TTL has then passed),
+        // but Couchbase has been observed to to lag slightly at times...
+        sleep(3);
 
         // check both cache & simplecache interface to confirm expire
         $this->assertSame(false, $this->cache->get('key'));
