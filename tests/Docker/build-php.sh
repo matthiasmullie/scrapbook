@@ -40,16 +40,9 @@ mkdir /tmp/cache
 
 rm -rf /tmp/pear
 
-# install composer
-apt-get install -y git zip unzip
+# composer requirements
+apt-get install -y wget git zip unzip
 docker-php-ext-install zip pcntl
-curl -sS https://getcomposer.org/installer | php
-mv composer.phar /usr/local/bin/composer
 
 # install dependencies
-composer install
-
-# install flysystem & PSR integration tests (not hard dependencies in
-# composer.json since they would fail to install on old PHP versions)
-composer require league/flysystem
-composer require cache/integration-tests
+make install

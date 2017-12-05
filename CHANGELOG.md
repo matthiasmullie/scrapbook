@@ -5,6 +5,7 @@
 ### Added
 - Dockerize everything needed for testing adapters & versions
 - Add test support for Couchbase 5.0
+- Add makefile instructions
 
 ### Changed
 - Use more direct ON CONFLICT functionality for PostgreSQL sets

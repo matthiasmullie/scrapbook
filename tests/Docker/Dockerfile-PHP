@@ -2,7 +2,8 @@ ARG version
 FROM php:$version
 
 WORKDIR /var/www
+COPY makefile makefile
 COPY composer.json composer.json
-COPY tests/Docker docker
+COPY tests/Docker tests/docker
 
-RUN docker/build-php.sh
+RUN tests/docker/build-php.sh
