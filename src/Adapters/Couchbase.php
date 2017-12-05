@@ -93,11 +93,7 @@ class Couchbase implements KeyValueStore
      */
     public function set($key, $value, $expire = 0)
     {
-        // Couchbase seems to not timely purge items the way it should when
-        // storing it with an expired timestamp
-        if ($expire < 0 || ($expire > 2592000 && $expire < time())) {
-            $this->delete($key);
-
+        if ($this->deleteIfExpired($key, $expire)) {
             return true;
         }
 
@@ -120,12 +116,8 @@ class Couchbase implements KeyValueStore
             return array();
         }
 
-        // Couchbase seems to not timely purge items the way it should when
-        // storing it with an expired timestamp
-        if ($expire < 0 || ($expire > 2592000 && $expire < time())) {
-            $keys = array_keys($items);
-            $this->deleteMulti($keys);
-
+        $keys = array_keys($items);
+        if ($this->deleteIfExpired($keys, $expire)) {
             return array_fill_keys($keys, true);
         }
 
@@ -215,7 +207,15 @@ class Couchbase implements KeyValueStore
             return false;
         }
 
-        return !$result->error;
+        $success = !$result->error;
+
+        // Couchbase is imprecise in its expiration handling, so we can clean up
+        // stuff that is already expired (assuming the `add` succeeded)
+        if ($success && $this->deleteIfExpired($key, $expire)) {
+            return true;
+        }
+
+        return $success;
     }
 
     /**
@@ -230,7 +230,15 @@ class Couchbase implements KeyValueStore
             return false;
         }
 
-        return !$result->error;
+        $success = !$result->error;
+
+        // Couchbase is imprecise in its expiration handling, so we can clean up
+        // stuff that is already expired (assuming the `replace` succeeded)
+        if ($success && $this->deleteIfExpired($key, $expire)) {
+            return true;
+        }
+
+        return $success;
     }
 
     /**
@@ -245,7 +253,15 @@ class Couchbase implements KeyValueStore
             return false;
         }
 
-        return !$result->error;
+        $success = !$result->error;
+
+        // Couchbase is imprecise in its expiration handling, so we can clean up
+        // stuff that is already expired (assuming the `cas` succeeded)
+        if ($success && $this->deleteIfExpired($key, $expire)) {
+            return true;
+        }
+
+        return $success;
     }
 
     /**
@@ -277,8 +293,8 @@ class Couchbase implements KeyValueStore
      */
     public function touch($key, $expire)
     {
-        if ($expire < 0 || ($expire > 2592000 && $expire < time())) {
-            return $this->delete($key);
+        if ($this->deleteIfExpired($key, $expire)) {
+            return true;
         }
 
         try {
@@ -406,6 +422,27 @@ class Couchbase implements KeyValueStore
         $unserialized = @unserialize($value);
 
         return $unserialized === false ? $value : $unserialized;
+    }
+
+    /**
+     * Couchbase seems to not timely purge items the way it should when
+     * storing it with an expired timestamp, so we'll detect that and
+     * delete it (instead of performing the already expired operation).
+     *
+     * @param string|string[] $key
+     * @param int             $expire
+     *
+     * @return int TTL in seconds
+     */
+    protected function deleteIfExpired($key, $expire)
+    {
+        if ($expire < 0 || ($expire > 2592000 && $expire < time())) {
+            $this->deleteMulti((array) $key);
+
+            return true;
+        }
+
+        return false;
     }
 
     /**

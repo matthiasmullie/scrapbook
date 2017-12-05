@@ -15,6 +15,7 @@
 - Fix obscure issue where `$value` is considered `null`
 - Count MemoryStore collections towards the memory limit
 - Fix PSR SimpleCache to KeyValueStore TTL conversion logic
+- Add more workarounds for Couchbase's imprecise expiration purging
 
 
 ## [1.4.4] - 2017-05-12
