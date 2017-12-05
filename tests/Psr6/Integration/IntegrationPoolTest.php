@@ -3,6 +3,8 @@
 namespace MatthiasMullie\Scrapbook\Tests\Psr6\Integration;
 
 use Cache\IntegrationTests\CachePoolTest;
+use MatthiasMullie\Scrapbook\Adapters\Couchbase;
+use MatthiasMullie\Scrapbook\Adapters\Collections\Couchbase as CouchbaseCollection;
 use MatthiasMullie\Scrapbook\KeyValueStore;
 use MatthiasMullie\Scrapbook\Psr6\Pool;
 use MatthiasMullie\Scrapbook\Tests\AdapterTestProvider;
@@ -19,6 +21,19 @@ class IntegrationPoolTest extends CachePoolTest implements AdapterProviderTestIn
      * @var string
      */
     protected $collectionName;
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function setUp()
+    {
+        parent::setUp();
+
+        if ($this->adapter instanceof Couchbase || $this->adapter instanceof CouchbaseCollection) {
+            $this->skippedTests['testExpiration'] = "Couchbase TTL can't be relied on with 1 second precision";
+            $this->skippedTests['testHasItemReturnsFalseWhenDeferredItemIsExpired'] = "Couchbase TTL can't be relied on with 1 second precision";
+        }
+    }
 
     /**
      * {@inheritdoc}

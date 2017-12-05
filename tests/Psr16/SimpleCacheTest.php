@@ -4,6 +4,8 @@ namespace MatthiasMullie\Scrapbook\Tests\Psr16;
 
 use ArrayIterator;
 use DateInterval;
+use MatthiasMullie\Scrapbook\Adapters\Couchbase;
+use MatthiasMullie\Scrapbook\Adapters\Collections\Couchbase as CouchbaseCollection;
 
 class SimpleCacheTest extends Psr16TestCase
 {
@@ -70,15 +72,18 @@ class SimpleCacheTest extends Psr16TestCase
 
     public function testSetFutureExpire()
     {
-        $success = $this->simplecache->set('key', 'value', 1);
+        $success = $this->simplecache->set('key', 'value', 2);
         $this->assertSame(true, $success);
 
-        $success = $this->simplecache->set('key2', 'value', new DateInterval('PT1S'));
+        $success = $this->simplecache->set('key2', 'value', new DateInterval('PT2S'));
         $this->assertSame(true, $success);
 
-        // sleeping for 2 seconds should do (the 1 second TTL has then passed),
-        // but Couchbase has been observed to to lag slightly at times...
         sleep(3);
+
+        // Couchbase TTL can't be relied on with 1 second precision = sleep more
+        if ($this->cache instanceof Couchbase || $this->cache instanceof CouchbaseCollection) {
+            sleep(2);
+        }
 
         // check both cache & simplecache interface to confirm expire
         $this->assertSame(false, $this->cache->get('key'));
