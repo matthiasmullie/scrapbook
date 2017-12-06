@@ -4,7 +4,7 @@ description:      'Scrapbook is a PHP cache library, with adapters for e.g. Memc
 url:              https://www.scrapbook.cash
 domain:           www.scrapbook.cash
 baseurl:          ""
-image:            public/logo.png
+image:            /public/logo.png
 
 author:
   name:           'Matthias Mullie'

@@ -1,0 +1,31 @@
+---
+layout: default
+---
+
+<article itemprop="mainEntity" itemscope itemtype="https://schema.org/Article">
+    <meta itemprop="mainEntityOfPage" content="{{ site.url }}{{ page.url }}">
+    {% if page.image %}
+    <meta itemprop="image" content="{{ site.baseurl }}{{ page.image }}">
+    <meta itemprop="thumbnailUrl" content="{{ site.baseurl }}{{ page.image }}">
+    {% endif %}
+    <meta itemprop="description" content="{% if page.description %}{{ page.description | strip_html }}{% else %}{{ site.description | strip_html }}{% endif %}">
+    <meta itemprop="url" content="{{ site.url }}{{ page.url }}">
+    <meta itemprop="headline" content="{{ page.title }}">
+    <meta itemprop="author" content="{{ site.author.name }}">
+    <div itemprop="publisher" itemscope itemtype="https://schema.org/Organization" style="display: none">
+        <meta itemprop="name" content="{{ site.title }}">
+        <meta itemprop="logo" content="{{ site.url }}{{ site.image }}">
+    </div>
+
+    <div id="parallex-inner" class="parallex">
+        <div class="container">
+            <header class="sixteen columns">
+                <h2 itemprop="name">{{ page.title }}</h2>
+
+                <hr class="sep10">
+            </header>
+        </div>
+    </div>
+
+    {{ content }}
+</article>

@@ -26,8 +26,22 @@ weight: 2
 							<i class="{{ node.icon }}"></i>
 						</div>
 
-						<div class="featured-desc-2">
-							<h3>{{ node.title }}</h3>
+						<article itemprop="mainEntity" itemscope itemtype="https://schema.org/Article" class="featured-desc-2">
+							<meta itemprop="mainEntityOfPage" content="{{ site.url }}{{ node.url }}">
+							{% if node.image %}
+							<meta itemprop="image" content="{{ site.baseurl }}{{ node.image }}">
+							<meta itemprop="thumbnailUrl" content="{{ site.baseurl }}{{ node.image }}">
+							{% endif %}
+							<meta itemprop="description" content="{% if node.description %}{{ node.description | strip_html }}{% else %}{{ site.description | strip_html }}{% endif %}">
+							<meta itemprop="url" content="{{ site.url }}{{ node.url }}">
+							<meta itemprop="headline" content="{{ node.title }}">
+							<meta itemprop="author" content="{{ site.author.name }}">
+							<div itemprop="publisher" itemscope itemtype="https://schema.org/Organization" style="display: none">
+								<meta itemprop="name" content="{{ site.title }}">
+								<meta itemprop="logo" content="{{ site.url }}{{ site.image }}">
+							</div>
+
+							<h3 itemprop="name">{{ node.title }}</h3>
 							<hr class="sep5">
 
 							<p>
@@ -35,7 +49,7 @@ weight: 2
 								<hr class="sep5">
 								<a href="{{ node.url }}" class="button color"><i class="fa fa-book"></i> Docs &rsaquo;</a>
 							</p>
-						</div>
+						</article>
 					</div>
 				</div>
 			{% endif %}

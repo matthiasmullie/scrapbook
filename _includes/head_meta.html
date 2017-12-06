@@ -25,13 +25,13 @@
 <meta property="twitter:url" content="{{ site.url }}{{ page.url }}">
 
 {% if page.image %}
-<meta property="og:image" content="{{ site.url }}/public/posts/{{ page.image }}">
-<meta name="twitter:image" content="{{ site.url }}/public/posts/{{ page.image }}">
-<link rel="image_src" href="{{ site.url }}/public/posts/{{ page.image }}">
+<meta property="og:image" content="{{ site.url }}{{ page.image }}">
+<meta name="twitter:image" content="{{ site.url }}{{ page.image }}">
+<link rel="image_src" href="{{ site.url }}{{ page.image }}">
 {% else %}
-<meta property="og:image" content="{{ site.url }}/{{ site.image }}">
-<meta name="twitter:image" content="{{ site.url }}/{{ site.image }}">
-<link rel="image_src" href="{{ site.url }}/{{ site.image }}">
+<meta property="og:image" content="{{ site.url }}{{ site.image }}">
+<meta name="twitter:image" content="{{ site.url }}{{ site.image }}">
+<link rel="image_src" href="{{ site.url }}{{ site.image }}">
 {% endif %}
 
 {% if page.date %}

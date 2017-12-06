@@ -3,7 +3,7 @@ layout: adapter
 title: MySQL
 description: MySQL is the world's most popular open source database. MySQL can cost-effectively help you deliver high performance, scalable database applications.
 weight: 4
-image: mysql.jpg
+image: /public/adapters/mysql.jpg
 homepage: https://www.mysql.com
 class: MatthiasMullie\Scrapbook\Adapters\MySQL
 ---

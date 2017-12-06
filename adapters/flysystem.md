@@ -3,7 +3,7 @@ layout: adapter
 title: Flysystem
 description: While it's not the fastest kind of cache in terms of I/O access times, opening a file usually still beats redoing expensive computations.
 weight: 7
-image: flysystem.jpg
+image: /public/adapters/flysystem.jpg
 homepage:
 class: MatthiasMullie\Scrapbook\Adapters\Flysystem
 composer: [ 'composer require league/flysystem' ]

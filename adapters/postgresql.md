@@ -3,7 +3,7 @@ layout: adapter
 title: PostgreSQL
 description: PostgreSQL has a proven architecture that has earned it a strong reputation for reliability, data integrity, and correctness.
 weight: 6
-image: postgresql.jpg
+image: /public/adapters/postgresql.jpg
 homepage: https://www.postgresql.org
 class: MatthiasMullie\Scrapbook\Adapters\PostgreSQL
 ---

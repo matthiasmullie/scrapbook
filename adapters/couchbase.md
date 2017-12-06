@@ -3,7 +3,7 @@ layout: adapter
 title: Couchbase
 description: Engineered to meet the elastic scalability, consistent high performance, always-on availability, and data mobility requirements of mission critical applications.
 weight: 2
-image: couchbase.jpg
+image: /public/adapters/couchbase.jpg
 homepage: https://www.couchbase.com
 class: MatthiasMullie\Scrapbook\Adapters\Couchbase
 ---
