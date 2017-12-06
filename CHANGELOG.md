@@ -197,7 +197,7 @@
 ### Fixed
 - Make sure CAS tokens are null if value doesn't exist
 - Normalized CAS token result on HHVM
-- Restored original Filsystem adapter (for PHP5.3 B/C), but still deprecated
+- Restored original Filesystem adapter (for PHP5.3 B/C), but still deprecated
 
 
 ## [1.0.3] - 2015-10-21
