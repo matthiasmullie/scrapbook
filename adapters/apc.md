@@ -4,7 +4,7 @@ title: APC(u)
 description: APC(u) is a free and open opcode cache for PHP. Its goal is to provide a free, open, and robust framework for caching and optimizing PHP intermediate code.
 weight: 3
 image: apc.jpg
-homepage: http://php.net/manual/en/book.apc.php
+homepage: https://php.net/manual/en/book.apc.php
 class: MatthiasMullie\Scrapbook\Adapters\Apc
 ---
 

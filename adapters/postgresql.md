@@ -4,7 +4,7 @@ title: PostgreSQL
 description: PostgreSQL has a proven architecture that has earned it a strong reputation for reliability, data integrity, and correctness.
 weight: 6
 image: postgresql.jpg
-homepage: http://www.postgresql.org
+homepage: https://www.postgresql.org
 class: MatthiasMullie\Scrapbook\Adapters\PostgreSQL
 ---
 

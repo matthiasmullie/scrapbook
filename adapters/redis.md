@@ -4,7 +4,7 @@ title: Redis
 description: Redis is often referred to as a data structure server since keys can contain strings, hashes, lists, sets, sorted sets, bitmaps and hyperloglogs.
 weight: 1
 image: redis.jpg
-homepage: http://redis.io
+homepage: https://redis.io
 class: MatthiasMullie\Scrapbook\Adapters\Redis
 ---
 

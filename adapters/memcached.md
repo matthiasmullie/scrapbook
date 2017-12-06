@@ -4,7 +4,7 @@ title: Memcached
 description: Memcached is an in-memory key-value store for small chunks of arbitrary data (strings, objects) from results of database calls, API calls, or page rendering.
 weight: 0
 image: memcached.jpg
-homepage: http://memcached.org
+homepage: https://memcached.org
 class: MatthiasMullie\Scrapbook\Adapters\Memcached
 ---
 

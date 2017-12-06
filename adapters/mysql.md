@@ -4,7 +4,7 @@ title: MySQL
 description: MySQL is the world's most popular open source database. MySQL can cost-effectively help you deliver high performance, scalable database applications.
 weight: 4
 image: mysql.jpg
-homepage: http://www.mysql.com
+homepage: https://www.mysql.com
 class: MatthiasMullie\Scrapbook\Adapters\MySQL
 ---
 
