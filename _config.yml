@@ -1,7 +1,8 @@
 # Setup
-title:            Scrapbook
-description:      'Scrapbook is a caching environment for PHP, with adapters for e.g. Memcached, Redis, Couchbase, APC(u), SQL and additional capabilities (e.g. transactions) built on top.'
+title:            Scrapbook &middot; PHP cache library
+description:      'Scrapbook is a PHP cache library, with adapters for e.g. Memcached, Redis, Couchbase, APC(u), SQL and additional capabilities (e.g. transactions) built on top.'
 url:              https://www.scrapbook.cash
+domain:           www.scrapbook.cash
 baseurl:          ""
 image:            public/logo.png
 
