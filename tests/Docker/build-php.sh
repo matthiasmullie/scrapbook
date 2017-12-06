@@ -4,7 +4,11 @@ curl -sS http://packages.couchbase.com/ubuntu/couchbase.key | apt-key add -
 curl -sS -o /etc/apt/sources.list.d/couchbase.list http://packages.couchbase.com/ubuntu/couchbase-ubuntu1404.list
 apt-get update
 
-apt-get install -y libcouchbase2-libevent libcouchbase-dev libmemcached-dev zlib1g-dev libpq-dev
+apt-get install -y libcouchbase2-libevent
+apt-get install -y libcouchbase-dev
+apt-get install -y libmemcached-dev
+apt-get install -y zlib1g-dev
+apt-get install -y libpq-dev
 
 # install PHP extensions
 pecl install -f xdebug
