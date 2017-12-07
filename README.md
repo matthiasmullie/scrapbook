@@ -1,13 +1,13 @@
-[![Scrapbook PHP cache](http://www.scrapbook.cash/public/logo_side.png)](http://www.scrapbook.cash)
+[![Scrapbook PHP cache](https://www.scrapbook.cash/public/logo_side.png)](https://www.scrapbook.cash)
 
 [![Build status](https://api.travis-ci.org/matthiasmullie/scrapbook.svg?branch=master)](https://travis-ci.org/matthiasmullie/scrapbook)
-[![Code coverage](http://img.shields.io/codecov/c/github/matthiasmullie/scrapbook.svg)](https://codecov.io/github/matthiasmullie/scrapbook)
-[![Code quality](http://img.shields.io/scrutinizer/g/matthiasmullie/scrapbook.svg)](https://scrutinizer-ci.com/g/matthiasmullie/scrapbook)
-[![Latest version](http://img.shields.io/packagist/v/matthiasmullie/scrapbook.svg)](https://packagist.org/packages/matthiasmullie/scrapbook)
-[![Downloads total](http://img.shields.io/packagist/dt/matthiasmullie/scrapbook.svg)](https://packagist.org/packages/matthiasmullie/scrapbook)
-[![License](http://img.shields.io/packagist/l/matthiasmullie/scrapbook.svg)](https://github.com/matthiasmullie/scrapbook/blob/master/LICENSE)
+[![Code coverage](https://img.shields.io/codecov/c/github/matthiasmullie/scrapbook.svg)](https://codecov.io/github/matthiasmullie/scrapbook)
+[![Code quality](https://img.shields.io/scrutinizer/g/matthiasmullie/scrapbook.svg)](https://scrutinizer-ci.com/g/matthiasmullie/scrapbook)
+[![Latest version](https://img.shields.io/packagist/v/matthiasmullie/scrapbook.svg)](https://packagist.org/packages/matthiasmullie/scrapbook)
+[![Downloads total](https://img.shields.io/packagist/dt/matthiasmullie/scrapbook.svg)](https://packagist.org/packages/matthiasmullie/scrapbook)
+[![License](https://img.shields.io/packagist/l/matthiasmullie/scrapbook.svg)](https://github.com/matthiasmullie/scrapbook/blob/master/LICENSE)
 
-Documentation: http://www.scrapbook.cash - API reference: http://docs.scrapbook.cash
+Documentation: https://www.scrapbook.cash - API reference: https://docs.scrapbook.cash
 
 
 # Table of contents
@@ -51,7 +51,7 @@ The exact bootstrapping will depend on which adapter, features and interface
 you will want to use, all of which are detailed below.
 
 This library is built in layers that are all
-[KeyValueStore](http://docs.scrapbook.cash/master/class-MatthiasMullie.Scrapbook.KeyValueStore.html)
+[KeyValueStore](https://docs.scrapbook.cash/master/class-MatthiasMullie.Scrapbook.KeyValueStore.html)
 implementations that you can wrap inside one another if you want to add more
 features.
 
@@ -81,7 +81,7 @@ $item->set('updated-value');
 $pool->save($item);
 ```
 
-Just take a look at this "[build your cache](http://www.scrapbook.cash/)"
+Just take a look at this "[build your cache](https://www.scrapbook.cash/)"
 section to generate the exact configuration you'd like to use (adapter,
 interface, features) and some example code.
 
@@ -422,7 +422,7 @@ All adapters & features implement this interface. If you have complex cache
 needs (like being able to `cas`), this is the one to stick to.
 
 A detailed list of the KeyValueStore interface & its methods can be found in
-the [documentation](http://www.scrapbook.cash/interfaces/key-value-store/).
+the [documentation](https://www.scrapbook.cash/interfaces/key-value-store/).
 
 
 ## psr/cache
@@ -456,7 +456,7 @@ $pool->save($item);
 ```
 
 A detailed list of the PSR-6 interface & its methods can be found in the
-[documentation](http://www.scrapbook.cash/interfaces/psr-cache/).
+[documentation](https://www.scrapbook.cash/interfaces/psr-cache/).
 
 
 ## psr/simple-cache
@@ -485,7 +485,7 @@ $simplecache->set('key', 'updated-value');
 ```
 
 A detailed list of the PSR-16 interface & its methods can be found in the
-[documentation](http://www.scrapbook.cash/interfaces/psr-simplecache/).
+[documentation](https://www.scrapbook.cash/interfaces/psr-simplecache/).
 
 
 # Collections
@@ -567,4 +567,4 @@ implications. Syntactic sugar is not a reason to break compatibility.
 
 # License
 
-Scrapbook is [MIT](http://opensource.org/licenses/MIT) licensed.
+Scrapbook is [MIT](https://opensource.org/licenses/MIT) licensed.
