@@ -7,8 +7,9 @@
 [![Downloads total](https://img.shields.io/packagist/dt/matthiasmullie/scrapbook.svg)](https://packagist.org/packages/matthiasmullie/scrapbook)
 [![License](https://img.shields.io/packagist/l/matthiasmullie/scrapbook.svg)](https://github.com/matthiasmullie/scrapbook/blob/master/LICENSE)
 
-Documentation: https://www.scrapbook.cash - API reference: https://docs.scrapbook.cash
+**[Donate/Support: ![Support](https://www.mullie.eu/public/donate.jpg)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&amp;hosted_button_id=3U2JXHLRMCPKL)**
 
+Documentation: https://www.scrapbook.cash - API reference: https://docs.scrapbook.cash
 
 # Table of contents
 
