@@ -1,6 +1,11 @@
 # Changelog
 
 
+## [1.4.6] - 2018-02-14
+### Fixed
+- Safeguard Apc::getMulti for `false` returned by apcu_fetch
+
+
 ## [1.4.5] - 2017-12-05
 ### Added
 - Dockerize everything needed for testing adapters & versions
@@ -275,3 +280,4 @@
 [1.4.3]: https://github.com/matthiasmullie/scrapbook/compare/1.4.2...1.4.3
 [1.4.4]: https://github.com/matthiasmullie/scrapbook/compare/1.4.3...1.4.4
 [1.4.5]: https://github.com/matthiasmullie/scrapbook/compare/1.4.4...1.4.5
+[1.4.6]: https://github.com/matthiasmullie/scrapbook/compare/1.4.5...1.4.6

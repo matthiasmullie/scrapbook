@@ -81,6 +81,9 @@ class Apc implements KeyValueStore
         }
 
         $values = $this->apcu_fetch($keys);
+        if ($values === false) {
+            return array();
+        }
 
         $tokens = array();
         foreach ($values as $key => $value) {
