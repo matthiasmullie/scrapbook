@@ -1,6 +1,11 @@
 # Changelog
 
 
+## [1.4.7] - xxxx-xx-xx
+### Fixed
+- Updated Couchbase install instructions in PHP Docker images
+
+
 ## [1.4.6] - 2018-02-14
 ### Fixed
 - Safeguard Apc::getMulti for `false` returned by apcu_fetch
@@ -281,3 +286,4 @@
 [1.4.4]: https://github.com/matthiasmullie/scrapbook/compare/1.4.3...1.4.4
 [1.4.5]: https://github.com/matthiasmullie/scrapbook/compare/1.4.4...1.4.5
 [1.4.6]: https://github.com/matthiasmullie/scrapbook/compare/1.4.5...1.4.6
+[1.4.7]: https://github.com/matthiasmullie/scrapbook/compare/1.4.6...1.4.7

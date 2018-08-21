@@ -1,8 +1,13 @@
 #!/bin/bash
 
+apt-get update
+apt-get install -y gnupg
 curl -sS http://packages.couchbase.com/ubuntu/couchbase.key | apt-key add -
 curl -sS -o /etc/apt/sources.list.d/couchbase.list http://packages.couchbase.com/ubuntu/couchbase-ubuntu1404.list
 apt-get update
+
+curl -O -J "http://ftp.se.debian.org/debian/pool/main/o/openssl/libssl1.0.0_1.0.2l-1~bpo8+1_amd64.deb"
+dpkg -i libssl1.0.0_1.0.2l-1~bpo8+1_amd64.deb
 
 apt-get install -y libcouchbase2-libevent
 apt-get install -y libcouchbase-dev
