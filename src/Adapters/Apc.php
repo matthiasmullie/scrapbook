@@ -603,7 +603,7 @@ class Apc implements KeyValueStore
         if (is_array($key)) {
             $nums = array_filter($key, 'is_numeric');
             if ($nums) {
-                $values = [];
+                $values = array();
                 foreach ($nums as $k) {
                     $values[$k] = $this->apcu_fetch((string) $k, $success);
                 }
@@ -642,7 +642,7 @@ class Apc implements KeyValueStore
         if (is_array($key)) {
             $nums = array_filter(array_keys($key), 'is_numeric');
             if ($nums) {
-                $success = [];
+                $success = array();
                 $nums = array_intersect_key($key, array_fill_keys($nums, null));
                 foreach ($nums as $k => $v) {
                     $success[$k] = $this->apcu_store((string) $k, $v, $ttl);

@@ -126,7 +126,7 @@ class Couchbase implements KeyValueStore
         // have to do those piecemeal
         $integers = array_filter(array_keys($items), 'is_int');
         if ($integers) {
-            $success = [];
+            $success = array();
             $integers = array_intersect_key($items, array_fill_keys($integers, null));
             foreach ($integers as $k => $v) {
                 $success[$k] = $this->set((string) $k, $v, $expire);

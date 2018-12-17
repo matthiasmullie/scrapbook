@@ -419,7 +419,7 @@ class Memcached implements KeyValueStore
      */
     protected function setMultiNumericItemsForHHVM(array $items, array $nums, $expire = 0)
     {
-        $success = [];
+        $success = array();
         $nums = array_intersect_key($items, array_fill_keys($nums, null));
         foreach ($nums as $k => $v) {
             $success[$k] = $this->set((string) $k, $v, $expire);
