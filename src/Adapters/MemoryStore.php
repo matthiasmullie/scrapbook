@@ -381,7 +381,7 @@ class MemoryStore implements KeyValueStore
 
         $units = array('B' => 1024, 'M' => pow(1024, 2), 'G' => pow(1024, 3));
 
-        return (int) preg_replace_callback('/^([0-9]+)('.implode(array_keys($units), '|').')$/', function ($match) use ($units) {
+        return (int) preg_replace_callback('/^([0-9]+)('.implode('|', array_keys($units)).')$/', function ($match) use ($units) {
             return $match[1] * $units[$match[2]];
         }, $shorthand);
     }
