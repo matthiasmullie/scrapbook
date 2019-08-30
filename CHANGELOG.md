@@ -1,9 +1,10 @@
 # Changelog
 
 
-## [1.4.7] - xxxx-xx-xx
+## [1.4.7] - 2019-08-30
 ### Fixed
 - Updated Couchbase install instructions in PHP Docker images
+- Updated `implode` parameter order for PHP7.4 compliance
 
 
 ## [1.4.6] - 2018-02-14
