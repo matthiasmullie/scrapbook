@@ -40,7 +40,7 @@
     "ext-apc": ">=3.1.1",
     "ext-couchbase": ">=2.0.0",
     "ext-memcached": ">=2.0.0",
-    "ext-redis": ">=2.2.0 || 0.0.0.0",
+    "ext-redis": ">=4.0.0 || 0.0.0.0",
     "ext-pdo": ">=0.1.0",
     "league/flysystem": "~1.0"
   },
