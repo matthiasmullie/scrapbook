@@ -1,6 +1,11 @@
 # Changelog
 
 
+## [1.4.8] - ????-??-??
+### Fixed
+- Fixed Flysystem support for long keys
+
+
 ## [1.4.7] - 2019-08-30
 ### Fixed
 - Updated Couchbase install instructions in PHP Docker images
@@ -288,3 +293,4 @@
 [1.4.5]: https://github.com/matthiasmullie/scrapbook/compare/1.4.4...1.4.5
 [1.4.6]: https://github.com/matthiasmullie/scrapbook/compare/1.4.5...1.4.6
 [1.4.7]: https://github.com/matthiasmullie/scrapbook/compare/1.4.6...1.4.7
+[1.4.8]: https://github.com/matthiasmullie/scrapbook/compare/1.4.7...1.4.8

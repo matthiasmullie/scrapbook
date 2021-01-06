@@ -405,7 +405,7 @@ class Flysystem implements KeyValueStore
      */
     protected function lock($key)
     {
-        $path = $key.'.lock';
+        $path = md5($key).'.lock';
 
         for ($i = 0; $i < 25; ++$i) {
             try {
@@ -429,7 +429,7 @@ class Flysystem implements KeyValueStore
      */
     protected function unlock($key)
     {
-        $path = $key.'.lock';
+        $path = md5($key).'.lock';
         try {
             $this->filesystem->delete($path);
         } catch (FileNotFoundException $e) {
@@ -520,6 +520,6 @@ class Flysystem implements KeyValueStore
      */
     protected function path($key)
     {
-        return $key.'.cache';
+        return md5($key).'.cache';
     }
 }

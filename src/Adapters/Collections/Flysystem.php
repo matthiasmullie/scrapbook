@@ -59,6 +59,6 @@ class Flysystem extends Adapter
      */
     protected function path($key)
     {
-        return $this->collection.'/'.parent::path($key.'.cache');
+        return $this->collection.'/'.parent::path($key);
     }
 }
