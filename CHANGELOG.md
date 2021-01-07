@@ -4,6 +4,7 @@
 ## [1.4.8] - ????-??-??
 ### Fixed
 - Fixed Flysystem support for long keys
+- Fixed non-existing getMulti results with certain Redis versions
 
 
 ## [1.4.7] - 2019-08-30

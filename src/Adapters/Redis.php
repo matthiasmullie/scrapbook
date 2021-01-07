@@ -106,7 +106,7 @@ class Redis implements KeyValueStore
         $tokens = array();
         foreach ($values as $key => $value) {
             // filter out non-existing values
-            if ($exists[$key] === false) {
+            if (!$exists[$key]) {
                 unset($values[$key]);
                 continue;
             }
