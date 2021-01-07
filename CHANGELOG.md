@@ -5,6 +5,7 @@
 ### Fixed
 - Fixed Flysystem support for long keys
 - Fixed non-existing getMulti results with certain Redis versions
+- Allow longer keys in MySQL-backed cache
 
 
 ## [1.4.7] - 2019-08-30
