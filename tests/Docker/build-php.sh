@@ -16,10 +16,17 @@ apt-get install -y zlib1g-dev
 apt-get install -y libpq-dev
 
 # install PHP extensions
-pecl install -f xdebug
 pecl install -f pcs-1.3.3
 pecl install -f igbinary
 pecl install -f couchbase
+
+if [[ `php-config --vernum` -ge 72000 ]]; then # PHP>=7.2
+    pecl install -f xdebug
+elif [[ `php-config --vernum` -ge 70000 ]]; then # PHP>=7.0
+    pecl install -f xdebug-2.7.2
+else # PHP<7.0
+    pecl install -f xdebug-2.5.5
+fi
 
 if [[ `php-config --vernum` -ge 70000 ]]; then # PHP>=7.0
     pecl install -f apcu
