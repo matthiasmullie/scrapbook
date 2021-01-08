@@ -6,6 +6,7 @@
 - Fixed Flysystem support for long keys
 - Fixed non-existing getMulti results with certain Redis versions
 - Allow longer keys in MySQL-backed cache
+- Made handling of binary values with PostgreSQL more robust
 
 
 ## [1.4.7] - 2019-08-30

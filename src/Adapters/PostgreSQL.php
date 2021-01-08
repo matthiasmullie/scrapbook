@@ -2,6 +2,8 @@
 
 namespace MatthiasMullie\Scrapbook\Adapters;
 
+use PDO;
+
 /**
  * PostgreSQL adapter. Basically just a wrapper over \PDO, but in an
  * exchangeable (KeyValueStore) interface.
@@ -36,17 +38,18 @@ class PostgreSQL extends SQL
 
         $this->clearExpired();
 
+        $serialized = $this->serialize($value);
+
         $statement = $this->client->prepare(
             "INSERT INTO $this->table (k, v, e)
             VALUES (:key, :value, :expire) 
             ON CONFLICT (k) DO UPDATE SET v=EXCLUDED.v, e=EXCLUDED.e"
         );
 
-        $statement->execute(array(
-            ':key' => $key,
-            ':value' => $this->serialize($value),
-            ':expire' => $this->expire($expire),
-        ));
+        $statement->bindParam(':key', $key);
+        $statement->bindParam(':value', $serialized, PDO::PARAM_LOB, strlen($serialized));
+        $statement->bindParam(':expire', $this->expire($expire));
+        $statement->execute();
 
         // ON CONFLICT is not supported in versions < 9.5, in which case we'll
         // have to fall back on add/replace
@@ -99,7 +102,7 @@ class PostgreSQL extends SQL
         $this->client->exec(
             "CREATE TABLE IF NOT EXISTS $this->table (
                 k VARCHAR NOT NULL PRIMARY KEY,
-                v TEXT,
+                v BYTEA,
                 e TIMESTAMP NULL DEFAULT NULL
             )"
         );
