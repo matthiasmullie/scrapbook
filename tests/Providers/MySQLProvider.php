@@ -13,7 +13,7 @@ class MySQLProvider extends AdapterProvider
             throw new Exception('ext-pdo is not installed.');
         }
 
-        $client = new \PDO('mysql:host=mysql;port=3306;dbname=cache', 'root', '');
+        $client = new \PDO('mysql:host=mysql;port=3306;dbname=cache', 'user', 'pass');
 
         parent::__construct(new \MatthiasMullie\Scrapbook\Adapters\MySQL($client));
     }
