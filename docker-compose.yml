@@ -39,12 +39,11 @@ services:
     image: mysql
     command: ['--character-set-server=utf8mb4', '--collation-server=utf8mb4_unicode_ci','--default-authentication-plugin=mysql_native_password']
     environment:
-      - MYSQL_ROOT_PASSWORD=pass
-      - MYSQL_USER=user
-      - MYSQL_PASSWORD=pass
+      - MYSQL_ALLOW_EMPTY_PASSWORD=yes
+      - MYSQL_ROOT_PASSWORD=
       - MYSQL_DATABASE=cache
     healthcheck:
-      test: ["CMD", "mysql" ,"-h", "mysql", "-P", "3306", "-u", "user", "-p", "pass", "-e", "SELECT 1", "cache"]
+      test: ["CMD", "mysql" ,"-h", "mysql", "-P", "3306", "-u", "root", "-e", "SELECT 1", "cache"]
       interval: 3s
       timeout: 3s
       retries: 30
