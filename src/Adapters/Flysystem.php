@@ -5,11 +5,14 @@ namespace MatthiasMullie\Scrapbook\Adapters;
 use League\Flysystem\FileNotFoundException;
 use League\Flysystem\FileExistsException;
 use League\Flysystem\Filesystem;
+use League\Flysystem\UnableToDeleteFile;
+use League\Flysystem\UnableToReadFile;
+use League\Flysystem\UnableToWriteFile;
 use MatthiasMullie\Scrapbook\Adapters\Collections\Flysystem as Collection;
 use MatthiasMullie\Scrapbook\KeyValueStore;
 
 /**
- * Flysystem adapter. Data will be written to League\Flysystem\Filesystem.
+ * Flysystem 1.x and 2.x adapter. Data will be written to League\Flysystem\Filesystem.
  *
  * Flysystem doesn't allow locking files, though. To guarantee interference from
  * other processes, we'll create separate lock-files to flag a cache key in use.
@@ -26,11 +29,17 @@ class Flysystem implements KeyValueStore
     protected $filesystem;
 
     /**
+     * @var string
+     */
+    protected $version;
+
+    /**
      * @param Filesystem $filesystem
      */
     public function __construct(Filesystem $filesystem)
     {
         $this->filesystem = $filesystem;
+        $this->version = class_exists('League\Flysystem\Local\LocalFilesystemAdapter') ? 2 : 1;
     }
 
     /**
@@ -98,9 +107,23 @@ class Flysystem implements KeyValueStore
 
         $path = $this->path($key);
         $data = $this->wrap($value, $expire);
-        $success = $this->filesystem->put($path, $data);
+        try {
+            if ($this->version === 1) {
+                $this->filesystem->put($path, $data);
+            } else {
+                $this->filesystem->write($path, $data);
+            }
+        } catch (FileExistsException $e) {
+            // v1.x
+            $this->unlock($key);
+            return false;
+        } catch (UnableToWriteFile $e) {
+            // v2.x
+            $this->unlock($key);
+            return false;
+        }
 
-        return $success !== false && $this->unlock($key);
+        return $this->unlock($key);
     }
 
     /**
@@ -121,6 +144,10 @@ class Flysystem implements KeyValueStore
      */
     public function delete($key)
     {
+        if (!$this->exists($key)) {
+            return false;
+        }
+
         if (!$this->lock($key)) {
             return false;
         }
@@ -129,12 +156,14 @@ class Flysystem implements KeyValueStore
 
         try {
             $this->filesystem->delete($path);
-            $this->unlock($key);
-
-            return true;
+            return $this->unlock($key);
         } catch (FileNotFoundException $e) {
+            // v1.x
             $this->unlock($key);
-
+            return false;
+        } catch (UnableToDeleteFile $e) {
+            // v2.x
+            $this->unlock($key);
             return false;
         }
     }
@@ -163,7 +192,6 @@ class Flysystem implements KeyValueStore
 
         if ($this->exists($key)) {
             $this->unlock($key);
-
             return false;
         }
 
@@ -171,12 +199,15 @@ class Flysystem implements KeyValueStore
         $data = $this->wrap($value, $expire);
 
         try {
-            $success = $this->filesystem->write($path, $data);
-
-            return $success && $this->unlock($key);
+            $this->filesystem->write($path, $data);
+            return $this->unlock($key);
         } catch (FileExistsException $e) {
+            // v1.x
             $this->unlock($key);
-
+            return false;
+        } catch (UnableToWriteFile $e) {
+            // v2.x
+            $this->unlock($key);
             return false;
         }
     }
@@ -192,7 +223,6 @@ class Flysystem implements KeyValueStore
 
         if (!$this->exists($key)) {
             $this->unlock($key);
-
             return false;
         }
 
@@ -200,12 +230,20 @@ class Flysystem implements KeyValueStore
         $data = $this->wrap($value, $expire);
 
         try {
-            $success = $this->filesystem->update($path, $data);
+            if ($this->version === 1) {
+                $this->filesystem->update($path, $data);
+            } else {
+                $this->filesystem->write($path, $data);
+            }
 
-            return $success && $this->unlock($key);
+            return $this->unlock($key);
         } catch (FileNotFoundException $e) {
+            // v1.x
             $this->unlock($key);
-
+            return false;
+        } catch (UnableToWriteFile $e) {
+            // v2.x
+            $this->unlock($key);
             return false;
         }
     }
@@ -222,7 +260,6 @@ class Flysystem implements KeyValueStore
         $current = $this->get($key);
         if ($token !== serialize($current)) {
             $this->unlock($key);
-
             return false;
         }
 
@@ -230,12 +267,20 @@ class Flysystem implements KeyValueStore
         $data = $this->wrap($value, $expire);
 
         try {
-            $success = $this->filesystem->update($path, $data);
+            if ($this->version === 1) {
+                $this->filesystem->update($path, $data);
+            } else {
+                $this->filesystem->write($path, $data);
+            }
 
-            return $success && $this->unlock($key);
+            return $this->unlock($key);
         } catch (FileNotFoundException $e) {
+            // v1.x
             $this->unlock($key);
-
+            return false;
+        } catch (UnableToWriteFile $e) {
+            // v2.x
+            $this->unlock($key);
             return false;
         }
     }
@@ -276,7 +321,6 @@ class Flysystem implements KeyValueStore
         $value = $this->get($key);
         if ($value === false) {
             $this->unlock($key);
-
             return false;
         }
 
@@ -284,12 +328,20 @@ class Flysystem implements KeyValueStore
         $data = $this->wrap($value, $expire);
 
         try {
-            $success = $this->filesystem->update($path, $data);
+            if ($this->version === 1) {
+                $this->filesystem->update($path, $data);
+            } else {
+                $this->filesystem->write($path, $data);
+            }
 
-            return $success && $this->unlock($key);
+            return $this->unlock($key);
         } catch (FileNotFoundException $e) {
+            // v1.x
             $this->unlock($key);
-
+            return false;
+        } catch (UnableToWriteFile $e) {
+            // v2.x
+            $this->unlock($key);
             return false;
         }
     }
@@ -299,15 +351,24 @@ class Flysystem implements KeyValueStore
      */
     public function flush()
     {
-        $files = $this->filesystem->listContents();
+        $files = $this->filesystem->listContents('.');
         foreach ($files as $file) {
             try {
                 if ($file['type'] === 'dir') {
-                    $this->filesystem->deleteDir($file['path']);
+                    if ($this->version === 1) {
+                        $this->filesystem->deleteDir($file['path']);
+                    } else {
+                        $this->filesystem->deleteDirectory($file['path']);
+                    }
                 } else {
                     $this->filesystem->delete($file['path']);
                 }
             } catch (FileNotFoundException $e) {
+                // v1.x
+                // don't care if we failed to unlink something, might have
+                // been deleted by another process in the meantime...
+            } catch (UnableToDeleteFile $e) {
+                // v2.x
                 // don't care if we failed to unlink something, might have
                 // been deleted by another process in the meantime...
             }
@@ -327,11 +388,16 @@ class Flysystem implements KeyValueStore
          * `League\Flysystem\Filesystem` object for a subfolder from the
          * `$this->filesystem` object we have. I could `->getAdapter` and fetch
          * the path from there, but only if we can assume that the adapter is
-         * `League\Flysystem\Adapter\Local`, which it may not be.
+         * `League\Flysystem\Adapter\Local` (1.x) or
+         * `League\Flysystem\Local\LocalFilesystemAdapter` (2.x), which it may not be.
          * But I can just create a new object that changes the path to write at,
          * by prefixing it with a subfolder!
          */
-        $this->filesystem->createDir($name);
+        if ($this->version === 1) {
+            $this->filesystem->createDir($name);
+        } else {
+            $this->filesystem->createDirectory($name);
+        }
 
         return new Collection($this->filesystem, $name);
     }
@@ -410,9 +476,12 @@ class Flysystem implements KeyValueStore
         for ($i = 0; $i < 25; ++$i) {
             try {
                 $this->filesystem->write($path, '');
-
                 return true;
             } catch (FileExistsException $e) {
+                // v1.x
+                usleep(200);
+            } catch (UnableToWriteFile $e) {
+                // v2.x
                 usleep(200);
             }
         }
@@ -433,6 +502,10 @@ class Flysystem implements KeyValueStore
         try {
             $this->filesystem->delete($path);
         } catch (FileNotFoundException $e) {
+            // v1.x
+            return false;
+        } catch (UnableToDeleteFile $e) {
+            // v2.x
             return false;
         }
 
@@ -495,6 +568,12 @@ class Flysystem implements KeyValueStore
         try {
             $data = $this->filesystem->read($path);
         } catch (FileNotFoundException $e) {
+            // v1.x
+            // unlikely given previous 'exists' check, but let's play safe...
+            // (outside process may have removed it since)
+            return false;
+        } catch (UnableToReadFile $e) {
+            // v2.x
             // unlikely given previous 'exists' check, but let's play safe...
             // (outside process may have removed it since)
             return false;
