@@ -29,7 +29,7 @@ class Flysystem implements KeyValueStore
     protected $filesystem;
 
     /**
-     * @var string
+     * @var int
      */
     protected $version;
 
