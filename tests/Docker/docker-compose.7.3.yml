@@ -1,0 +1,7 @@
+version: '2.1'
+services:
+  php:
+    image: '7.3'
+    build:
+      args:
+        version: 7.3-cli
