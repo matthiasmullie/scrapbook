@@ -27,11 +27,9 @@ class SimpleCacheTest extends Psr16TestCase
         $this->assertSame('default', $this->simplecache->get('key', 'default'));
     }
 
-    /**
-     * @expectedException \Psr\SimpleCache\InvalidArgumentException
-     */
     public function testGetException()
     {
+        $this->expectException('Psr\SimpleCache\InvalidArgumentException');
         $this->simplecache->get(array());
     }
 
@@ -45,11 +43,9 @@ class SimpleCacheTest extends Psr16TestCase
         $this->assertSame('value', $this->simplecache->get('key'));
     }
 
-    /**
-     * @expectedException \Psr\SimpleCache\InvalidArgumentException
-     */
     public function testSetException()
     {
+        $this->expectException('Psr\SimpleCache\InvalidArgumentException');
         $this->simplecache->set(5, 5);
     }
 
@@ -105,11 +101,9 @@ class SimpleCacheTest extends Psr16TestCase
         $this->assertSame(null, $this->simplecache->get('key'));
     }
 
-    /**
-     * @expectedException \Psr\SimpleCache\InvalidArgumentException
-     */
     public function testDeleteException()
     {
+        $this->expectException('Psr\SimpleCache\InvalidArgumentException');
         $this->simplecache->delete(new \stdClass());
     }
 
@@ -150,11 +144,9 @@ class SimpleCacheTest extends Psr16TestCase
         $this->assertSame(array('key' => 'value', 'key2' => 'value', 'key3' => null), $results);
     }
 
-    /**
-     * @expectedException \Psr\SimpleCache\InvalidArgumentException
-     */
     public function testGetMultipleException()
     {
+        $this->expectException('Psr\SimpleCache\InvalidArgumentException');
         $this->simplecache->getMultiple(null);
     }
 
@@ -177,11 +169,9 @@ class SimpleCacheTest extends Psr16TestCase
         $this->assertSame(array('key' => 'value', 'key2' => 'value'), $results);
     }
 
-    /**
-     * @expectedException \Psr\SimpleCache\InvalidArgumentException
-     */
     public function testSetMultipleException()
     {
+        $this->expectException('Psr\SimpleCache\InvalidArgumentException');
         $this->simplecache->setMultiple(123.456);
     }
 
@@ -202,11 +192,9 @@ class SimpleCacheTest extends Psr16TestCase
         $this->assertSame(array(), $this->cache->getMulti(array('key', 'key2')));
     }
 
-    /**
-     * @expectedException \Psr\SimpleCache\InvalidArgumentException
-     */
     public function testDeleteMultipleException()
     {
+        $this->expectException('Psr\SimpleCache\InvalidArgumentException');
         $this->simplecache->deleteMultiple(123);
     }
 
@@ -218,11 +206,9 @@ class SimpleCacheTest extends Psr16TestCase
         $this->assertSame(false, $this->simplecache->has('key2'));
     }
 
-    /**
-     * @expectedException \Psr\SimpleCache\InvalidArgumentException
-     */
     public function testHasException()
     {
+        $this->expectException('Psr\SimpleCache\InvalidArgumentException');
         $this->simplecache->has(true);
     }
 }

@@ -6,9 +6,9 @@ use MatthiasMullie\Scrapbook\Tests\AdapterTest;
 
 class CollectionsAdapterTest extends AdapterTest
 {
-    public function setUp()
+    protected function compatSetUp()
     {
-        parent::setUp();
+        parent::compatSetUp();
 
         // I'll do this here instead of in setAdapter, because that runs before
         // the test suite, but I want a new collection for every single test

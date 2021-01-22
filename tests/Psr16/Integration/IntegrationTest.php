@@ -39,9 +39,9 @@ class IntegrationTest extends SimpleCacheTest implements AdapterProviderTestInte
     /**
      * {@inheritdoc}
      */
-    protected function setUp()
+    protected function compatSetUp()
     {
-        parent::setUp();
+        parent::compatSetUp();
 
         if ($this->adapter instanceof Couchbase || $this->adapter instanceof CouchbaseCollection) {
             $this->skippedTests['testSetTtl'] = "Couchbase TTL can't be relied on with 1 second precision";

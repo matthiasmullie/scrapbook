@@ -20,16 +20,16 @@ class TransactionalOptimizationTest extends AdapterTestCase
         $this->transactionalCache = new TransactionalStore($adapter);
     }
 
-    public function setUp()
+    protected function compatSetUp()
     {
-        parent::setUp();
+        parent::compatSetUp();
 
         $this->transactionalCache->begin();
     }
 
-    public function tearDown()
+    protected function compatTearDown()
     {
-        parent::tearDown();
+        parent::compatTearDown();
 
         try {
             $this->transactionalCache->rollback();

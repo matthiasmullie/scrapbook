@@ -2,14 +2,14 @@
 
 namespace MatthiasMullie\Scrapbook\Tests\Adapters;
 
-use PHPUnit\Framework\TestCase;
+use MatthiasMullie\Scrapbook\Tests\PHPUnitCompat\CompatTestCase;
 use ReflectionObject;
 
 /**
  * @group default
  * @group MemoryStore
  */
-class MemoryStoreTest extends TestCase
+class MemoryStoreTest extends CompatTestCase
 {
     public function testLRU()
     {

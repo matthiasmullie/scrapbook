@@ -14,16 +14,16 @@ class TransactionalStoreAdapterTest extends AdapterTest
         $this->cache = new TransactionalStore($adapter);
     }
 
-    public function setUp()
+    protected function compatSetUp()
     {
-        parent::setUp();
+        parent::compatSetUp();
 
         $this->cache->begin();
     }
 
-    public function tearDown()
+    protected function compatTearDown()
     {
-        parent::tearDown();
+        parent::compatTearDown();
 
         try {
             $this->cache->rollback();

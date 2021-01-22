@@ -3,9 +3,9 @@
 namespace MatthiasMullie\Scrapbook\Tests;
 
 use MatthiasMullie\Scrapbook\KeyValueStore;
-use PHPUnit\Framework\TestCase;
+use MatthiasMullie\Scrapbook\Tests\PHPUnitCompat\CompatTestCase;
 
-class AdapterTestCase extends TestCase implements AdapterProviderTestInterface
+class AdapterTestCase extends CompatTestCase implements AdapterProviderTestInterface
 {
     /**
      * @var KeyValueStore
@@ -34,8 +34,9 @@ class AdapterTestCase extends TestCase implements AdapterProviderTestInterface
         $this->collectionName = $name;
     }
 
-    public function tearDown()
+    protected function compatTearDown()
     {
+        parent::compatTearDown();
         $this->cache->flush();
     }
 }
