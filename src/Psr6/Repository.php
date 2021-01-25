@@ -40,9 +40,6 @@ class Repository
      */
     protected $unresolved = array();
 
-    /**
-     * @param KeyValueStore $store
-     */
     public function __construct(KeyValueStore $store)
     {
         $this->store = $store;

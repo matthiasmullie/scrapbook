@@ -14,8 +14,6 @@ interface AdapterProviderTestInterface
 
     /**
      * This is where AdapterProvider will inject the adapter to.
-     *
-     * @param KeyValueStore $adapter
      */
     public function setAdapter(KeyValueStore $adapter);
 

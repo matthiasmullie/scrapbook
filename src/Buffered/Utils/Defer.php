@@ -70,9 +70,6 @@ class Defer
      */
     protected $flush = false;
 
-    /**
-     * @param KeyValueStore $cache
-     */
     public function __construct(KeyValueStore $cache)
     {
         $this->cache = $cache;
@@ -84,10 +81,7 @@ class Defer
     public function __destruct()
     {
         if (!empty($this->keys)) {
-            throw new UncommittedTransaction(
-                'Transaction is about to be destroyed without having been '.
-                'committed or rolled back.'
-            );
+            throw new UncommittedTransaction('Transaction is about to be destroyed without having been '.'committed or rolled back.');
         }
     }
 
@@ -199,7 +193,7 @@ class Defer
         $cache = $this->cache;
         $callback = function ($originalValue, $key, $value, $expire) use ($cache) {
             // check if given (local) CAS token was known
-            if ($originalValue === null) {
+            if (null === $originalValue) {
                 return false;
             }
 
@@ -260,7 +254,7 @@ class Defer
             if (in_array($this->keys[$key][0], array('set', 'add', 'replace', 'cas'))) {
                 // we're trying to increment a key that's only just being stored
                 // in this transaction - might as well combine those
-                $symbol = $this->keys[$key][1] === 'increment' ? 1 : -1;
+                $symbol = 'increment' === $this->keys[$key][1] ? 1 : -1;
                 $this->keys[$key][2]['value'] += $symbol * $offset;
                 $this->keys[$key][2]['expire'] = $expire;
             } elseif (in_array($this->keys[$key][0], array('increment', 'decrement'))) {
@@ -269,10 +263,10 @@ class Defer
 
                 // we may be combining an increment with a decrement
                 // we must carefully figure out how these 2 apply against each other
-                $symbol = $this->keys[$key][0] === 'increment' ? 1 : -1;
+                $symbol = 'increment' === $this->keys[$key][0] ? 1 : -1;
                 $previous = $symbol * $this->keys[$key][2]['offset'];
 
-                $symbol = $operation === 'increment' ? 1 : -1;
+                $symbol = 'increment' === $operation ? 1 : -1;
                 $current = $symbol * $offset;
 
                 $offset = $previous + $current;
@@ -360,7 +354,7 @@ class Defer
             // apply update to cache & receive a simple bool to indicate
             // success (true) or failure (false)
             $success = call_user_func_array($update[1], $update[2]);
-            if ($success === false) {
+            if (false === $success) {
                 $this->rollback($old, $new);
 
                 return false;
@@ -375,9 +369,6 @@ class Defer
     /**
      * Roll the cache back to pre-transaction state by comparing the current
      * cache values with what we planned to set them to.
-     *
-     * @param array $old
-     * @param array $new
      */
     protected function rollback(array $old, array $new)
     {

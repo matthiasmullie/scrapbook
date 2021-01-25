@@ -2,8 +2,8 @@
 
 namespace MatthiasMullie\Scrapbook\Adapters\Collections;
 
-use MatthiasMullie\Scrapbook\Adapters\SQL as Adapter;
 use MatthiasMullie\Scrapbook\Adapters\Collections\Utils\PrefixKeys;
+use MatthiasMullie\Scrapbook\Adapters\SQL as Adapter;
 use PDO;
 
 /**
@@ -26,10 +26,8 @@ class SQL extends PrefixKeys
     protected $table;
 
     /**
-     * @param Adapter $cache
-     * @param PDO     $client
-     * @param string  $table
-     * @param string  $name
+     * @param string $table
+     * @param string $name
      */
     public function __construct(Adapter $cache, PDO $client, $table, $name)
     {

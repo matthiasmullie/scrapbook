@@ -27,9 +27,6 @@ class SimpleCache implements CacheInterface
      */
     protected $store;
 
-    /**
-     * @param KeyValueStore $store
-     */
     public function __construct(KeyValueStore $store)
     {
         $this->store = $store;
@@ -92,9 +89,7 @@ class SimpleCache implements CacheInterface
         }
 
         if (!is_array($keys)) {
-            throw new InvalidArgumentException(
-                'Invalid keys: '.var_export($keys, true).'. Keys should be an array or Traversable of strings.'
-            );
+            throw new InvalidArgumentException('Invalid keys: '.var_export($keys, true).'. Keys should be an array or Traversable of strings.');
         }
         array_map(array($this, 'assertValidKey'), $keys);
 
@@ -120,9 +115,7 @@ class SimpleCache implements CacheInterface
             $array = array();
             foreach ($values as $key => $value) {
                 if (!is_string($key) && !is_int($key)) {
-                    throw new InvalidArgumentException(
-                        'Invalid values: '.var_export($values, true).'. Only strings are allowed as keys.'
-                    );
+                    throw new InvalidArgumentException('Invalid values: '.var_export($values, true).'. Only strings are allowed as keys.');
                 }
                 $array[$key] = $value;
             }
@@ -130,9 +123,7 @@ class SimpleCache implements CacheInterface
         }
 
         if (!is_array($values)) {
-            throw new InvalidArgumentException(
-                'Invalid values: '.var_export($values, true).'. Values should be an array or Traversable with strings as keys.'
-            );
+            throw new InvalidArgumentException('Invalid values: '.var_export($values, true).'. Values should be an array or Traversable with strings as keys.');
         }
 
         foreach ($values as $key => $value) {
@@ -158,9 +149,7 @@ class SimpleCache implements CacheInterface
         }
 
         if (!is_array($keys)) {
-            throw new InvalidArgumentException(
-                'Invalid keys: '.var_export($keys, true).'. Keys should be an array or Traversable of strings.'
-            );
+            throw new InvalidArgumentException('Invalid keys: '.var_export($keys, true).'. Keys should be an array or Traversable of strings.');
         }
         array_map(array($this, 'assertValidKey'), $keys);
 
@@ -195,24 +184,17 @@ class SimpleCache implements CacheInterface
     protected function assertValidKey($key)
     {
         if (!is_string($key)) {
-            throw new InvalidArgumentException(
-                'Invalid key: '.var_export($key, true).'. Key should be a string.'
-            );
+            throw new InvalidArgumentException('Invalid key: '.var_export($key, true).'. Key should be a string.');
         }
 
-        if ($key === '') {
-            throw new InvalidArgumentException(
-                'Invalid key. Key should not be empty.'
-            );
+        if ('' === $key) {
+            throw new InvalidArgumentException('Invalid key. Key should not be empty.');
         }
 
         // valid key according to PSR-16 rules
         $invalid = preg_quote(static::KEY_INVALID_CHARACTERS, '/');
         if (preg_match('/['.$invalid.']/', $key)) {
-            throw new InvalidArgumentException(
-                'Invalid key: '.$key.'. Contains (a) character(s) reserved '.
-                'for future extension: '.static::KEY_INVALID_CHARACTERS
-            );
+            throw new InvalidArgumentException('Invalid key: '.$key.'. Contains (a) character(s) reserved '.'for future extension: '.static::KEY_INVALID_CHARACTERS);
         }
     }
 
@@ -220,7 +202,7 @@ class SimpleCache implements CacheInterface
      * Accepts all TTL inputs valid in PSR-16 (null|int|DateInterval) and
      * converts them into TTL for KeyValueStore (int).
      *
-     * @param null|int|DateInterval $ttl
+     * @param int|DateInterval|null $ttl
      *
      * @return int
      *
@@ -228,7 +210,7 @@ class SimpleCache implements CacheInterface
      */
     protected function ttl($ttl)
     {
-        if ($ttl === null) {
+        if (null === $ttl) {
             return 0;
         } elseif (is_int($ttl)) {
             /*
@@ -236,7 +218,7 @@ class SimpleCache implements CacheInterface
              * expired, whereas KeyValueStore will interpret 0 to mean "never
              * expire".
              */
-            if ($ttl === 0) {
+            if (0 === $ttl) {
                 return -1;
             }
 

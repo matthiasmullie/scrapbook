@@ -52,8 +52,7 @@ class Item implements CacheItemInterface
     protected $changed = false;
 
     /**
-     * @param string     $key
-     * @param Repository $repository
+     * @param string $key
      */
     public function __construct($key, Repository $repository)
     {
@@ -102,7 +101,7 @@ class Item implements CacheItemInterface
     public function get()
     {
         // value was already set on this object, return that one!
-        if ($this->value !== null) {
+        if (null !== $this->value) {
             return $this->value;
         }
 
@@ -130,7 +129,7 @@ class Item implements CacheItemInterface
      */
     public function isHit()
     {
-        if ($this->isHit !== null) {
+        if (null !== $this->isHit) {
             return $this->isHit;
         }
 
@@ -147,7 +146,7 @@ class Item implements CacheItemInterface
             // convert datetime to unix timestamp
             $this->expire = (int) $expiration->format('U');
             $this->changed = true;
-        } elseif ($expiration === null) {
+        } elseif (null === $expiration) {
             $this->expire = 0;
             $this->changed = true;
         } else {
@@ -181,10 +180,7 @@ class Item implements CacheItemInterface
             // this is allowed, but just defaults to infinite
             $this->expire = 0;
         } else {
-            throw new InvalidArgumentException(
-                'Invalid time: '.serialize($time).'. Must be integer or '.
-                'instance of DateInterval.'
-            );
+            throw new InvalidArgumentException('Invalid time: '.serialize($time).'. Must be integer or '.'instance of DateInterval.');
         }
         $this->changed = true;
 
@@ -211,7 +207,7 @@ class Item implements CacheItemInterface
     {
         $expire = $this->getExpiration();
 
-        return $expire !== 0 && $expire < time();
+        return 0 !== $expire && $expire < time();
     }
 
     /**

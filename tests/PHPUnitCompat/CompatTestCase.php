@@ -9,9 +9,13 @@ use ReflectionMethod;
 // The only way to work around this is to introduce an additional
 // layer with its own setUp/tearDown equivalent functions, without
 // the typehint (because older PHP versions can't even parse them)
-$reflect = new ReflectionMethod( 'PHPUnit\\Framework\\TestCase', 'setUp' );
-if ( method_exists( $reflect, 'hasReturnType' ) && $reflect->hasReturnType() ) {
-    class CompatTestCase extends ReturnTypehint {}
+$reflect = new ReflectionMethod('PHPUnit\\Framework\\TestCase', 'setUp');
+if (method_exists($reflect, 'hasReturnType') && $reflect->hasReturnType()) {
+    class CompatTestCase extends ReturnTypehint
+    {
+    }
 } else {
-    class CompatTestCase extends NoReturnTypehint {}
+    class CompatTestCase extends NoReturnTypehint
+    {
+    }
 }

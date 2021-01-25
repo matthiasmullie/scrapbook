@@ -2,9 +2,9 @@
 
 namespace MatthiasMullie\Scrapbook\Psr6;
 
+use MatthiasMullie\Scrapbook\KeyValueStore;
 use Psr\Cache\CacheItemInterface;
 use Psr\Cache\CacheItemPoolInterface;
-use MatthiasMullie\Scrapbook\KeyValueStore;
 
 /**
  * Representation of the cache storage, which lets you read items from, and add
@@ -38,9 +38,6 @@ class Pool implements CacheItemPoolInterface
      */
     protected $deferred = array();
 
-    /**
-     * @param KeyValueStore $store
-     */
     public function __construct(KeyValueStore $store)
     {
         $this->store = $store;
@@ -162,10 +159,8 @@ class Pool implements CacheItemPoolInterface
     public function save(CacheItemInterface $item)
     {
         if (!$item instanceof Item) {
-            throw new InvalidArgumentException(
-                'MatthiasMullie\Scrapbook\Psr6\Pool can only save
-                MatthiasMullie\Scrapbook\Psr6\Item objects'
-            );
+            throw new InvalidArgumentException('MatthiasMullie\Scrapbook\Psr6\Pool can only save
+                MatthiasMullie\Scrapbook\Psr6\Item objects');
         }
 
         if (!$item->hasChanged()) {
@@ -176,7 +171,7 @@ class Pool implements CacheItemPoolInterface
              * changed, the value for this key is in cache) and if it doesn't,
              * well then nothing is in cache.
              */
-            return $item->get() !== null;
+            return null !== $item->get();
         }
 
         $expire = $item->getExpiration();
@@ -190,10 +185,8 @@ class Pool implements CacheItemPoolInterface
     public function saveDeferred(CacheItemInterface $item)
     {
         if (!$item instanceof Item) {
-            throw new InvalidArgumentException(
-                'MatthiasMullie\Scrapbook\Psr6\Pool can only save
-                MatthiasMullie\Scrapbook\Psr6\Item objects'
-            );
+            throw new InvalidArgumentException('MatthiasMullie\Scrapbook\Psr6\Pool can only save
+                MatthiasMullie\Scrapbook\Psr6\Item objects');
         }
 
         $this->deferred[$item->getKey()] = $item;
@@ -245,18 +238,13 @@ class Pool implements CacheItemPoolInterface
     protected function assertValidKey($key)
     {
         if (!is_string($key)) {
-            throw new InvalidArgumentException(
-                'Invalid key: '.var_export($key, true).'. Key should be a string.'
-            );
+            throw new InvalidArgumentException('Invalid key: '.var_export($key, true).'. Key should be a string.');
         }
 
         // valid key according to PSR-6 rules
         $invalid = preg_quote(static::KEY_INVALID_CHARACTERS, '/');
         if (preg_match('/['.$invalid.']/', $key)) {
-            throw new InvalidArgumentException(
-                'Invalid key: '.$key.'. Contains (a) character(s) reserved '.
-                'for future extension: '.static::KEY_INVALID_CHARACTERS
-            );
+            throw new InvalidArgumentException('Invalid key: '.$key.'. Contains (a) character(s) reserved '.'for future extension: '.static::KEY_INVALID_CHARACTERS);
         }
     }
 }

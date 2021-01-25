@@ -26,19 +26,17 @@ class CouchbaseProvider extends AdapterProvider
     }
 
     /**
-     * Wait 10 seconds should nodes not be healthy; they may be warming up
-     *
-     * @param \CouchbaseBucket $bucket
+     * Wait 10 seconds should nodes not be healthy; they may be warming up.
      *
      * @return bool
      */
     protected function waitForHealthyServer(\CouchbaseBucket $bucket)
     {
-        for ($i = 0; $i < 10; $i++) {
+        for ($i = 0; $i < 10; ++$i) {
             $healthy = true;
             $info = $bucket->manager()->info();
             foreach ($info['nodes'] as $node) {
-                $healthy = $healthy && $node['status'] === 'healthy';
+                $healthy = $healthy && 'healthy' === $node['status'];
             }
 
             if ($healthy) {

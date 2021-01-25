@@ -70,7 +70,7 @@ class SQLite extends MySQL
             ':expire' => $expire,
         ));
 
-        return $statement->rowCount() === 1;
+        return 1 === $statement->rowCount();
     }
 
     /**
@@ -78,7 +78,7 @@ class SQLite extends MySQL
      */
     public function flush()
     {
-        return $this->client->exec("DELETE FROM $this->table") !== false;
+        return false !== $this->client->exec("DELETE FROM $this->table");
     }
 
     /**

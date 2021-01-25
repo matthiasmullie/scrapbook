@@ -237,8 +237,6 @@ class StampedeProtector implements KeyValueStore
      * to the original key name. If this key is present (which it will only be
      * for a short amount of time) we'll know it's protected.
      *
-     * @param array $keys
-     *
      * @return string[] Array of keys that were successfully protected
      */
     protected function protect(array $keys)
@@ -292,9 +290,7 @@ class StampedeProtector implements KeyValueStore
         $suffix = '.stampede';
 
         if (substr($key, -strlen($suffix)) === $suffix) {
-            throw new InvalidKey(
-                "Invalid key: $key. Keys with suffix '$suffix' are reserved."
-            );
+            throw new InvalidKey("Invalid key: $key. Keys with suffix '$suffix' are reserved.");
         }
 
         return $key.$suffix;

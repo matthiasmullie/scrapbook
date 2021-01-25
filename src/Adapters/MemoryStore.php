@@ -39,7 +39,7 @@ class MemoryStore implements KeyValueStore
      */
     public function __construct($limit = null)
     {
-        if ($limit === null) {
+        if (null === $limit) {
             $phpLimit = ini_get('memory_limit');
             if ($phpLimit <= 0) {
                 $this->limit = PHP_INT_MAX;
@@ -263,7 +263,7 @@ class MemoryStore implements KeyValueStore
         }
 
         $expire = $this->items[$key][1];
-        if ($expire !== 0 && $expire < time()) {
+        if (0 !== $expire && $expire < time()) {
             // not permanent & already expired
             $this->size -= strlen($this->items[$key][0]);
             unset($this->items[$key]);
@@ -381,7 +381,7 @@ class MemoryStore implements KeyValueStore
 
         $units = array('B' => 1024, 'M' => pow(1024, 2), 'G' => pow(1024, 3));
 
-        return (int) preg_replace_callback('/^([0-9]+)('.implode('|', array_keys($units)).')$/', function($match) use ($units) {
+        return (int) preg_replace_callback('/^([0-9]+)('.implode('|', array_keys($units)).')$/', function ($match) use ($units) {
             return $match[1] * $units[$match[2]];
         }, $shorthand);
     }

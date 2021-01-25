@@ -2,8 +2,8 @@
 
 namespace MatthiasMullie\Scrapbook\Tests;
 
-use MatthiasMullie\Scrapbook\KeyValueStore;
 use MatthiasMullie\Scrapbook\Exception\Exception;
+use MatthiasMullie\Scrapbook\KeyValueStore;
 
 class AdapterProvider
 {
@@ -18,8 +18,7 @@ class AdapterProvider
     protected $collectionName;
 
     /**
-     * @param KeyValueStore $adapter
-     * @param string        $collectionName
+     * @param string $collectionName
      *
      * @throws Exception
      */

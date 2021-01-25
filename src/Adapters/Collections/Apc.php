@@ -15,8 +15,7 @@ use MatthiasMullie\Scrapbook\Adapters\Collections\Utils\PrefixKeys;
 class Apc extends PrefixKeys
 {
     /**
-     * @param Adapter $cache
-     * @param string  $name
+     * @param string $name
      */
     public function __construct(Adapter $cache, $name)
     {

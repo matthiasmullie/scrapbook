@@ -4,8 +4,10 @@ namespace MatthiasMullie\Scrapbook\Tests\PHPUnitCompat;
 
 use PHPUnit\Framework\TestCase;
 
-class NoReturnTypehint extends TestCase {
-    protected function setUp() {
+class NoReturnTypehint extends TestCase
+{
+    protected function setUp()
+    {
         $backtrace = debug_backtrace();
         $current = array_shift($backtrace);
         foreach ($backtrace as $call) {
@@ -16,7 +18,9 @@ class NoReturnTypehint extends TestCase {
         }
         $this->compatSetUp();
     }
-    protected function tearDown() {
+
+    protected function tearDown()
+    {
         $backtrace = debug_backtrace();
         $current = array_shift($backtrace);
         foreach ($backtrace as $call) {
@@ -27,10 +31,14 @@ class NoReturnTypehint extends TestCase {
         }
         $this->compatTearDown();
     }
-    protected function compatSetUp() {
+
+    protected function compatSetUp()
+    {
         parent::setUp();
     }
-    protected function compatTearDown() {
+
+    protected function compatTearDown()
+    {
         parent::tearDown();
     }
 }

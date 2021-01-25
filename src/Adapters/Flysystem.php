@@ -2,8 +2,8 @@
 
 namespace MatthiasMullie\Scrapbook\Adapters;
 
-use League\Flysystem\FileNotFoundException;
 use League\Flysystem\FileExistsException;
+use League\Flysystem\FileNotFoundException;
 use League\Flysystem\Filesystem;
 use League\Flysystem\UnableToDeleteFile;
 use League\Flysystem\UnableToReadFile;
@@ -33,9 +33,6 @@ class Flysystem implements KeyValueStore
      */
     protected $version;
 
-    /**
-     * @param Filesystem $filesystem
-     */
     public function __construct(Filesystem $filesystem)
     {
         $this->filesystem = $filesystem;
@@ -55,7 +52,7 @@ class Flysystem implements KeyValueStore
         }
 
         $data = $this->read($key);
-        if ($data === false) {
+        if (false === $data) {
             return false;
         }
 
@@ -76,7 +73,7 @@ class Flysystem implements KeyValueStore
             $token = null;
             $value = $this->get($key, $token);
 
-            if ($token !== null) {
+            if (null !== $token) {
                 $results[$key] = $value;
                 $tokens[$key] = $token;
             }
@@ -97,7 +94,7 @@ class Flysystem implements KeyValueStore
         }
 
         $expire = $this->normalizeTime($expire);
-        if ($expire !== 0 && $expire < time()) {
+        if (0 !== $expire && $expire < time()) {
             $this->unlock($key);
 
             // don't waste time storing (and later comparing expiration
@@ -108,7 +105,7 @@ class Flysystem implements KeyValueStore
         $path = $this->path($key);
         $data = $this->wrap($value, $expire);
         try {
-            if ($this->version === 1) {
+            if (1 === $this->version) {
                 $this->filesystem->put($path, $data);
             } else {
                 $this->filesystem->write($path, $data);
@@ -116,10 +113,12 @@ class Flysystem implements KeyValueStore
         } catch (FileExistsException $e) {
             // v1.x
             $this->unlock($key);
+
             return false;
         } catch (UnableToWriteFile $e) {
             // v2.x
             $this->unlock($key);
+
             return false;
         }
 
@@ -156,14 +155,17 @@ class Flysystem implements KeyValueStore
 
         try {
             $this->filesystem->delete($path);
+
             return $this->unlock($key);
         } catch (FileNotFoundException $e) {
             // v1.x
             $this->unlock($key);
+
             return false;
         } catch (UnableToDeleteFile $e) {
             // v2.x
             $this->unlock($key);
+
             return false;
         }
     }
@@ -192,6 +194,7 @@ class Flysystem implements KeyValueStore
 
         if ($this->exists($key)) {
             $this->unlock($key);
+
             return false;
         }
 
@@ -200,14 +203,17 @@ class Flysystem implements KeyValueStore
 
         try {
             $this->filesystem->write($path, $data);
+
             return $this->unlock($key);
         } catch (FileExistsException $e) {
             // v1.x
             $this->unlock($key);
+
             return false;
         } catch (UnableToWriteFile $e) {
             // v2.x
             $this->unlock($key);
+
             return false;
         }
     }
@@ -223,6 +229,7 @@ class Flysystem implements KeyValueStore
 
         if (!$this->exists($key)) {
             $this->unlock($key);
+
             return false;
         }
 
@@ -230,7 +237,7 @@ class Flysystem implements KeyValueStore
         $data = $this->wrap($value, $expire);
 
         try {
-            if ($this->version === 1) {
+            if (1 === $this->version) {
                 $this->filesystem->update($path, $data);
             } else {
                 $this->filesystem->write($path, $data);
@@ -240,10 +247,12 @@ class Flysystem implements KeyValueStore
         } catch (FileNotFoundException $e) {
             // v1.x
             $this->unlock($key);
+
             return false;
         } catch (UnableToWriteFile $e) {
             // v2.x
             $this->unlock($key);
+
             return false;
         }
     }
@@ -260,6 +269,7 @@ class Flysystem implements KeyValueStore
         $current = $this->get($key);
         if ($token !== serialize($current)) {
             $this->unlock($key);
+
             return false;
         }
 
@@ -267,7 +277,7 @@ class Flysystem implements KeyValueStore
         $data = $this->wrap($value, $expire);
 
         try {
-            if ($this->version === 1) {
+            if (1 === $this->version) {
                 $this->filesystem->update($path, $data);
             } else {
                 $this->filesystem->write($path, $data);
@@ -277,10 +287,12 @@ class Flysystem implements KeyValueStore
         } catch (FileNotFoundException $e) {
             // v1.x
             $this->unlock($key);
+
             return false;
         } catch (UnableToWriteFile $e) {
             // v2.x
             $this->unlock($key);
+
             return false;
         }
     }
@@ -319,8 +331,9 @@ class Flysystem implements KeyValueStore
         }
 
         $value = $this->get($key);
-        if ($value === false) {
+        if (false === $value) {
             $this->unlock($key);
+
             return false;
         }
 
@@ -328,7 +341,7 @@ class Flysystem implements KeyValueStore
         $data = $this->wrap($value, $expire);
 
         try {
-            if ($this->version === 1) {
+            if (1 === $this->version) {
                 $this->filesystem->update($path, $data);
             } else {
                 $this->filesystem->write($path, $data);
@@ -338,10 +351,12 @@ class Flysystem implements KeyValueStore
         } catch (FileNotFoundException $e) {
             // v1.x
             $this->unlock($key);
+
             return false;
         } catch (UnableToWriteFile $e) {
             // v2.x
             $this->unlock($key);
+
             return false;
         }
     }
@@ -354,8 +369,8 @@ class Flysystem implements KeyValueStore
         $files = $this->filesystem->listContents('.');
         foreach ($files as $file) {
             try {
-                if ($file['type'] === 'dir') {
-                    if ($this->version === 1) {
+                if ('dir' === $file['type']) {
+                    if (1 === $this->version) {
                         $this->filesystem->deleteDir($file['path']);
                     } else {
                         $this->filesystem->deleteDirectory($file['path']);
@@ -393,7 +408,7 @@ class Flysystem implements KeyValueStore
          * But I can just create a new object that changes the path to write at,
          * by prefixing it with a subfolder!
          */
-        if ($this->version === 1) {
+        if (1 === $this->version) {
             $this->filesystem->createDir($name);
         } else {
             $this->filesystem->createDirectory($name);
@@ -417,7 +432,7 @@ class Flysystem implements KeyValueStore
     protected function doIncrement($key, $offset, $initial, $expire)
     {
         $current = $this->get($key, $token);
-        if ($current === false) {
+        if (false === $current) {
             $success = $this->add($key, $initial, $expire);
 
             return $success ? $initial : false;
@@ -444,12 +459,12 @@ class Flysystem implements KeyValueStore
     protected function exists($key)
     {
         $data = $this->read($key);
-        if ($data === false) {
+        if (false === $data) {
             return false;
         }
 
         $expire = $data[0];
-        if ($expire !== 0 && $expire < time()) {
+        if (0 !== $expire && $expire < time()) {
             // expired, don't keep it around
             $path = $this->path($key);
             $this->filesystem->delete($path);
@@ -476,6 +491,7 @@ class Flysystem implements KeyValueStore
         for ($i = 0; $i < 25; ++$i) {
             try {
                 $this->filesystem->write($path, '');
+
                 return true;
             } catch (FileExistsException $e) {
                 // v1.x
@@ -579,7 +595,7 @@ class Flysystem implements KeyValueStore
             return false;
         }
 
-        if ($data === false) {
+        if (false === $data) {
             // in theory, a file could still be deleted between Flysystem's
             // assertPresent & the time it actually fetched the content
             // extremely unlikely though

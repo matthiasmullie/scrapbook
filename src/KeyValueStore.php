@@ -38,7 +38,6 @@ interface KeyValueStore
      * getMulti is preferred over multiple individual get operations as you'll
      * get them all in 1 request.
      *
-     * @param array   $keys
      * @param mixed[] $tokens Will be filled with the CAS tokens, in [key => token] format
      *
      * @return mixed[] [key => value]

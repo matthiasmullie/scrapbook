@@ -4,8 +4,10 @@ namespace MatthiasMullie\Scrapbook\Tests\PHPUnitCompat;
 
 use PHPUnit\Framework\TestCase;
 
-class ReturnTypehint extends TestCase {
-    protected function setUp(): void {
+class ReturnTypehint extends TestCase
+{
+    protected function setUp(): void
+    {
         $backtrace = debug_backtrace();
         $current = array_shift($backtrace);
         foreach ($backtrace as $call) {
@@ -16,7 +18,9 @@ class ReturnTypehint extends TestCase {
         }
         $this->compatSetUp();
     }
-    protected function tearDown(): void {
+
+    protected function tearDown(): void
+    {
         $backtrace = debug_backtrace();
         $current = array_shift($backtrace);
         foreach ($backtrace as $call) {
@@ -27,10 +31,14 @@ class ReturnTypehint extends TestCase {
         }
         $this->compatTearDown();
     }
-    protected function compatSetUp() {
+
+    protected function compatSetUp()
+    {
         parent::setUp();
     }
-    protected function compatTearDown() {
+
+    protected function compatTearDown()
+    {
         parent::tearDown();
     }
 }

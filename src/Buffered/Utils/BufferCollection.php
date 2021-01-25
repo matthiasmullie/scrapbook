@@ -19,7 +19,6 @@ class BufferCollection extends MemoryStoreCollection
     protected $cache;
 
     /**
-     * @param Buffer $cache
      * @param string $name
      */
     public function __construct(Buffer $cache, $name)
@@ -43,7 +42,7 @@ class BufferCollection extends MemoryStoreCollection
      */
     public function expired($key)
     {
-        if ($this->get($key) !== false) {
+        if (false !== $this->get($key)) {
             // returned a value, clearly not yet expired
             return false;
         }

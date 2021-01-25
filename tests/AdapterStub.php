@@ -16,9 +16,6 @@ class AdapterStub implements KeyValueStore
      */
     protected $exception;
 
-    /**
-     * @param Exception $exception
-     */
     public function __construct(Exception $exception)
     {
         $this->exception = $exception;

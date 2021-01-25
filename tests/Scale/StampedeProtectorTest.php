@@ -9,8 +9,8 @@ use MatthiasMullie\Scrapbook\Adapters\MemoryStore;
 use MatthiasMullie\Scrapbook\Adapters\Redis;
 use MatthiasMullie\Scrapbook\Adapters\SQL;
 use MatthiasMullie\Scrapbook\KeyValueStore;
-use MatthiasMullie\Scrapbook\Tests\AdapterTestProvider;
 use MatthiasMullie\Scrapbook\Tests\AdapterTestCase;
+use MatthiasMullie\Scrapbook\Tests\AdapterTestProvider;
 
 class StampedeProtectorTest extends AdapterTestCase
 {
@@ -63,9 +63,9 @@ class StampedeProtectorTest extends AdapterTestCase
         }
 
         $pid = pcntl_fork();
-        if ($pid === -1) {
+        if (-1 === $pid) {
             // can't fork, ignore this test...
-        } elseif ($pid === 0) {
+        } elseif (0 === $pid) {
             // request non-existing key: this should make us go in stampede-
             // protection mode if another process/thread requests it again...
             $this->protector->get('key');
@@ -86,7 +86,7 @@ class StampedeProtectorTest extends AdapterTestCase
              * start testing stampede protection until the other thread has done
              * the first request though, so let's wait a bit...
              */
-            while ($this->cache->getMulti(array('key', 'key.stampede')) === array()) {
+            while (array() === $this->cache->getMulti(array('key', 'key.stampede'))) {
                 usleep(10);
             }
 
@@ -163,9 +163,9 @@ class StampedeProtectorTest extends AdapterTestCase
         $this->cache->set('key2', 'value2');
 
         $pid = pcntl_fork();
-        if ($pid === -1) {
+        if (-1 === $pid) {
             // can't fork, ignore this test...
-        } elseif ($pid === 0) {
+        } elseif (0 === $pid) {
             // request non-existing key: this should make us go in stampede-
             // protection mode if another process/thread requests it again...
             $this->protector->getMulti(array('key', 'key2'));
@@ -186,7 +186,7 @@ class StampedeProtectorTest extends AdapterTestCase
              * start testing stampede protection until the other thread has done
              * the first request though, so let's wait a bit...
              */
-            while ($this->cache->getMulti(array('key', 'key.stampede')) === array()) {
+            while (array() === $this->cache->getMulti(array('key', 'key.stampede'))) {
                 usleep(10);
             }
 
@@ -230,8 +230,6 @@ class StampedeProtectorTest extends AdapterTestCase
     /**
      * Not all adapters (well, most actually) will handle forking well.
      * E.g. connections will be terminated as soon as child ends, ...
-     *
-     * @param KeyValueStore $cache
      *
      * @return bool
      */

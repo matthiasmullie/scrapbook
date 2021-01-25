@@ -22,8 +22,7 @@ class PrefixKeys implements KeyValueStore
     protected $prefix;
 
     /**
-     * @param KeyValueStore $cache
-     * @param string        $prefix
+     * @param string $prefix
      */
     public function __construct(KeyValueStore $cache, $prefix)
     {

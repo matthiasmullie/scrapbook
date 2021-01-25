@@ -34,7 +34,7 @@ class MySQL extends SQL
         ));
 
         // 1 = insert; 2 = update
-        return $statement->rowCount() === 1 || $statement->rowCount() === 2;
+        return 1 === $statement->rowCount() || 2 === $statement->rowCount();
     }
 
     /**
@@ -108,7 +108,7 @@ class MySQL extends SQL
             ':expire' => $expire,
         ));
 
-        return $statement->rowCount() === 1;
+        return 1 === $statement->rowCount();
     }
 
     /**
@@ -116,7 +116,7 @@ class MySQL extends SQL
      */
     public function flush()
     {
-        return $this->client->exec("TRUNCATE TABLE $this->table") !== false;
+        return false !== $this->client->exec("TRUNCATE TABLE $this->table");
     }
 
     /**

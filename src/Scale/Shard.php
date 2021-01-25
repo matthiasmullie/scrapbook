@@ -35,9 +35,6 @@ class Shard implements KeyValueStore
 
     /**
      * Overloadable with multiple KeyValueStore objects.
-     *
-     * @param KeyValueStore      $cache1
-     * @param KeyValueStore|null $cache2
      */
     public function __construct(KeyValueStore $cache1, KeyValueStore $cache2 = null /* , [KeyValueStore $cache3, [...]] */)
     {
@@ -46,9 +43,6 @@ class Shard implements KeyValueStore
         $this->caches = $caches;
     }
 
-    /**
-     * @param KeyValueStore $cache
-     */
     public function addCache(KeyValueStore $cache)
     {
         $this->caches[] = $cache;
@@ -242,8 +236,6 @@ class Shard implements KeyValueStore
     /**
      * Get a [KeyValueStore => array of cache keys] map (SplObjectStorage) for
      * multiple cache keys.
-     *
-     * @param array $keys
      *
      * @return SplObjectStorage
      */

@@ -4,8 +4,8 @@ namespace MatthiasMullie\Scrapbook\Tests\Psr16;
 
 use ArrayIterator;
 use DateInterval;
-use MatthiasMullie\Scrapbook\Adapters\Couchbase;
 use MatthiasMullie\Scrapbook\Adapters\Collections\Couchbase as CouchbaseCollection;
+use MatthiasMullie\Scrapbook\Adapters\Couchbase;
 
 class SimpleCacheTest extends Psr16TestCase
 {

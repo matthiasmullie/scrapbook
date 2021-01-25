@@ -29,10 +29,7 @@ class AdapterTestProvider
     {
         if (!$testCase instanceof AdapterProviderTestInterface) {
             $class = get_class($testCase);
-            throw new Exception(
-                "AdapterTestProvider can't be used with a class ($class) that ".
-                "doesn't implement AdapterProviderTestInterface."
-            );
+            throw new Exception("AdapterTestProvider can't be used with a class ($class) that "."doesn't implement AdapterProviderTestInterface.");
         }
 
         $this->testCase = $testCase;
@@ -72,8 +69,7 @@ class AdapterTestProvider
      * that get input from dataProviders, so they're wrapped in another class
      * that we must unwrap in order to assign the adapter.
      *
-     * @param TestSuite       $suite
-     * @param AdapterProvider $adapterProvider
+     * @param TestSuite $suite
      */
     protected function injectAdapter(/* TestSuite|\PHPUnit_Framework_TestSuite */ $suite, AdapterProvider $adapterProvider)
     {

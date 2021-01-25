@@ -46,8 +46,6 @@ class RepositoryTest extends Psr6TestCase
     }
 
     /**
-     * @param Pool $pool
-     *
      * @return array
      */
     protected function getRepositoryData(Pool $pool)

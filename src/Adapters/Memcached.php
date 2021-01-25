@@ -22,9 +22,6 @@ class Memcached implements KeyValueStore
      */
     protected $client;
 
-    /**
-     * @param \Memcached $client
-     */
     public function __construct(\Memcached $client)
     {
         $this->client = $client;
@@ -200,7 +197,7 @@ class Memcached implements KeyValueStore
          * to replace the error codes by falses.
          */
         foreach ($result as $key => $status) {
-            $result[$key] = $status === true;
+            $result[$key] = true === $status;
         }
 
         return $result;
@@ -335,7 +332,7 @@ class Memcached implements KeyValueStore
     protected function doIncrement($key, $offset, $initial, $expire)
     {
         $value = $this->get($key, $token);
-        if ($value === false) {
+        if (false === $value) {
             $success = $this->add($key, $initial, $expire);
 
             return $success ? $initial : false;
@@ -379,9 +376,7 @@ class Memcached implements KeyValueStore
         }, $key);
 
         if (strlen($key) > 255) {
-            throw new InvalidKey(
-                "Invalid key: $key. Encoded Memcached keys can not exceed 255 chars."
-            );
+            throw new InvalidKey("Invalid key: $key. Encoded Memcached keys can not exceed 255 chars.");
         }
 
         return $key;
@@ -411,9 +406,7 @@ class Memcached implements KeyValueStore
      *
      * @see https://github.com/facebook/hhvm/pull/7654
      *
-     * @param array $items
-     * @param array $nums
-     * @param int   $expire
+     * @param int $expire
      *
      * @return array
      */
@@ -444,13 +437,10 @@ class Memcached implements KeyValueStore
      */
     protected function throwExceptionOnClientCallFailure($result)
     {
-        if ($result !== false) {
+        if (false !== $result) {
             return;
         }
 
-        throw new OperationFailed(
-            $this->client->getResultMessage(),
-            $this->client->getResultCode()
-        );
+        throw new OperationFailed($this->client->getResultMessage(), $this->client->getResultCode());
     }
 }

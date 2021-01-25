@@ -9,8 +9,8 @@ use MatthiasMullie\Scrapbook\Adapters\Couchbase;
 use MatthiasMullie\Scrapbook\Adapters\Memcached;
 use MatthiasMullie\Scrapbook\KeyValueStore;
 use MatthiasMullie\Scrapbook\Psr6\Pool;
-use MatthiasMullie\Scrapbook\Tests\AdapterTestProvider;
 use MatthiasMullie\Scrapbook\Tests\AdapterProviderTestInterface;
+use MatthiasMullie\Scrapbook\Tests\AdapterTestProvider;
 
 class IntegrationPoolTest extends CachePoolTest implements AdapterProviderTestInterface
 {

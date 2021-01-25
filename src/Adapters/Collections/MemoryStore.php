@@ -2,8 +2,8 @@
 
 namespace MatthiasMullie\Scrapbook\Adapters\Collections;
 
-use MatthiasMullie\Scrapbook\Adapters\MemoryStore as Adapter;
 use MatthiasMullie\Scrapbook\Adapters\Collections\Utils\PrefixKeys;
+use MatthiasMullie\Scrapbook\Adapters\MemoryStore as Adapter;
 use ReflectionObject;
 
 /**
@@ -16,8 +16,7 @@ use ReflectionObject;
 class MemoryStore extends PrefixKeys
 {
     /**
-     * @param Adapter $cache
-     * @param string  $name
+     * @param string $name
      */
     public function __construct(Adapter $cache, $name)
     {
@@ -45,7 +44,7 @@ class MemoryStore extends PrefixKeys
         $items = $property->getValue($this->cache);
 
         foreach ($items as $key => $value) {
-            if (strpos($key, $this->prefix) === 0) {
+            if (0 === strpos($key, $this->prefix)) {
                 $this->cache->delete($key);
             }
         }

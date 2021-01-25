@@ -22,8 +22,7 @@ class Flysystem extends Adapter
     protected $collection;
 
     /**
-     * @param Filesystem $filesystem
-     * @param string     $collection
+     * @param string $collection
      */
     public function __construct(Filesystem $filesystem, $collection)
     {
@@ -39,8 +38,8 @@ class Flysystem extends Adapter
         $files = $this->filesystem->listContents($this->collection);
         foreach ($files as $file) {
             try {
-                if ($file['type'] === 'dir') {
-                    if ($this->version === 1) {
+                if ('dir' === $file['type']) {
+                    if (1 === $this->version) {
                         $this->filesystem->deleteDir($file['path']);
                     } else {
                         $this->filesystem->deleteDirectory($file['path']);

@@ -3,14 +3,14 @@
 namespace MatthiasMullie\Scrapbook\Tests\Psr16\Integration;
 
 use Cache\IntegrationTests\SimpleCacheTest;
-use MatthiasMullie\Scrapbook\Adapters\Collections\Memcached as MemcachedCollection;
 use MatthiasMullie\Scrapbook\Adapters\Collections\Couchbase as CouchbaseCollection;
+use MatthiasMullie\Scrapbook\Adapters\Collections\Memcached as MemcachedCollection;
 use MatthiasMullie\Scrapbook\Adapters\Couchbase;
 use MatthiasMullie\Scrapbook\Adapters\Memcached;
 use MatthiasMullie\Scrapbook\KeyValueStore;
 use MatthiasMullie\Scrapbook\Psr16\SimpleCache;
-use MatthiasMullie\Scrapbook\Tests\AdapterTestProvider;
 use MatthiasMullie\Scrapbook\Tests\AdapterProviderTestInterface;
+use MatthiasMullie\Scrapbook\Tests\AdapterTestProvider;
 
 class IntegrationTest extends SimpleCacheTest implements AdapterProviderTestInterface
 {

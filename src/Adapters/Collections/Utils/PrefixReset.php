@@ -17,8 +17,7 @@ class PrefixReset extends PrefixKeys
     protected $collection;
 
     /**
-     * @param KeyValueStore $cache
-     * @param string        $name
+     * @param string $name
      */
     public function __construct(KeyValueStore $cache, $name)
     {
@@ -35,7 +34,7 @@ class PrefixReset extends PrefixKeys
         $index = $this->cache->increment($this->collection);
         $this->setPrefix($this->collection.':'.$index.':');
 
-        return $index !== false;
+        return false !== $index;
     }
 
     /**
@@ -51,7 +50,7 @@ class PrefixReset extends PrefixKeys
          */
         $index = $this->cache->get($this->collection);
 
-        if ($index === false) {
+        if (false === $index) {
             $index = $this->cache->set($this->collection, 1);
         }
 

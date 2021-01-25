@@ -2,9 +2,9 @@
 
 namespace MatthiasMullie\Scrapbook\Adapters;
 
-use PDO;
-use MatthiasMullie\Scrapbook\KeyValueStore;
 use MatthiasMullie\Scrapbook\Adapters\Collections\SQL as Collection;
+use MatthiasMullie\Scrapbook\KeyValueStore;
+use PDO;
 
 /**
  * SQL adapter. Basically just a wrapper over \PDO, but in an exchangeable
@@ -35,7 +35,6 @@ abstract class SQL implements KeyValueStore
     abstract protected function init();
 
     /**
-     * @param PDO    $client
      * @param string $table
      */
     public function __construct(PDO $client, $table = 'cache')
@@ -166,7 +165,7 @@ abstract class SQL implements KeyValueStore
 
         $statement->execute(array(':key' => $key));
 
-        return $statement->rowCount() === 1;
+        return 1 === $statement->rowCount();
     }
 
     /**
@@ -197,7 +196,7 @@ abstract class SQL implements KeyValueStore
          * any. Otherwise, we'll use the getMulti() results to figure out which
          * couldn't be deleted because they didn't exist at that time.
          */
-        $success = $statement->rowCount() !== 0;
+        $success = 0 !== $statement->rowCount();
         $success = array_fill_keys($keys, $success);
         foreach ($keys as $key) {
             if (!array_key_exists($key, $items)) {
@@ -229,7 +228,7 @@ abstract class SQL implements KeyValueStore
             ':expire' => $expire,
         ));
 
-        return $statement->rowCount() === 1;
+        return 1 === $statement->rowCount();
     }
 
     /**
@@ -254,7 +253,7 @@ abstract class SQL implements KeyValueStore
             ':expire' => $expire,
         ));
 
-        if ($statement->rowCount() === 1) {
+        if (1 === $statement->rowCount()) {
             return true;
         }
 
@@ -297,7 +296,7 @@ abstract class SQL implements KeyValueStore
             ':token' => $token,
         ));
 
-        if ($statement->rowCount() === 1) {
+        if (1 === $statement->rowCount()) {
             return true;
         }
 
@@ -362,7 +361,7 @@ abstract class SQL implements KeyValueStore
             ':expire' => $expire,
         ));
 
-        return $statement->rowCount() === 1;
+        return 1 === $statement->rowCount();
     }
 
     /**
@@ -371,7 +370,7 @@ abstract class SQL implements KeyValueStore
     public function flush()
     {
         // TRUNCATE doesn't work on SQLite - DELETE works for all
-        return $this->client->exec("DELETE FROM $this->table") !== false;
+        return false !== $this->client->exec("DELETE FROM $this->table");
     }
 
     /**
@@ -406,7 +405,7 @@ abstract class SQL implements KeyValueStore
         $this->clearExpired();
 
         $value = $this->get($key);
-        if ($value === false) {
+        if (false === $value) {
             $return = $this->add($key, $initial, $expire);
 
             if ($return) {
@@ -455,11 +454,11 @@ abstract class SQL implements KeyValueStore
      *
      * @param int $expire
      *
-     * @return null|string
+     * @return string|null
      */
     protected function expire($expire)
     {
-        if ($expire === 0) {
+        if (0 === $expire) {
             return;
         }
 

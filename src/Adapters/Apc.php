@@ -51,7 +51,7 @@ class Apc implements KeyValueStore
         }
 
         $value = $this->apcu_fetch($key, $success);
-        if ($success === false) {
+        if (false === $success) {
             $token = null;
 
             return false;
@@ -81,7 +81,7 @@ class Apc implements KeyValueStore
         }
 
         $values = $this->apcu_fetch($keys);
-        if ($values === false) {
+        if (false === $values) {
             return array();
         }
 
@@ -227,7 +227,7 @@ class Apc implements KeyValueStore
         if ($ttl < 0) {
             // don't add - it's expired already; just check if it already
             // existed to return true/false as expected from add()
-            return $this->get($key) === false;
+            return false === $this->get($key);
         }
 
         // lock required for CAS
@@ -252,7 +252,7 @@ class Apc implements KeyValueStore
         // APC doesn't support replace; I'll use get to check key existence,
         // then safely replace with cas
         $current = $this->get($key, $token);
-        if ($current === false) {
+        if (false === $current) {
             return false;
         }
 
@@ -288,7 +288,7 @@ class Apc implements KeyValueStore
         // get current value, to compare with token
         $compare = $this->apcu_fetch($key);
 
-        if ($compare === false) {
+        if (false === $compare) {
             $this->unlock($key);
 
             return false;
@@ -420,7 +420,7 @@ class Apc implements KeyValueStore
          * PHP, then CAS the new value = 1 operation + CAS.
          */
         $value = $this->get($key, $token);
-        if ($value === false) {
+        if (false === $value) {
             // don't even set initial value, it's already expired...
             if ($ttl < 0) {
                 return $initial;
@@ -571,7 +571,7 @@ class Apc implements KeyValueStore
      */
     protected function expire($key = array(), $ttl = 0)
     {
-        if ($ttl === 0) {
+        if (0 === $ttl) {
             // when storing indefinitely, there's no point in keeping it around,
             // it won't just expire
             return;

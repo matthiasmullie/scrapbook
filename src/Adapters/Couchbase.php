@@ -25,8 +25,7 @@ class Couchbase implements KeyValueStore
     protected $client;
 
     /**
-     * @param \CouchbaseBucket $client
-     * @param bool             $assertServerHealthy
+     * @param bool $assertServerHealthy
      *
      * @throws ServerUnhealthy
      */
@@ -379,7 +378,7 @@ class Couchbase implements KeyValueStore
     protected function doIncrement($key, $offset, $initial, $expire)
     {
         $value = $this->get($key, $token);
-        if ($value === false) {
+        if (false === $value) {
             $success = $this->add($key, $initial, $expire);
 
             return $success ? $initial : false;
@@ -421,7 +420,7 @@ class Couchbase implements KeyValueStore
     {
         $unserialized = @unserialize($value);
 
-        return $unserialized === false ? $value : $unserialized;
+        return false === $unserialized ? $value : $unserialized;
     }
 
     /**
@@ -454,7 +453,7 @@ class Couchbase implements KeyValueStore
     {
         $info = $this->client->manager()->info();
         foreach ($info['nodes'] as $node) {
-            if ($node['status'] !== 'healthy') {
+            if ('healthy' !== $node['status']) {
                 throw new ServerUnhealthy('Server isn\'t ready yet');
             }
         }
