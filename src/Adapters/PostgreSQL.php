@@ -39,6 +39,7 @@ class PostgreSQL extends SQL
         $this->clearExpired();
 
         $serialized = $this->serialize($value);
+        $expiration = $this->expire($expire);
 
         $statement = $this->client->prepare(
             "INSERT INTO $this->table (k, v, e)
@@ -48,7 +49,7 @@ class PostgreSQL extends SQL
 
         $statement->bindParam(':key', $key);
         $statement->bindParam(':value', $serialized, PDO::PARAM_LOB, strlen($serialized));
-        $statement->bindParam(':expire', $this->expire($expire));
+        $statement->bindParam(':expire', $expiration);
         $statement->execute();
 
         // ON CONFLICT is not supported in versions < 9.5, in which case we'll

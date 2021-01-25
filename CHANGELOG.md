@@ -8,7 +8,8 @@
 - Allow longer keys in MySQL-backed cache
 - Made handling of binary values with PostgreSQL more robust
 - Add support for Flysystem v2.x
-- Fix PHP8 issue with `cas` in transactional cache
+- Fix PHP8 error with `cas` in transactional cache
+- Fix PHP8 warning in PostgreSQL `set`
 
 
 ## [1.4.7] - 2019-08-30
