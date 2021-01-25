@@ -211,7 +211,7 @@ class Defer
         };
 
         $args = array(
-            'token' => $originalValue,
+            'originalValue' => $originalValue,
             'key' => $key,
             'value' => $value,
             'expire' => $expire,
