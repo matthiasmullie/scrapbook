@@ -1,5 +1,5 @@
 # defaults for `make test`
-PHP ?= '7.2'
+PHP ?= '8.0'
 ADAPTER ?= 'Apc,Couchbase,Flysystem,Memcached,MemoryStore,MySQL,PostgreSQL,Redis,SQLite'
 UP ?= 1
 DOWN ?= 1
