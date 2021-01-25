@@ -27,21 +27,6 @@ class IntegrationPoolTest extends CachePoolTest implements AdapterProviderTestIn
     /**
      * {@inheritdoc}
      */
-    protected function compatSetUp()
-    {
-        parent::compatSetUp();
-
-        if ($this->adapter instanceof Couchbase || $this->adapter instanceof CouchbaseCollection) {
-            $this->skippedTests['testExpiration'] = "Couchbase TTL can't be relied on with 1 second precision";
-            $this->skippedTests['testHasItemReturnsFalseWhenDeferredItemIsExpired'] = "Couchbase TTL can't be relied on with 1 second precision";
-        } elseif ($this->adapter instanceof Memcached || $this->adapter instanceof MemcachedCollection) {
-            $this->skippedTests['testBasicUsageWithLongKey'] = "Memcached keys can't exceed 255 characters";
-        }
-    }
-
-    /**
-     * {@inheritdoc}
-     */
     public static function suite()
     {
         $provider = new AdapterTestProvider(new static());
@@ -55,6 +40,14 @@ class IntegrationPoolTest extends CachePoolTest implements AdapterProviderTestIn
     public function setAdapter(KeyValueStore $adapter)
     {
         $this->adapter = $adapter;
+
+        $this->skippedTests = array();
+        if ($this->adapter instanceof Couchbase || $this->adapter instanceof CouchbaseCollection) {
+            $this->skippedTests['testExpiration'] = "Couchbase TTL can't be relied on with 1 second precision";
+            $this->skippedTests['testHasItemReturnsFalseWhenDeferredItemIsExpired'] = "Couchbase TTL can't be relied on with 1 second precision";
+        } elseif ($this->adapter instanceof Memcached || $this->adapter instanceof MemcachedCollection) {
+            $this->skippedTests['testBasicUsageWithLongKey'] = "Memcached keys can't exceed 255 characters";
+        }
     }
 
     /**
