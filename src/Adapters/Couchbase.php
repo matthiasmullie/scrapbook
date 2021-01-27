@@ -3,6 +3,7 @@
 namespace MatthiasMullie\Scrapbook\Adapters;
 
 use MatthiasMullie\Scrapbook\Adapters\Collections\Couchbase as Collection;
+use MatthiasMullie\Scrapbook\Exception\InvalidKey;
 use MatthiasMullie\Scrapbook\Exception\ServerUnhealthy;
 use MatthiasMullie\Scrapbook\KeyValueStore;
 
@@ -44,6 +45,8 @@ class Couchbase implements KeyValueStore
      */
     public function get($key, &$token = null)
     {
+        $this->assertValidKey($key);
+
         try {
             $result = $this->client->get($key);
         } catch (\CouchbaseException $e) {
@@ -62,6 +65,8 @@ class Couchbase implements KeyValueStore
      */
     public function getMulti(array $keys, array &$tokens = null)
     {
+        array_map(array($this, 'assertValidKey'), $keys);
+
         $tokens = array();
         if (empty($keys)) {
             return array();
@@ -93,6 +98,8 @@ class Couchbase implements KeyValueStore
      */
     public function set($key, $value, $expire = 0)
     {
+        $this->assertValidKey($key);
+
         if ($this->deleteIfExpired($key, $expire)) {
             return true;
         }
@@ -112,6 +119,8 @@ class Couchbase implements KeyValueStore
      */
     public function setMulti(array $items, $expire = 0)
     {
+        array_map(array($this, 'assertValidKey'), array_keys($items));
+
         if (empty($items)) {
             return array();
         }
@@ -163,6 +172,8 @@ class Couchbase implements KeyValueStore
      */
     public function delete($key)
     {
+        $this->assertValidKey($key);
+
         try {
             $result = $this->client->remove($key);
         } catch (\CouchbaseException $e) {
@@ -177,6 +188,8 @@ class Couchbase implements KeyValueStore
      */
     public function deleteMulti(array $keys)
     {
+        array_map(array($this, 'assertValidKey'), $keys);
+
         if (empty($keys)) {
             return array();
         }
@@ -200,6 +213,8 @@ class Couchbase implements KeyValueStore
      */
     public function add($key, $value, $expire = 0)
     {
+        $this->assertValidKey($key);
+
         $value = $this->serialize($value);
         try {
             $result = $this->client->insert($key, $value, array('expiry' => $expire));
@@ -223,6 +238,8 @@ class Couchbase implements KeyValueStore
      */
     public function replace($key, $value, $expire = 0)
     {
+        $this->assertValidKey($key);
+
         $value = $this->serialize($value);
         try {
             $result = $this->client->replace($key, $value, array('expiry' => $expire));
@@ -246,6 +263,8 @@ class Couchbase implements KeyValueStore
      */
     public function cas($token, $key, $value, $expire = 0)
     {
+        $this->assertValidKey($key);
+
         $value = $this->serialize($value);
         try {
             $result = $this->client->replace($key, $value, array('expiry' => $expire, 'cas' => $token));
@@ -269,6 +288,8 @@ class Couchbase implements KeyValueStore
      */
     public function increment($key, $offset = 1, $initial = 0, $expire = 0)
     {
+        $this->assertValidKey($key);
+
         if ($offset <= 0 || $initial < 0) {
             return false;
         }
@@ -281,6 +302,8 @@ class Couchbase implements KeyValueStore
      */
     public function decrement($key, $offset = 1, $initial = 0, $expire = 0)
     {
+        $this->assertValidKey($key);
+
         if ($offset <= 0 || $initial < 0) {
             return false;
         }
@@ -293,6 +316,8 @@ class Couchbase implements KeyValueStore
      */
     public function touch($key, $expire)
     {
+        $this->assertValidKey($key);
+
         if ($this->deleteIfExpired($key, $expire)) {
             return true;
         }
@@ -378,6 +403,8 @@ class Couchbase implements KeyValueStore
      */
     protected function doIncrement($key, $offset, $initial, $expire)
     {
+        $this->assertValidKey($key);
+
         $value = $this->get($key, $token);
         if (false === $value) {
             $success = $this->add($key, $initial, $expire);
@@ -443,6 +470,18 @@ class Couchbase implements KeyValueStore
         }
 
         return false;
+    }
+
+    /**
+     * @param string $key
+     *
+     * @throws InvalidKey
+     */
+    protected function assertValidKey($key)
+    {
+        if (strlen($key) > 255) {
+            throw new InvalidKey("Invalid key: $key. Couchbase keys can not exceed 255 chars.");
+        }
     }
 
     /**

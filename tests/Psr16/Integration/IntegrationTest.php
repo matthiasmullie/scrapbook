@@ -48,6 +48,7 @@ class IntegrationTest extends SimpleCacheTest implements AdapterProviderTestInte
         if ($this->adapter instanceof Couchbase || $this->adapter instanceof CouchbaseCollection) {
             $this->skippedTests['testSetTtl'] = "Couchbase TTL can't be relied on with 1 second precision";
             $this->skippedTests['testSetMultipleTtl'] = "Couchbase TTL can't be relied on with 1 second precision";
+            $this->skippedTests['testBasicUsageWithLongKey'] = "Couchbase keys can't exceed 255 characters";
         } elseif ($this->adapter instanceof Memcached || $this->adapter instanceof MemcachedCollection) {
             $this->skippedTests['testBasicUsageWithLongKey'] = "Memcached keys can't exceed 255 characters";
         }
