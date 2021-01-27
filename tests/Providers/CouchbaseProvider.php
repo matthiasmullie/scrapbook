@@ -9,14 +9,17 @@ class CouchbaseProvider extends AdapterProvider
 {
     public function __construct()
     {
-        if (!class_exists('CouchbaseCluster')) {
+        if (class_exists('CouchbaseCluster')) {
+            $cluster = new \CouchbaseCluster('couchbase://couchbase:11210?detailed_errcodes=1');
+        } elseif (class_exists('\Couchbase\Cluster')) {
+            $cluster = new \Couchbase\Cluster('couchbase://couchbase:11210?detailed_errcodes=1');
+        } else {
             throw new Exception('ext-couchbase is not installed.');
         }
 
         $authenticator = new \Couchbase\PasswordAuthenticator();
         $authenticator->username('Administrator')->password('password');
 
-        $cluster = new \CouchbaseCluster('couchbase://couchbase:11210?detailed_errcodes=1');
         $cluster->authenticate($authenticator);
         $bucket = $cluster->openBucket('default');
 

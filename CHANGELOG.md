@@ -1,7 +1,10 @@
 # Changelog
 
 
-## [1.4.8] - ????-??-??
+## [1.4.8] - 2021-01-27
+### Added
+- Added support for later Couchbase v2.x versions
+
 ### Fixed
 - Fixed Flysystem support for long keys
 - Fixed non-existing getMulti results with certain Redis versions

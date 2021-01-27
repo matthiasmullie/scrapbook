@@ -12,6 +12,7 @@ use MatthiasMullie\Scrapbook\KeyValueStore;
  *
  * @see http://developer.couchbase.com/documentation/server/4.0/sdks/php-2.0/php-intro.html
  * @see http://docs.couchbase.com/sdk-api/couchbase-php-client-2.1.0/
+ * @see http://docs.couchbase.com/sdk-api/couchbase-php-client-2.6.2/
  *
  * @author Matthias Mullie <scrapbook@mullie.eu>
  * @copyright Copyright (c) 2014, Matthias Mullie. All rights reserved
@@ -20,7 +21,7 @@ use MatthiasMullie\Scrapbook\KeyValueStore;
 class Couchbase implements KeyValueStore
 {
     /**
-     * @var \CouchbaseBucket
+     * @var \CouchbaseBucket|\Couchbase|Bucket
      */
     protected $client;
 
@@ -29,7 +30,7 @@ class Couchbase implements KeyValueStore
      *
      * @throws ServerUnhealthy
      */
-    public function __construct(\CouchbaseBucket $client, $assertServerHealthy = true)
+    public function __construct(/* \CouchbaseBucket|\Couchbase|Bucket */ $client, $assertServerHealthy = true)
     {
         $this->client = $client;
 
