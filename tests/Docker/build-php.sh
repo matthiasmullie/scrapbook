@@ -40,7 +40,7 @@ docker-php-ext-enable apcu
 echo "apc.enable_cli=1" >> /usr/local/etc/php/php.ini
 docker-php-ext-enable xdebug
 docker-php-ext-enable igbinary
-docker-php-ext-enable couchbase
+docker-php-ext-enable couchbase-2.6.2
 docker-php-ext-enable memcached
 docker-php-ext-enable redis
 docker-php-ext-install pdo
