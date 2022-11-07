@@ -64,10 +64,9 @@ Or with a specific PHP version:
 make test PHP=7.0 ADAPTER=MySQL,PostgreSQL,SQLite
 ```
 
-Travis CI has been [configured](.travis.yml) to run a matrix of all supported
-PHP versions & adapters individually. Upon submitting a new pull request, that
-test suite will be run & report back on your pull request. Please make sure the
-test suite passes.
+GitHub Actions have been [configured](.github/workflows/test.yml) to run supported
+PHP versions & adapters. Upon submitting a new pull request, that test suite will
+be run & report back on your pull request. Please make sure the test suite passes.
 
 
 ### Writing tests
@@ -86,8 +85,7 @@ adapter's KeyValueStore implementation & `__construct` should throw a
 There are also adapter-specific tests. Just look at
 [MemoryStoreTest.php](tests/Adapters/MemoryStoreTest.php), for example.
 
-Make sure to remember to also include the adapter in [.travis.yml](.travis.yml)
-and create an [installation script](tests/.travis) for Travis CI.
+Make sure to remember to also include the adapter in [test.yml](.github/workflows/test.yml).
 
 
 #### Other new class
