@@ -63,11 +63,15 @@
 		},
 
 		couchbase: {
-			src: "// create \\CouchbaseBucket object pointing to your Couchbase server\n" +
-				"$cluster = new \\CouchbaseCluster('couchbase://localhost');\n" +
-				"$bucket = $cluster->openBucket('default');\n" +
+			src: "// create \\Couchbase\\Bucket object pointing to your Couchbase server\n" +
+				"$options = new \\Couchbase\\ClusterOptions();\n" +
+				"$options->credentials('username', 'password');\n" +
+				"$cluster = new \\Couchbase\\Cluster('couchbase://localhost', $options);\n" +
+				"$bucket = $cluster->bucket('default');\n" +
+				"$collection = $bucket->defaultCollection();\n" +
+				"$bucketManager = $cluster->buckets();\n" +
 				"// create Scrapbook cache object\n" +
-				"$cache = new \\MatthiasMullie\\Scrapbook\\Adapters\\Couchbase($bucket);\n",
+				"$cache = new \\MatthiasMullie\\Scrapbook\\Adapters\\Couchbase($collection, $bucketManager, $bucket);\n",
 			composer: 'pecl install couchbase'
 		},
 
