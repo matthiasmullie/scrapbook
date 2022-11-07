@@ -1,26 +1,22 @@
 #!/bin/bash
 
 apt-get update
-apt-get install -y gnupg
-curl -sS http://packages.couchbase.com/ubuntu/couchbase.key | apt-key add -
-echo "deb http://packages.couchbase.com/ubuntu bionic bionic/main" > /etc/apt/sources.list.d/couchbase.list
-apt-get update
 
+apt-get install --reinstall -y ca-certificates
+apt-get install -y libssl-dev
 apt-get install -y zlib1g-dev libzip-dev
-apt-get install -y libcouchbase2-libevent libcouchbase-dev
 apt-get install -y libmemcached-dev
 apt-get install -y libpq-dev
 
-pecl install -f pcs-1.3.3
+pecl install -f xdebug
 pecl install -f igbinary
-pecl install -f couchbase-2.6.2
 
-if [[ `php-config --vernum` -ge 72000 ]]; then # PHP>=7.2
-    pecl install -f xdebug
-elif [[ `php-config --vernum` -ge 70000 ]]; then # PHP>=7.0
-    pecl install -f xdebug-2.7.2
-else # PHP<7.0
-    pecl install -f xdebug-2.5.5
+if [[ `php-config --vernum` -ge 70400 ]]; then # PHP>=7.4
+  if [[ `php-config --vernum` -lt 80000 ]]; then # PHP<8
+    pecl install -f json
+  fi
+  apt-get install -y cmake
+  pecl install -f couchbase
 fi
 
 if [[ `php-config --vernum` -ge 70000 ]]; then # PHP>=7.0
@@ -56,4 +52,4 @@ apt-get install -y wget git zip unzip
 docker-php-ext-install zip
 
 # install dependencies
-make install
+make install || true
