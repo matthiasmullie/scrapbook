@@ -131,17 +131,22 @@ $cache = new \MatthiasMullie\Scrapbook\Adapters\Redis($client);
 always-on availability, and data mobility requirements of mission critical
 applications.*
 
-The [PECL Couchbase extension](https://pecl.php.net/package/couchbase) is used
-to interface with the Couchbase server. Just provide a valid `\CouchbaseBucket`
-object to the Couchbase adapter:
-
+The [PECL Couchbase extension](https://pecl.php.net/package/couchbase) and
+[couchbase/couchbase package](https://packagist.org/packages/couchbase/couchbase)
+are used to interface with the Couchbase server. Just provide valid
+`\Couchbase\Collection`, `\Couchbase\Management\BucketManager` and
+`\Couchbase\Bucket` objects to the Couchbase adapter:
 
 ```php
-// create \CouchbaseBucket object pointing to your Couchbase server
-$cluster = new \CouchbaseCluster('couchbase://localhost');
-$bucket = $cluster->openBucket('default');
+// create \Couchbase\Bucket object pointing to your Couchbase server
+$options = new \Couchbase\ClusterOptions();
+$options->credentials('username', 'password');
+$cluster = new \Couchbase\Cluster('couchbase://localhost', $options);
+$bucket = $cluster->bucket('default');
+$collection = $bucket->defaultCollection();
+$bucketManager = $cluster->buckets();
 // create Scrapbook KeyValueStore object
-$cache = new \MatthiasMullie\Scrapbook\Adapters\Couchbase($bucket);
+$cache = new \MatthiasMullie\Scrapbook\Adapters\Couchbase($collection, $bucketManager, $bucket);
 ```
 
 

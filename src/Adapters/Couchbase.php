@@ -71,7 +71,7 @@ class Couchbase implements KeyValueStore
     public function __construct(
         /* \CouchbaseBucket|\Couchbase\Bucket|\Couchbase\Collection */
         $client,
-        /* \CouchbaseBucketManager|\Couchbase\BucketManager|Couchbase\Management\BucketManager|false */
+        /* \CouchbaseBucketManager|\Couchbase\BucketManager|\Couchbase\Management\BucketManager|false */
         $bucketManager,
         /* \CouchbaseBucket|\Couchbase\Bucket|null */
         $bucket,
