@@ -3,7 +3,7 @@
 namespace MatthiasMullie\Scrapbook\Adapters;
 
 use APCIterator;
-use APCuIterator;
+use APCUIterator;
 use MatthiasMullie\Scrapbook\Adapters\Collections\Apc as Collection;
 use MatthiasMullie\Scrapbook\Exception\Exception;
 use MatthiasMullie\Scrapbook\KeyValueStore;
@@ -358,7 +358,10 @@ class Apc implements KeyValueStore
         }
 
         // get existing TTL & quit early if it's that one already
-        $iterator = $this->APCuIterator('/^'.preg_quote($key, '/').'$/', \APC_ITER_VALUE | \APC_ITER_TTL, 1, \APC_LIST_ACTIVE);
+        $iterator = $this->APCUIterator('/^'.preg_quote($key, '/').'$/', \APC_ITER_VALUE | \APC_ITER_TTL, 1, \APC_LIST_ACTIVE);
+        if (!$iterator->valid()) {
+            return false;
+        }
         $current = $iterator->current();
         if (!$current) {
             // doesn't exist
@@ -665,7 +668,7 @@ class Apc implements KeyValueStore
     }
 
     /**
-     * @param string|string[]|APCIterator|APCuIterator $key
+     * @param string|string[]|APCIterator|APCUIterator $key
      *
      * @return bool|string[]
      */
@@ -712,17 +715,17 @@ class Apc implements KeyValueStore
      * @param int                  $chunk_size
      * @param int                  $list
      *
-     * @return APCIterator|APCuIterator
+     * @return APCIterator|APCUIterator
      */
-    protected function APCuIterator($search = null, $format = null, $chunk_size = null, $list = null)
+    protected function APCUIterator($search = null, $format = null, $chunk_size = null, $list = null)
     {
         $arguments = func_get_args();
 
-        if (class_exists('APCuIterator', false)) {
+        if (class_exists('APCUIterator', false)) {
             // I can't set the defaults parameter values because the APC_ or
             // APCU_ constants may not exist, so I'll just initialize from
             // func_get_args, not passing those params that haven't been set
-            $reflect = new \ReflectionClass('APCuIterator');
+            $reflect = new \ReflectionClass('APCUIterator');
 
             return $reflect->newInstanceArgs($arguments);
         } else {
