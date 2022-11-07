@@ -26,8 +26,10 @@ $cache->set('key', 'value'); // returns true
 $cache->get('key'); // returns 'value'
 ```
 
-The [PECL Couchbase extension](https://pecl.php.net/package/couchbase) is used
-to interface with the Couchbase server. Just provide a valid `\CouchbaseBucket`
-object to the Couchbase adapter:
+The [PECL Couchbase extension](https://pecl.php.net/package/couchbase) and
+[couchbase/couchbase package](https://packagist.org/packages/couchbase/couchbase)
+are used to interface with the Couchbase server. Just provide valid
+`\Couchbase\Collection`, `\Couchbase\Management\BucketManager` and
+`\Couchbase\Bucket` objects to the Couchbase adapter:
 
 <hr class="sep20">
