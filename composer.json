@@ -34,7 +34,7 @@
   },
   "require-dev": {
     "phpunit/phpunit": ">=4.8",
-    "friendsofphp/php-cs-fixer": "~2.0"
+    "friendsofphp/php-cs-fixer": ">=2.0"
   },
   "suggest": {
     "ext-apc": ">=3.1.1",
@@ -42,7 +42,8 @@
     "ext-memcached": ">=2.0.0",
     "ext-redis": ">=2.2.0 || 0.0.0.0",
     "ext-pdo": ">=0.1.0",
-    "league/flysystem": "~1.0"
+    "couchbase/couchbase": ">=2.0",
+    "league/flysystem": ">=1.0"
   },
   "provide": {
     "psr/cache-implementation": "~1.0",

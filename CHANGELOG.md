@@ -1,6 +1,17 @@
 # Changelog
 
 
+## [1.4.9] - 2022-11-03
+### Added
+- Added support for Couchbase v3.x & 4.x versions
+
+### Fixed
+- Fixed (invalid) APCUIterator check
+
+### Changed
+- Dropped built-in server health check option with Couchbase SDK v3.x/4.x support
+
+
 ## [1.4.8] - 2021-01-27
 ### Added
 - Added support for later Couchbase v2.x versions
@@ -303,3 +314,4 @@
 [1.4.6]: https://github.com/matthiasmullie/scrapbook/compare/1.4.5...1.4.6
 [1.4.7]: https://github.com/matthiasmullie/scrapbook/compare/1.4.6...1.4.7
 [1.4.8]: https://github.com/matthiasmullie/scrapbook/compare/1.4.7...1.4.8
+[1.4.9]: https://github.com/matthiasmullie/scrapbook/compare/1.4.8...1.4.9
