@@ -11,7 +11,11 @@ class ReturnTypehint extends TestCase
         $backtrace = debug_backtrace();
         $current = array_shift($backtrace);
         foreach ($backtrace as $call) {
-            if ($call['class'] === $current['class'] && $call['function'] === $current['function']) {
+            if (
+                isset($call['class'], $call['function']) &&
+                $call['class'] === $current['class']
+                && $call['function'] === $current['function']
+            ) {
                 // prevent recursion
                 return;
             }
@@ -24,7 +28,11 @@ class ReturnTypehint extends TestCase
         $backtrace = debug_backtrace();
         $current = array_shift($backtrace);
         foreach ($backtrace as $call) {
-            if ($call['class'] === $current['class'] && $call['function'] === $current['function']) {
+            if (
+                isset($call['class'], $call['function']) &&
+                $call['class'] === $current['class']
+                && $call['function'] === $current['function']
+            ) {
                 // prevent recursion
                 return;
             }

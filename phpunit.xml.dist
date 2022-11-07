@@ -1,5 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<phpunit colors="true" bootstrap="tests/bootstrap.php">
+<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" colors="true" bootstrap="tests/bootstrap.php" xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/9.3/phpunit.xsd">
+	<coverage>
+		<include>
+			<directory suffix=".php">src</directory>
+		</include>
+		<report>
+			<clover outputFile="build/logs/clover.xml"/>
+		</report>
+	</coverage>
 	<testsuites>
 		<testsuite name="scrapbook">
 			<directory suffix="Test.php">tests</directory>
@@ -12,12 +20,5 @@
 			<directory suffix="Test.php" phpVersion="5.5.0" phpVersionOperator=">=">tests/Psr16/Integration</directory>
 		</testsuite>
 	</testsuites>
-	<filter>
-		<whitelist>
-			<directory suffix=".php">src</directory>
-		</whitelist>
-	</filter>
-	<logging>
-		<log type="coverage-clover" target="build/logs/clover.xml"/>
-	</logging>
+	<logging/>
 </phpunit>

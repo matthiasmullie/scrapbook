@@ -1,13 +1,11 @@
 [![Scrapbook PHP cache](https://www.scrapbook.cash/public/logo_side.png)](https://www.scrapbook.cash)
 
-[![Build status](https://api.travis-ci.org/matthiasmullie/scrapbook.svg?branch=master)](https://travis-ci.org/matthiasmullie/scrapbook)
-[![Code coverage](https://img.shields.io/codecov/c/github/matthiasmullie/scrapbook.svg)](https://codecov.io/github/matthiasmullie/scrapbook)
-[![Code quality](https://img.shields.io/scrutinizer/g/matthiasmullie/scrapbook.svg)](https://scrutinizer-ci.com/g/matthiasmullie/scrapbook)
-[![Latest version](https://img.shields.io/packagist/v/matthiasmullie/scrapbook.svg)](https://packagist.org/packages/matthiasmullie/scrapbook)
-[![Downloads total](https://img.shields.io/packagist/dt/matthiasmullie/scrapbook.svg)](https://packagist.org/packages/matthiasmullie/scrapbook)
-[![License](https://img.shields.io/packagist/l/matthiasmullie/scrapbook.svg)](https://github.com/matthiasmullie/scrapbook/blob/master/LICENSE)
-
-**[Donate/Support: ![Support](https://www.mullie.eu/public/donate.png)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&amp;hosted_button_id=3U2JXHLRMCPKL)**
+[![Build status](https://img.shields.io/github/workflow/status/matthiasmullie/scrapbook/test-suite?style=flat-square)](https://github.com/matthiasmullie/scrapbook/actions/workflows/test.yml)
+[![Code coverage](https://img.shields.io/codecov/c/github/matthiasmullie/scrapbook?style=flat-square)](https://codecov.io/github/matthiasmullie/scrapbook)
+[![Code quality](https://img.shields.io/scrutinizer/g/matthiasmullie/scrapbook?style=flat-square)](https://scrutinizer-ci.com/g/matthiasmullie/scrapbook)
+[![Latest version](https://img.shields.io/packagist/v/matthiasmullie/scrapbook?style=flat-square)](https://packagist.org/packages/matthiasmullie/scrapbook)
+[![Downloads total](https://img.shields.io/packagist/dt/matthiasmullie/scrapbook?style=flat-square)](https://packagist.org/packages/matthiasmullie/scrapbook)
+[![License](https://img.shields.io/packagist/l/matthiasmullie/scrapbook?style=flat-square)](https://github.com/matthiasmullie/scrapbook/blob/master/LICENSE)
 
 Documentation: https://www.scrapbook.cash - API reference: https://docs.scrapbook.cash
 
@@ -552,10 +550,11 @@ version, as well as HHVM. Differences in the exact implementation of the cache
 backends across these versions & platforms will be mitigated within Scrapbook
 to ensure uniform behavior.
 
-Compatibility with all of these versions & platforms is tested on
-[Travis CI](https://travis-ci.org/matthiasmullie/scrapbook) using the official
-PHP Docker images, which means that PHP<=5.5 is no longer actively being tested
-even though these versions are supported by Scrapbook.
+Compatibility with all of these versions & platforms can be confirmed with the
+provided docker-compose config for PHP versions 5.6 and onwards.
+Even though officially supported by Scrapbook, lower PHP versions (down to 5.3)
+are no longer actively being tested because dependencies required for testing
+have since diverged too much.
 
 Cache backends that do not have an implementation for a particular version or
 platform ([Flysystem](#filesystem), on older PHP versions) are obviously not
