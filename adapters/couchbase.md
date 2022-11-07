@@ -9,11 +9,15 @@ class: MatthiasMullie\Scrapbook\Adapters\Couchbase
 ---
 
 ```php
-// create \CouchbaseBucket object pointing to your Couchbase server
-$cluster = new \CouchbaseCluster('couchbase://localhost');
-$bucket = $cluster->openBucket('default');
+// create \Couchbase\Bucket object pointing to your Couchbase server
+$options = new \Couchbase\ClusterOptions();
+$options->credentials('username', 'password');
+$cluster = new \Couchbase\Cluster('couchbase://localhost', $options);
+$bucket = $cluster->bucket('default');
+$collection = $bucket->defaultCollection();
+$bucketManager = $cluster->buckets();
 // create Scrapbook KeyValueStore object
-$cache = new \MatthiasMullie\Scrapbook\Adapters\Couchbase($bucket);
+$cache = new \MatthiasMullie\Scrapbook\Adapters\Couchbase($collection, $bucketManager, $bucket);
 
 // set a value
 $cache->set('key', 'value'); // returns true
