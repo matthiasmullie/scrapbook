@@ -13,7 +13,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
 
       - name: Test PHP 8.1 & submit codecov
         run: make test PHP=8.1 ADAPTER=Apc,Couchbase,Flysystem,Memcached,MemoryStore,MySQL,PostgreSQL,Redis,SQLite UP=1 DOWN=0 && bash <(curl -s https://codecov.io/bash) && make down PHP=8.1
