@@ -94,10 +94,9 @@ weight: 5
 		<pre>make test PHP=7.0 ADAPTER=MySQL,PostgreSQL,SQLite</pre>
 
 		<p>
-			Travis CI has been <a href="https://github.com/matthiasmullie/scrapbook/blob/master/.travis.yml" title="configured">configured</a> to run a matrix of all supported
-			PHP versions & adapters individually. Upon submitting a new pull request, that
-			test suite will be run & report back on your pull request. Please make sure the
-			test suite passes.
+			GitHub Actions have been a href="https://github.com/matthiasmullie/scrapbook/blob/master/.github/workflows/test.yml" title="configured">configured</a> to run supported
+			PHP versions & adapters. Upon submitting a new pull request, that test suite will
+			be run & report back on your pull request. Please make sure the test suite passes.
 		</p>
 
 		<hr class="sep20">
@@ -128,8 +127,7 @@ weight: 5
 		</p>
 
 		<p>
-			Make sure to remember to also include the adapter in <a href="https://github.com/matthiasmullie/scrapbook/blob/master/.travis.yml" title=".travis.yml">.travis.yml</a>
-			and create an <a href="https://github.com/matthiasmullie/scrapbook/blob/master/tests/.travis" title="installation script">installation script</a> for Travis CI.
+			Make sure to remember to also include the adapter in <a href="https://github.com/matthiasmullie/scrapbook/blob/master/.github/workflows/test.yml" title="test.yml">test.yml</a>.
 		</p>
 
 		<hr class="sep10">
