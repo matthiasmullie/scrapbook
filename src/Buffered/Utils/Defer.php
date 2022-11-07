@@ -81,7 +81,7 @@ class Defer
     public function __destruct()
     {
         if (!empty($this->keys)) {
-            throw new UncommittedTransaction('Transaction is about to be destroyed without having been '.'committed or rolled back.');
+            throw new UncommittedTransaction('Transaction is about to be destroyed without having been committed or rolled back.');
         }
     }
 

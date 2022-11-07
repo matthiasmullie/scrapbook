@@ -1,7 +1,6 @@
 <?php
 
-namespace
-{
+namespace {
     require __DIR__.'/../vendor/autoload.php';
 
     // compatibility for when cache/integration-tests are run with PHPUnit>=6.0

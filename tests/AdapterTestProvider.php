@@ -6,7 +6,6 @@ use MatthiasMullie\Scrapbook\Exception\Exception;
 use MatthiasMullie\Scrapbook\KeyValueStore;
 use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\TestSuite;
-use ReflectionClass;
 
 class AdapterTestProvider
 {
@@ -29,7 +28,7 @@ class AdapterTestProvider
     {
         if (!$testCase instanceof AdapterProviderTestInterface) {
             $class = get_class($testCase);
-            throw new Exception("AdapterTestProvider can't be used with a class ($class) that "."doesn't implement AdapterProviderTestInterface.");
+            throw new Exception("AdapterTestProvider can't be used with a class ($class) that doesn't implement AdapterProviderTestInterface.");
         }
 
         $this->testCase = $testCase;
@@ -44,7 +43,7 @@ class AdapterTestProvider
 
         $i = 0;
         foreach ($this->getAdapterProviders() as $name => $adapterProvider) {
-            $class = new ReflectionClass(get_class($this->testCase));
+            $class = new \ReflectionClass(get_class($this->testCase));
             $tests = new TestSuite($class);
 
             // we can't use --filter to narrow down on specific adapters

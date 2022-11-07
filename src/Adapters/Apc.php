@@ -2,8 +2,6 @@
 
 namespace MatthiasMullie\Scrapbook\Adapters;
 
-use APCIterator;
-use APCUIterator;
 use MatthiasMullie\Scrapbook\Adapters\Collections\Apc as Collection;
 use MatthiasMullie\Scrapbook\Exception\Exception;
 use MatthiasMullie\Scrapbook\KeyValueStore;
@@ -668,7 +666,7 @@ class Apc implements KeyValueStore
     }
 
     /**
-     * @param string|string[]|APCIterator|APCUIterator $key
+     * @param string|string[]|\APCIterator|\APCUIterator $key
      *
      * @return bool|string[]
      */
@@ -715,7 +713,7 @@ class Apc implements KeyValueStore
      * @param int                  $chunk_size
      * @param int                  $list
      *
-     * @return APCIterator|APCUIterator
+     * @return \APCIterator|\APCUIterator
      */
     protected function APCUIterator($search = null, $format = null, $chunk_size = null, $list = null)
     {

@@ -2,7 +2,6 @@
 
 namespace MatthiasMullie\Scrapbook\Tests;
 
-use Exception;
 use MatthiasMullie\Scrapbook\KeyValueStore;
 
 /**
@@ -12,11 +11,11 @@ use MatthiasMullie\Scrapbook\KeyValueStore;
 class AdapterStub implements KeyValueStore
 {
     /**
-     * @var Exception
+     * @var \Exception
      */
     protected $exception;
 
-    public function __construct(Exception $exception)
+    public function __construct(\Exception $exception)
     {
         $this->exception = $exception;
     }

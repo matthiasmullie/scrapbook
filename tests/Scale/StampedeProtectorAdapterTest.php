@@ -12,7 +12,7 @@ class StampedeProtectorAdapterTest extends AdapterTest
      *
      * @var int
      */
-    const SLA = 100;
+    /* public */ const SLA = 100;
 
     public function setAdapter(KeyValueStore $adapter)
     {

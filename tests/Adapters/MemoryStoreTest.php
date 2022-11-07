@@ -3,7 +3,6 @@
 namespace MatthiasMullie\Scrapbook\Tests\Adapters;
 
 use MatthiasMullie\Scrapbook\Tests\PHPUnitCompat\CompatTestCase;
-use ReflectionObject;
 
 /**
  * @group default
@@ -149,7 +148,7 @@ class MemoryStoreTest extends CompatTestCase
         $this->assertEquals('value1', $cache->get('key1'));
 
         // verify that items of collection are gone entirely
-        $object = new ReflectionObject($cache);
+        $object = new \ReflectionObject($cache);
         $property = $object->getProperty('items');
         $property->setAccessible(true);
         $items = $property->getValue($cache);
@@ -179,7 +178,7 @@ class MemoryStoreTest extends CompatTestCase
         $this->assertEquals(false, $collection->get('key2'));
 
         // verify that items of parent & collection are gone entirely
-        $object = new ReflectionObject($cache);
+        $object = new \ReflectionObject($cache);
         $property = $object->getProperty('items');
         $property->setAccessible(true);
         $items = $property->getValue($cache);

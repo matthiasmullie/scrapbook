@@ -237,11 +237,11 @@ class Shard implements KeyValueStore
      * Get a [KeyValueStore => array of cache keys] map (SplObjectStorage) for
      * multiple cache keys.
      *
-     * @return SplObjectStorage
+     * @return \SplObjectStorage
      */
     protected function getShards(array $keys)
     {
-        $shards = new SplObjectStorage();
+        $shards = new \SplObjectStorage();
 
         foreach ($keys as $key) {
             $shard = $this->getShard($key);

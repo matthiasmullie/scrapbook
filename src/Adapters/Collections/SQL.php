@@ -4,7 +4,6 @@ namespace MatthiasMullie\Scrapbook\Adapters\Collections;
 
 use MatthiasMullie\Scrapbook\Adapters\Collections\Utils\PrefixKeys;
 use MatthiasMullie\Scrapbook\Adapters\SQL as Adapter;
-use PDO;
 
 /**
  * SQL adapter for a subset of data, accomplished by prefixing keys.
@@ -16,7 +15,7 @@ use PDO;
 class SQL extends PrefixKeys
 {
     /**
-     * @var PDO
+     * @var \PDO
      */
     protected $client;
 
@@ -29,7 +28,7 @@ class SQL extends PrefixKeys
      * @param string $table
      * @param string $name
      */
-    public function __construct(Adapter $cache, PDO $client, $table, $name)
+    public function __construct(Adapter $cache, \PDO $client, $table, $name)
     {
         parent::__construct($cache, 'collection:'.$name.':');
         $this->client = $client;

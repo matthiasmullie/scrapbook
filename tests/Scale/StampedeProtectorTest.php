@@ -19,7 +19,7 @@ class StampedeProtectorTest extends AdapterTestCase
      *
      * @var int
      */
-    const SLA = 100;
+    /* public */ const SLA = 100;
 
     /**
      * @var StampedeProtectorStub

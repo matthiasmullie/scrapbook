@@ -4,7 +4,6 @@ namespace MatthiasMullie\Scrapbook\Adapters;
 
 use MatthiasMullie\Scrapbook\Adapters\Collections\SQL as Collection;
 use MatthiasMullie\Scrapbook\KeyValueStore;
-use PDO;
 
 /**
  * SQL adapter. Basically just a wrapper over \PDO, but in an exchangeable
@@ -20,7 +19,7 @@ use PDO;
 abstract class SQL implements KeyValueStore
 {
     /**
-     * @var PDO
+     * @var \PDO
      */
     protected $client;
 
@@ -37,14 +36,14 @@ abstract class SQL implements KeyValueStore
     /**
      * @param string $table
      */
-    public function __construct(PDO $client, $table = 'cache')
+    public function __construct(\PDO $client, $table = 'cache')
     {
         $this->client = $client;
         $this->table = $table;
 
         // don't throw exceptions - it's ok to fail, as long as the return value
         // reflects that!
-        $this->client->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_SILENT);
+        $this->client->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_SILENT);
 
         // make sure the database exists (or just "fail" silently)
         $this->init();
@@ -68,7 +67,7 @@ abstract class SQL implements KeyValueStore
             ':expire' => date('Y-m-d H:i:s'), // right now!
         ));
 
-        $result = $statement->fetch(PDO::FETCH_ASSOC);
+        $result = $statement->fetch(\PDO::FETCH_ASSOC);
 
         if (!isset($result['v'])) {
             $token = null;
@@ -105,7 +104,7 @@ abstract class SQL implements KeyValueStore
                 (e IS NULL OR e > :expire)'
         );
         $statement->execute(array(':expire' => date('Y-m-d H:i:s')));
-        $values = $statement->fetchAll(PDO::FETCH_ASSOC);
+        $values = $statement->fetchAll(\PDO::FETCH_ASSOC);
 
         $result = array();
         $tokens = array();

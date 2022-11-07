@@ -3,7 +3,6 @@
 namespace MatthiasMullie\Scrapbook\Tests\Psr6;
 
 use MatthiasMullie\Scrapbook\Psr6\Pool;
-use ReflectionObject;
 
 class RepositoryTest extends Psr6TestCase
 {
@@ -51,13 +50,13 @@ class RepositoryTest extends Psr6TestCase
     protected function getRepositoryData(Pool $pool)
     {
         // grab repository from pool
-        $object = new ReflectionObject($pool);
+        $object = new \ReflectionObject($pool);
         $property = $object->getProperty('repository');
         $property->setAccessible(true);
         $repository = $property->getValue($pool);
 
         // grab repository queues
-        $object = new ReflectionObject($repository);
+        $object = new \ReflectionObject($repository);
         $property = $object->getProperty('unresolved');
         $property->setAccessible(true);
         $unresolved = $property->getValue($repository);

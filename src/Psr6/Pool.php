@@ -21,7 +21,7 @@ class Pool implements CacheItemPoolInterface
      *
      * @var string
      */
-    const KEY_INVALID_CHARACTERS = '{}()/\@:';
+    /* public */ const KEY_INVALID_CHARACTERS = '{}()/\@:';
 
     /**
      * @var KeyValueStore
@@ -244,7 +244,7 @@ class Pool implements CacheItemPoolInterface
         // valid key according to PSR-6 rules
         $invalid = preg_quote(static::KEY_INVALID_CHARACTERS, '/');
         if (preg_match('/['.$invalid.']/', $key)) {
-            throw new InvalidArgumentException('Invalid key: '.$key.'. Contains (a) character(s) reserved '.'for future extension: '.static::KEY_INVALID_CHARACTERS);
+            throw new InvalidArgumentException('Invalid key: '.$key.'. Contains (a) character(s) reserved for future extension: '.static::KEY_INVALID_CHARACTERS);
         }
     }
 }

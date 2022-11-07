@@ -2,8 +2,6 @@
 
 namespace MatthiasMullie\Scrapbook\Adapters;
 
-use PDO;
-
 /**
  * PostgreSQL adapter. Basically just a wrapper over \PDO, but in an
  * exchangeable (KeyValueStore) interface.
@@ -48,7 +46,7 @@ class PostgreSQL extends SQL
         );
 
         $statement->bindParam(':key', $key);
-        $statement->bindParam(':value', $serialized, PDO::PARAM_LOB, strlen($serialized));
+        $statement->bindParam(':value', $serialized, \PDO::PARAM_LOB, strlen($serialized));
         $statement->bindParam(':expire', $expiration);
         $statement->execute();
 

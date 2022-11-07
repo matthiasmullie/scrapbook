@@ -20,7 +20,7 @@ class SimpleCache implements CacheInterface
      *
      * @var string
      */
-    const KEY_INVALID_CHARACTERS = '{}()/\@:';
+    /* public */ const KEY_INVALID_CHARACTERS = '{}()/\@:';
 
     /**
      * @var KeyValueStore
@@ -84,7 +84,7 @@ class SimpleCache implements CacheInterface
      */
     public function getMultiple($keys, $default = null)
     {
-        if ($keys instanceof Traversable) {
+        if ($keys instanceof \Traversable) {
             $keys = iterator_to_array($keys, false);
         }
 
@@ -108,7 +108,7 @@ class SimpleCache implements CacheInterface
      */
     public function setMultiple($values, $ttl = null)
     {
-        if ($values instanceof Traversable) {
+        if ($values instanceof \Traversable) {
             // we also need the keys, and an array is stricter about what it can
             // have as keys than a Traversable is, so we can't use
             // iterator_to_array...
@@ -144,7 +144,7 @@ class SimpleCache implements CacheInterface
      */
     public function deleteMultiple($keys)
     {
-        if ($keys instanceof Traversable) {
+        if ($keys instanceof \Traversable) {
             $keys = iterator_to_array($keys, false);
         }
 
@@ -194,7 +194,7 @@ class SimpleCache implements CacheInterface
         // valid key according to PSR-16 rules
         $invalid = preg_quote(static::KEY_INVALID_CHARACTERS, '/');
         if (preg_match('/['.$invalid.']/', $key)) {
-            throw new InvalidArgumentException('Invalid key: '.$key.'. Contains (a) character(s) reserved '.'for future extension: '.static::KEY_INVALID_CHARACTERS);
+            throw new InvalidArgumentException('Invalid key: '.$key.'. Contains (a) character(s) reserved for future extension: '.static::KEY_INVALID_CHARACTERS);
         }
     }
 
@@ -202,7 +202,7 @@ class SimpleCache implements CacheInterface
      * Accepts all TTL inputs valid in PSR-16 (null|int|DateInterval) and
      * converts them into TTL for KeyValueStore (int).
      *
-     * @param int|DateInterval|null $ttl
+     * @param int|\DateInterval|null $ttl
      *
      * @return int
      *
@@ -235,9 +235,9 @@ class SimpleCache implements CacheInterface
             }
 
             return $ttl;
-        } elseif ($ttl instanceof DateInterval) {
+        } elseif ($ttl instanceof \DateInterval) {
             // convert DateInterval to integer by adding it to a 0 DateTime
-            $datetime = new DateTime();
+            $datetime = new \DateTime();
             $datetime->setTimestamp(0);
             $datetime->add($ttl);
 

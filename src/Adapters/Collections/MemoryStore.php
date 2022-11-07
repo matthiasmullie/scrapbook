@@ -38,7 +38,7 @@ class MemoryStore extends PrefixKeys
          * - Reflection is not the most optimized thing, but that doesn't matter
          *   too much for MemoryStore, which is not a *real* cache
          */
-        $object = new ReflectionObject($this->cache);
+        $object = new \ReflectionObject($this->cache);
         $property = $object->getProperty('items');
         $property->setAccessible(true);
         $items = $property->getValue($this->cache);

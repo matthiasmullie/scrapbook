@@ -2,7 +2,6 @@
 
 namespace MatthiasMullie\Scrapbook\Psr6;
 
-use DateInterval;
 use DateTime;
 use DateTimeInterface;
 use Psr\Cache\CacheItemInterface;
@@ -142,7 +141,7 @@ class Item implements CacheItemInterface
     public function expiresAt($expiration)
     {
         // DateTimeInterface only exists since PHP>=5.5, also accept DateTime
-        if ($expiration instanceof DateTimeInterface || $expiration instanceof DateTime) {
+        if ($expiration instanceof \DateTimeInterface || $expiration instanceof \DateTime) {
             // convert datetime to unix timestamp
             $this->expire = (int) $expiration->format('U');
             $this->changed = true;
@@ -169,8 +168,8 @@ class Item implements CacheItemInterface
      */
     public function expiresAfter($time)
     {
-        if ($time instanceof DateInterval) {
-            $expire = new DateTime();
+        if ($time instanceof \DateInterval) {
+            $expire = new \DateTime();
             $expire->add($time);
             // convert datetime to unix timestamp
             $this->expire = (int) $expire->format('U');
@@ -180,7 +179,7 @@ class Item implements CacheItemInterface
             // this is allowed, but just defaults to infinite
             $this->expire = 0;
         } else {
-            throw new InvalidArgumentException('Invalid time: '.serialize($time).'. Must be integer or '.'instance of DateInterval.');
+            throw new InvalidArgumentException('Invalid time: '.serialize($time).'. Must be integer or instance of DateInterval.');
         }
         $this->changed = true;
 
