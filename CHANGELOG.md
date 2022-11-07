@@ -7,6 +7,7 @@
 
 ### Fixed
 - Fixed (invalid) APCUIterator check
+- Improved handling of Memcached's untimely expiration purge
 
 ### Changed
 - Dropped built-in server health check option with Couchbase SDK v3.x/4.x support

@@ -435,6 +435,8 @@ class Couchbase implements KeyValueStore
                 $options = $options->expiry($expire);
                 $this->collection->insert($key, $value, $options);
 
+                $this->deleteIfExpired($key, $expire);
+
                 return true;
             } catch (\Couchbase\Exception\CouchbaseException $e) {
                 // SDK >=4.0
@@ -480,6 +482,8 @@ class Couchbase implements KeyValueStore
                 $options = $this->timeout === null ? $options : $options->timeout($this->timeout);
                 $options = $options->expiry($expire);
                 $this->collection->replace($key, $value, $options);
+
+                $this->deleteIfExpired($key, $expire);
 
                 return true;
             } catch (\Couchbase\Exception\CouchbaseException $e) {
@@ -530,6 +534,8 @@ class Couchbase implements KeyValueStore
                 $options = $options->expiry($expire);
                 $options = $options->cas($token);
                 $this->collection->replace($key, $value, $options);
+
+                $this->deleteIfExpired($key, $expire);
 
                 return true;
             } catch (\Couchbase\Exception\CouchbaseException $e) {

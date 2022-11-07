@@ -96,11 +96,7 @@ class Memcached implements KeyValueStore
      */
     public function set($key, $value, $expire = 0)
     {
-        // Memcached seems to not timely purge items the way it should when
-        // storing it with an expired timestamp
-        if ($expire < 0 || ($expire > 2592000 && $expire < time())) {
-            $this->delete($key);
-
+        if ($this->deleteIfExpired($key, $expire)) {
             return true;
         }
 
@@ -118,12 +114,8 @@ class Memcached implements KeyValueStore
             return array();
         }
 
-        // Memcached seems to not timely purge items the way it should when
-        // storing it with an expired timestamp
-        if ($expire < 0 || ($expire > 2592000 && $expire < time())) {
-            $keys = array_keys($items);
-            $this->deleteMulti($keys);
-
+        $keys = array_keys($items);
+        if ($this->deleteIfExpired($keys, $expire)) {
             return array_fill_keys($keys, true);
         }
 
@@ -210,7 +202,12 @@ class Memcached implements KeyValueStore
     {
         $key = $this->encode($key);
 
-        return $this->client->add($key, $value, $expire);
+        $success = $this->client->add($key, $value, $expire);
+        if ($success) {
+            $this->deleteIfExpired($key, $expire);
+        }
+
+        return $success;
     }
 
     /**
@@ -220,7 +217,12 @@ class Memcached implements KeyValueStore
     {
         $key = $this->encode($key);
 
-        return $this->client->replace($key, $value, $expire);
+        $success = $this->client->replace($key, $value, $expire);
+        if ($success) {
+            $this->deleteIfExpired($key, $expire);
+        }
+
+        return $success;
     }
 
     /**
@@ -234,7 +236,12 @@ class Memcached implements KeyValueStore
 
         $key = $this->encode($key);
 
-        return $this->client->cas($token, $key, $value, $expire);
+        $success = $this->client->cas($token, $key, $value, $expire);
+        if ($success) {
+            $this->deleteIfExpired($key, $expire);
+        }
+
+        return $success;
     }
 
     /**
@@ -276,13 +283,8 @@ class Memcached implements KeyValueStore
      */
     public function touch($key, $expire)
     {
-        /*
-         * Since \Memcached has no reliable touch(), we might as well take an
-         * easy approach where we can. If TTL is expired already, just delete
-         * the key - this only needs 1 request.
-         */
-        if ($expire < 0 || ($expire > 2592000 && $expire < time())) {
-            return $this->delete($key);
+        if ($this->deleteIfExpired($key, $expire)) {
+            return true;
         }
 
         /**
@@ -398,6 +400,27 @@ class Memcached implements KeyValueStore
         return preg_replace_callback($regex, function ($match) {
             return rawurldecode($match[0]);
         }, $key);
+    }
+
+    /**
+     * Memcached seems to not timely purge items the way it should when
+     * storing it with an expired timestamp, so we'll detect that and
+     * delete it (instead of performing the already expired operation).
+     *
+     * @param string|string[] $key
+     * @param int             $expire
+     *
+     * @return bool True if expired
+     */
+    protected function deleteIfExpired($key, $expire)
+    {
+        if ($expire < 0 || ($expire > 2592000 && $expire < time())) {
+            $this->deleteMulti((array) $key);
+
+            return true;
+        }
+
+        return false;
     }
 
     /**
