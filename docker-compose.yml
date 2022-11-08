@@ -11,7 +11,7 @@ services:
       - ./src:/var/www/src
       - ./tests:/var/www/tests
       - ./build:/var/www/build
-      - ./phpunit.xml.dist:/var/www/phpunit.xml.dist
+      - ./phpunit.xml:/var/www/phpunit.xml
     depends_on:
       couchbase:
         condition: service_healthy

@@ -15,17 +15,30 @@ install:
 	rm composer.phar
 
 docs:
-	make install
-	wget http://apigen.org/apigen.phar
-	chmod +x apigen.phar
-	php apigen.phar generate --source=src,vendor/cache,vendor/psr --skip-doc-path="*/vendor/*,*/psr-simplecache/*" --destination=docs --template-theme=bootstrap
-	rm apigen.phar
+	docker run --rm -v $$(pwd)/docs:/data/docs -w /data php:cli bash -c "\
+		apt-get update && apt-get install -y wget git zip unzip;\
+		docker-php-ext-install zip;\
+		wget -q -O - https://getcomposer.org/installer | php;\
+		mv composer.phar /usr/local/bin/composer;\
+		wget -q https://phpdoc.org/phpDocumentor.phar;\
+		TEMPLATE=\$$(grep -o "{{#TAGS}}.*{{/TAGS}}" docs/index.html);\
+		HTML='';\
+		git clone https://github.com/matthiasmullie/scrapbook.git code && cd code;\
+		while read TAG; do\
+			git clean -fx;\
+			git checkout \$$TAG;\
+			git reset --hard;\
+			composer install --ignore-platform-reqs;\
+			php ../phpDocumentor.phar --directory=src --directory=vendor/psr/cache --directory=vendor/psr/simple-cache --target=../docs/\$$TAG --visibility=public --defaultpackagename=Scrapbook --title=Scrapbook;\
+			HTML=\$$HTML\$$(echo \$$TEMPLATE | sed -e \"s/{{[#/]TAGS}}//g\" | sed -e \"s/{{\.}}/\$$TAG/g\");\
+		done <<< \$$(git rev-parse --abbrev-ref HEAD && git tag --sort=-v:refname);\
+		sed -i \"s|\$$TEMPLATE|\$$HTML|g\" ../docs/index.html"
 
 up:
-	docker-compose up --no-deps -d $(filter-out apc flysystem memorystore sqlite, $(shell echo $(ADAPTER) | tr "A-Z," "a-z ")) php
+	docker-compose up --no-deps -d $(filter-out apc flysystem memorystore sqlite, $(shell echo $(ADAPTER) | tr "A-Z," "a-z ")) php-$(PHP)
 
 down:
-	docker-compose stop -t0 $(filter-out apc flysystem memorystore sqlite, $(shell echo $(ADAPTER) | tr "A-Z," "a-z ")) php
+	docker-compose stop -t0 $(filter-out apc flysystem memorystore sqlite, $(shell echo $(ADAPTER) | tr "A-Z," "a-z ")) php-$(PHP)
 
 test:
 	# Usage:
@@ -34,3 +47,5 @@ test:
 	[ $(UP) -eq 1 ] && make up PHP=$(PHP) ADAPTER=$(ADAPTER) || true
 	$(eval cmd='docker-compose run --no-deps php-$(PHP) env XDEBUG_MODE=coverage vendor/bin/phpunit --group $(ADAPTER)')
 	eval $(cmd); status=$$?; [ $(DOWN) -eq 1 ] && make down PHP=$(PHP) ADAPTER=$(ADAPTER); exit $$status
+
+.PHONY: docs

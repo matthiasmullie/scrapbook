@@ -1,0 +1,21 @@
+name: docs
+
+on:
+  push:
+    branches: [ master ]
+    tags: [ '*' ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Generate docs
+        run: make docs
+      - name: Publish
+        uses: s0/git-publish-subdir-action@develop
+        env:
+          REPO: git@github.com:matthiasmullie/scrapbook-docs.git
+          BRANCH: main
+          FOLDER: docs
+          SSH_PRIVATE_KEY: ${{ secrets.DEPLOY_PRIVATE_KEY }}
