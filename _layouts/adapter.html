@@ -60,10 +60,10 @@ layout: article
 		<nav class="categories">
 			<ul>
 				{% if page.class %}
-					<li><a href="//docs.scrapbook.cash/class-{{ page.class | replace:'\','.' }}.html" title="{{ page.class }}">{{ page.class }}</a></li>
+					<li><a href="//docs.scrapbook.cash/master/classes/{{ page.class | replace:'\','-' }}.html" title="{{ page.class }}">{{ page.class }}</a></li>
 				{% endif %}
 				{% if page.namespace %}
-					<li><a href="//docs.scrapbook.cash/namespace-{{ page.namespace | replace:'\','.' }}.html" title="{{ page.namespace }}">{{ page.namespace }}</a></li>
+					<li><a href="//docs.scrapbook.cash/master/namespaces/{{ page.namespace | replace:'\','-' | downcase }}.html" title="{{ page.namespace }}">{{ page.namespace }}</a></li>
 				{% endif %}
 			</ul>
 		</nav>
