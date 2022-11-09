@@ -546,7 +546,7 @@ class Redis implements KeyValueStore
              * even create the value (also saving a request)
              */
             if ($ttl < 0) {
-                return true;
+                return $initial;
             }
 
             // value is not yet set, store initial value!
