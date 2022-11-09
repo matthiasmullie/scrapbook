@@ -108,7 +108,7 @@
 
 		flysystem: {
 			src: "// create Flysystem object\n" +
-				"$adapter = new \\League\\Flysystem\\Adapter\\Local('/path/to/cache', LOCK_EX);\n" +
+				"$adapter = new \\League\\Flysystem\\Local\\LocalFilesystemAdapter('/path/to/cache', null, LOCK_EX);\n" +
 				"$filesystem = new \\League\\Flysystem\\Filesystem($adapter);\n" +
 				"// create Scrapbook cache object\n" +
 				"$cache = new \\MatthiasMullie\\Scrapbook\\Adapters\\Flysystem($filesystem);\n",
