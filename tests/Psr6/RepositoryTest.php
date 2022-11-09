@@ -1,29 +1,31 @@
 <?php
 
+declare(strict_types=1);
+
 namespace MatthiasMullie\Scrapbook\Tests\Psr6;
 
 use MatthiasMullie\Scrapbook\Psr6\Pool;
 
 class RepositoryTest extends Psr6TestCase
 {
-    public function testDestructUnresolvedItem()
+    public function testDestructUnresolvedItem(): void
     {
         // add an item
         $item = $this->pool->getItem('key');
 
-        list($unresolved, $resolved) = $this->getRepositoryData($this->pool);
+        [$unresolved, $resolved] = $this->getRepositoryData($this->pool);
         $this->assertNotEmpty($unresolved);
         $this->assertEmpty($resolved);
 
         // item should now get removed from repository
         unset($item);
 
-        list($unresolved, $resolved) = $this->getRepositoryData($this->pool);
+        [$unresolved, $resolved] = $this->getRepositoryData($this->pool);
         $this->assertEmpty($unresolved);
         $this->assertEmpty($resolved);
     }
 
-    public function testDestructResolvedItem()
+    public function testDestructResolvedItem(): void
     {
         // add to cache, so there is something to resolve
         $this->cache->set('key', 'value');
@@ -32,22 +34,19 @@ class RepositoryTest extends Psr6TestCase
         $item = $this->pool->getItem('key');
         $item->get();
 
-        list($unresolved, $resolved) = $this->getRepositoryData($this->pool);
+        [$unresolved, $resolved] = $this->getRepositoryData($this->pool);
         $this->assertEmpty($unresolved);
         $this->assertNotEmpty($resolved);
 
         // item should now get removed from repository
         unset($item);
 
-        list($unresolved, $resolved) = $this->getRepositoryData($this->pool);
+        [$unresolved, $resolved] = $this->getRepositoryData($this->pool);
         $this->assertEmpty($unresolved);
         $this->assertEmpty($resolved);
     }
 
-    /**
-     * @return array
-     */
-    protected function getRepositoryData(Pool $pool)
+    protected function getRepositoryData(Pool $pool): array
     {
         // grab repository from pool
         $object = new \ReflectionObject($pool);
@@ -64,6 +63,6 @@ class RepositoryTest extends Psr6TestCase
         $property->setAccessible(true);
         $resolved = $property->getValue($repository);
 
-        return array($unresolved, $resolved);
+        return [$unresolved, $resolved];
     }
 }

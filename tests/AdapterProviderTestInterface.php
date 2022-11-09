@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace MatthiasMullie\Scrapbook\Tests;
 
 use MatthiasMullie\Scrapbook\KeyValueStore;
@@ -7,20 +9,15 @@ use PHPUnit\Framework\TestSuite;
 
 interface AdapterProviderTestInterface
 {
-    /**
-     * @return TestSuite
-     */
-    public static function suite();
+    public static function suite(): TestSuite;
 
     /**
      * This is where AdapterProvider will inject the adapter to.
      */
-    public function setAdapter(KeyValueStore $adapter);
+    public function setAdapter(KeyValueStore $adapter): void;
 
     /**
      * This is where AdapterProvider will inject the adapter to.
-     *
-     * @param string $name
      */
-    public function setCollectionName($name);
+    public function setCollectionName(string $name): void;
 }

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace MatthiasMullie\Scrapbook\Tests\Buffered;
 
 use MatthiasMullie\Scrapbook\Buffered\TransactionalStore;
@@ -9,21 +11,26 @@ use MatthiasMullie\Scrapbook\Tests\AdapterTest;
 
 class TransactionalStoreAdapterTest extends AdapterTest
 {
-    public function setAdapter(KeyValueStore $adapter)
+    /**
+     * @var TransactionalStore
+     */
+    protected KeyValueStore $cache;
+
+    public function setAdapter(KeyValueStore $adapter): void
     {
         $this->cache = new TransactionalStore($adapter);
     }
 
-    protected function compatSetUp()
+    protected function setUp(): void
     {
-        parent::compatSetUp();
+        parent::setUp();
 
         $this->cache->begin();
     }
 
-    protected function compatTearDown()
+    protected function tearDown(): void
     {
-        parent::compatTearDown();
+        parent::tearDown();
 
         try {
             $this->cache->rollback();

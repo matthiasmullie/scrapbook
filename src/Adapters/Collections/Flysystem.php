@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace MatthiasMullie\Scrapbook\Adapters\Collections;
 
 use League\Flysystem\FileNotFoundException;
@@ -16,24 +18,15 @@ use MatthiasMullie\Scrapbook\Adapters\Flysystem as Adapter;
  */
 class Flysystem extends Adapter
 {
-    /**
-     * @var string
-     */
-    protected $collection;
+    protected string $collection;
 
-    /**
-     * @param string $collection
-     */
-    public function __construct(Filesystem $filesystem, $collection)
+    public function __construct(Filesystem $filesystem, string $collection)
     {
         parent::__construct($filesystem);
         $this->collection = $collection;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function flush()
+    public function flush(): bool
     {
         $files = $this->filesystem->listContents($this->collection);
         foreach ($files as $file) {
@@ -52,7 +45,7 @@ class Flysystem extends Adapter
                 // don't care if we failed to unlink something, might have
                 // been deleted by another process in the meantime...
             } catch (UnableToDeleteFile $e) {
-                // v2.x
+                // v2.x/3.x
                 // don't care if we failed to unlink something, might have
                 // been deleted by another process in the meantime...
             }
@@ -61,12 +54,7 @@ class Flysystem extends Adapter
         return true;
     }
 
-    /**
-     * @param string $key
-     *
-     * @return string
-     */
-    protected function path($key)
+    protected function path(string $key): string
     {
         return $this->collection.'/'.parent::path($key);
     }

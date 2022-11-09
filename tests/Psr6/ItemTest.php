@@ -1,16 +1,18 @@
 <?php
 
+declare(strict_types=1);
+
 namespace MatthiasMullie\Scrapbook\Tests\Psr6;
 
 class ItemTest extends Psr6TestCase
 {
-    public function testItemGetKey()
+    public function testItemGetKey(): void
     {
         $item = $this->pool->getItem('key');
         $this->assertEquals('key', $item->getKey());
     }
 
-    public function testItemGetExisting()
+    public function testItemGetExisting(): void
     {
         $this->cache->set('key', 'value');
 
@@ -18,7 +20,7 @@ class ItemTest extends Psr6TestCase
         $this->assertEquals('value', $item->get());
     }
 
-    public function testItemGetExistingSetViaPool()
+    public function testItemGetExistingSetViaPool(): void
     {
         $item = $this->pool->getItem('key');
         $item->set('value');
@@ -29,13 +31,13 @@ class ItemTest extends Psr6TestCase
         $this->assertEquals('value', $item->get());
     }
 
-    public function testItemGetNonExisting()
+    public function testItemGetNonExisting(): void
     {
         $item = $this->pool->getItem('key');
-        $this->assertEquals(null, $item->get());
+        $this->assertNull($item->get());
     }
 
-    public function testItemSetExisting()
+    public function testItemSetExisting(): void
     {
         $this->cache->set('key', 'value');
 
@@ -44,7 +46,7 @@ class ItemTest extends Psr6TestCase
         $this->assertEquals('value', $item->get());
     }
 
-    public function testItemSetExistingSetViaPool()
+    public function testItemSetExistingSetViaPool(): void
     {
         $item = $this->pool->getItem('key');
         $item->set('value');
@@ -56,22 +58,22 @@ class ItemTest extends Psr6TestCase
         $this->assertEquals('value', $item->get());
     }
 
-    public function testItemSetNonExisting()
+    public function testItemSetNonExisting(): void
     {
         $item = $this->pool->getItem('key');
         $item->set('value');
         $this->assertEquals('value', $item->get());
     }
 
-    public function testItemIsHitExisting()
+    public function testItemIsHitExisting(): void
     {
         $this->cache->set('key', 'value');
 
         $item = $this->pool->getItem('key');
-        $this->assertEquals(true, $item->isHit());
+        $this->assertTrue($item->isHit());
     }
 
-    public function testItemIsHitExistingSetViaPool()
+    public function testItemIsHitExistingSetViaPool(): void
     {
         $item = $this->pool->getItem('key');
         $item->set('value');
@@ -79,16 +81,16 @@ class ItemTest extends Psr6TestCase
         $this->pool->commit();
 
         $item = $this->pool->getItem('key');
-        $this->assertEquals(true, $item->isHit());
+        $this->assertTrue($item->isHit());
     }
 
-    public function testItemIsHitNonExisting()
+    public function testItemIsHitNonExisting(): void
     {
         $item = $this->pool->getItem('key');
-        $this->assertEquals(false, $item->isHit());
+        $this->assertFalse($item->isHit());
     }
 
-    public function testItemExpiresAtExisting()
+    public function testItemExpiresAtExisting(): void
     {
         $this->cache->set('key', 'value');
 
@@ -96,14 +98,14 @@ class ItemTest extends Psr6TestCase
 
         // DateTime object
         $item->expiresAt(new \DateTime('tomorrow'));
-        $this->assertEquals(strtotime('tomorrow'), $item->getExpiration(), '', 1);
+        $this->assertEqualsWithDelta(strtotime('tomorrow'), $item->getExpiration(), 1);
 
         // permanent
         $item->expiresAt(null);
         $this->assertEquals(0, $item->getExpiration());
     }
 
-    public function testItemExpiresAtExistingSetViaPool()
+    public function testItemExpiresAtExistingSetViaPool(): void
     {
         $item = $this->pool->getItem('key');
         $item->set('value');
@@ -114,27 +116,27 @@ class ItemTest extends Psr6TestCase
 
         // DateTime object
         $item->expiresAt(new \DateTime('tomorrow'));
-        $this->assertEquals(strtotime('tomorrow'), $item->getExpiration(), '', 1);
+        $this->assertEqualsWithDelta(strtotime('tomorrow'), $item->getExpiration(), 1);
 
         // permanent
         $item->expiresAt(null);
         $this->assertEquals(0, $item->getExpiration());
     }
 
-    public function testItemExpiresAtNonExisting()
+    public function testItemExpiresAtNonExisting(): void
     {
         $item = $this->pool->getItem('key');
 
         // DateTime object
         $item->expiresAt(new \DateTime('tomorrow'));
-        $this->assertEquals(strtotime('tomorrow'), $item->getExpiration(), '', 1);
+        $this->assertEqualsWithDelta(strtotime('tomorrow'), $item->getExpiration(), 1);
 
         // permanent
         $item->expiresAt(null);
         $this->assertEquals(0, $item->getExpiration());
     }
 
-    public function testItemExpiresAfterExisting()
+    public function testItemExpiresAfterExisting(): void
     {
         $this->cache->set('key', 'value');
 
@@ -142,18 +144,18 @@ class ItemTest extends Psr6TestCase
 
         // relative time, both small and large
         $item->expiresAfter(5);
-        $this->assertEquals(strtotime('+5 seconds'), $item->getExpiration(), '', 1);
+        $this->assertEqualsWithDelta(strtotime('+5 seconds'), $item->getExpiration(), 1);
         $item->expiresAfter(50 * 24 * 60 * 60);
-        $this->assertEquals(strtotime('+50 days'), $item->getExpiration(), '', 1);
+        $this->assertEqualsWithDelta(strtotime('+50 days'), $item->getExpiration(), 1);
 
         // DateInterval object
         $item->expiresAfter(new \DateInterval('PT5S'));
-        $this->assertEquals(strtotime('+5 seconds'), $item->getExpiration(), '', 1);
+        $this->assertEqualsWithDelta(strtotime('+5 seconds'), $item->getExpiration(), 1);
         $item->expiresAfter(new \DateInterval('P50D'));
-        $this->assertEquals(strtotime('+50 days'), $item->getExpiration(), '', 1);
+        $this->assertEqualsWithDelta(strtotime('+50 days'), $item->getExpiration(), 1);
     }
 
-    public function testItemExpiresAfterExistingSetViaPool()
+    public function testItemExpiresAfterExistingSetViaPool(): void
     {
         $item = $this->pool->getItem('key');
         $item->set('value');
@@ -164,31 +166,31 @@ class ItemTest extends Psr6TestCase
 
         // relative time, both small and large
         $item->expiresAfter(5);
-        $this->assertEquals(strtotime('+5 seconds'), $item->getExpiration(), '', 1);
+        $this->assertEqualsWithDelta(strtotime('+5 seconds'), $item->getExpiration(), 1);
         $item->expiresAfter(50 * 24 * 60 * 60);
-        $this->assertEquals(strtotime('+50 days'), $item->getExpiration(), '', 1);
+        $this->assertEqualsWithDelta(strtotime('+50 days'), $item->getExpiration(), 1);
 
         // DateInterval object
         $item->expiresAfter(new \DateInterval('PT5S'));
-        $this->assertEquals(strtotime('+5 seconds'), $item->getExpiration(), '', 1);
+        $this->assertEqualsWithDelta(strtotime('+5 seconds'), $item->getExpiration(), 1);
         $item->expiresAfter(new \DateInterval('P50D'));
-        $this->assertEquals(strtotime('+50 days'), $item->getExpiration(), '', 1);
+        $this->assertEqualsWithDelta(strtotime('+50 days'), $item->getExpiration(), 1);
     }
 
-    public function testItemExpiresAfterNonExisting()
+    public function testItemExpiresAfterNonExisting(): void
     {
         $item = $this->pool->getItem('key');
 
         // relative time, both small and large
         $item->expiresAfter(5);
-        $this->assertEquals(strtotime('+5 seconds'), $item->getExpiration(), '', 1);
+        $this->assertEqualsWithDelta(strtotime('+5 seconds'), $item->getExpiration(), 1);
         $item->expiresAfter(50 * 24 * 60 * 60);
-        $this->assertEquals(strtotime('+50 days'), $item->getExpiration(), '', 1);
+        $this->assertEqualsWithDelta(strtotime('+50 days'), $item->getExpiration(), 1);
 
         // DateInterval object
         $item->expiresAfter(new \DateInterval('PT5S'));
-        $this->assertEquals(strtotime('+5 seconds'), $item->getExpiration(), '', 1);
+        $this->assertEqualsWithDelta(strtotime('+5 seconds'), $item->getExpiration(), 1);
         $item->expiresAfter(new \DateInterval('P50D'));
-        $this->assertEquals(strtotime('+50 days'), $item->getExpiration(), '', 1);
+        $this->assertEqualsWithDelta(strtotime('+50 days'), $item->getExpiration(), 1);
     }
 }

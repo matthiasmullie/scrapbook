@@ -1,42 +1,37 @@
 <?php
 
+declare(strict_types=1);
+
 namespace MatthiasMullie\Scrapbook\Tests;
 
 use MatthiasMullie\Scrapbook\KeyValueStore;
-use MatthiasMullie\Scrapbook\Tests\PHPUnitCompat\CompatTestCase;
+use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\TestSuite;
 
-class AdapterTestCase extends CompatTestCase implements AdapterProviderTestInterface
+class AdapterTestCase extends TestCase implements AdapterProviderTestInterface
 {
-    /**
-     * @var KeyValueStore
-     */
-    protected $cache;
+    protected KeyValueStore $cache;
 
-    /**
-     * @var string
-     */
-    protected $collectionName;
+    protected string $collectionName;
 
-    public static function suite()
+    public static function suite(): TestSuite
     {
-        $provider = new AdapterTestProvider(new static());
-
-        return $provider->getSuite();
+        return (new AdapterTestProvider(new static()))->getSuite();
     }
 
-    public function setAdapter(KeyValueStore $adapter)
+    public function setAdapter(KeyValueStore $adapter): void
     {
         $this->cache = $adapter;
     }
 
-    public function setCollectionName($name)
+    public function setCollectionName(string $name): void
     {
         $this->collectionName = $name;
     }
 
-    protected function compatTearDown()
+    protected function tearDown(): void
     {
-        parent::compatTearDown();
+        parent::tearDown();
         $this->cache->flush();
     }
 }

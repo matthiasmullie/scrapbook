@@ -23,42 +23,6 @@ services:
         condition: service_healthy
       redis:
         condition: service_healthy
-  php-5.6:
-    <<: *default-php
-    build:
-      <<: *default-php-build
-      args:
-        version: 5.6-cli
-  php-7.0:
-    <<: *default-php
-    build:
-      <<: *default-php-build
-      args:
-        version: 7.0-cli
-  php-7.1:
-    <<: *default-php
-    build:
-      <<: *default-php-build
-      args:
-        version: 7.1-cli
-  php-7.2:
-    <<: *default-php
-    build:
-      <<: *default-php-build
-      args:
-        version: 7.2-cli
-  php-7.3:
-    <<: *default-php
-    build:
-      <<: *default-php-build
-      args:
-        version: 7.3-cli
-  php-7.4:
-    <<: *default-php
-    build:
-      <<: *default-php-build
-      args:
-        version: 7.4-cli
   php-8.0:
     <<: *default-php
     build:
@@ -101,9 +65,6 @@ services:
       - POSTGRES_USER=user
       - POSTGRES_PASSWORD=pass
       - POSTGRES_DB=cache
-      # @see https://stackoverflow.com/questions/62807717/how-can-i-solve-postgresql-scram-authentication-problem
-      - POSTGRES_HOST_AUTH_METHOD=md5
-      - POSTGRES_INITDB_ARGS=--auth-host=md5
     healthcheck:
       test: ["CMD", "pg_isready", "-U", "user"]
       interval: 3s

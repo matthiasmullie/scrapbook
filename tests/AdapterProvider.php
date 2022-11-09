@@ -1,47 +1,29 @@
 <?php
 
+declare(strict_types=1);
+
 namespace MatthiasMullie\Scrapbook\Tests;
 
-use MatthiasMullie\Scrapbook\Exception\Exception;
 use MatthiasMullie\Scrapbook\KeyValueStore;
 
 class AdapterProvider
 {
-    /**
-     * @var KeyValueStore
-     */
-    protected $adapter;
+    protected KeyValueStore $adapter;
 
-    /**
-     * @var string
-     */
-    protected $collectionName;
+    protected string $collectionName;
 
-    /**
-     * @param string $collectionName
-     *
-     * @throws Exception
-     */
-    public function __construct(KeyValueStore $adapter, $collectionName = 'collection')
+    public function __construct(KeyValueStore $adapter, string $collectionName = 'collection')
     {
         $this->adapter = $adapter;
         $this->collectionName = $collectionName;
     }
 
-    /**
-     * @return KeyValueStore
-     *
-     * @throws Exception
-     */
-    public function getAdapter()
+    public function getAdapter(): KeyValueStore
     {
         return $this->adapter;
     }
 
-    /**
-     * @return string
-     */
-    public function getCollectionName()
+    public function getCollectionName(): string
     {
         return $this->collectionName;
     }

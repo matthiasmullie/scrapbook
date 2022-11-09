@@ -1,34 +1,36 @@
 <?php
 
+declare(strict_types=1);
+
 namespace MatthiasMullie\Scrapbook\Tests;
 
 class AdapterTest extends AdapterTestCase
 {
-    public function testGetAndSet()
+    public function testGetAndSet(): void
     {
         $return = $this->cache->set('test key', 'value');
 
-        $this->assertEquals(true, $return);
+        $this->assertTrue($return);
         $this->assertEquals('value', $this->cache->get('test key'));
     }
 
-    public function testGetVeryLongKeys()
+    public function testGetVeryLongKeys(): void
     {
         $return = $this->cache->set('this-is-turning-out-to-be-a-rather-unusually-long-key', 'value');
-        $this->assertEquals(true, $return);
+        $this->assertTrue($return);
         $this->assertEquals('value', $this->cache->get('this-is-turning-out-to-be-a-rather-unusually-long-key'));
 
         $return = $this->cache->set('12345678901234567890123456789012345678901234567890', 'value');
-        $this->assertEquals(true, $return);
+        $this->assertTrue($return);
         $this->assertEquals('value', $this->cache->get('12345678901234567890123456789012345678901234567890'));
     }
 
-    public function testGetFail()
+    public function testGetFail(): void
     {
-        $this->assertEquals(false, $this->cache->get('test key'));
+        $this->assertFalse($this->cache->get('test key'));
     }
 
-    public function testGetNonReferential()
+    public function testGetNonReferential(): void
     {
         // this is mostly for MemoryStore - other stores probably aren't at risk
 
@@ -51,12 +53,12 @@ class AdapterTest extends AdapterTestCase
         $this->assertEquals($comparison, $fromCache2);
     }
 
-    public function testGetMulti()
+    public function testGetMulti(): void
     {
-        $items = array(
+        $items = [
             'test key' => 'value',
             'key2' => 'value2',
-        );
+        ];
 
         foreach ($items as $key => $value) {
             $this->cache->set($key, $value);
@@ -65,67 +67,67 @@ class AdapterTest extends AdapterTestCase
         $this->assertEquals($items, $this->cache->getMulti(array_keys($items)));
 
         // requesting non-existing keys
-        $this->assertEquals(array(), $this->cache->getMulti(array('key3')));
-        $this->assertEquals(array('key2' => 'value2'), $this->cache->getMulti(array('key2', 'key3')));
+        $this->assertEquals([], $this->cache->getMulti(['key3']));
+        $this->assertEquals(['key2' => 'value2'], $this->cache->getMulti(['key2', 'key3']));
     }
 
-    public function testGetNoCasTokens()
+    public function testGetNoCasTokens(): void
     {
         $this->cache->get('test key', $token);
-        $this->assertEquals(null, $token);
+        $this->assertNull($token);
 
-        $this->cache->getMulti(array('test key'), $tokens);
-        $this->assertEquals(array(), $tokens);
+        $this->cache->getMulti(['test key'], $tokens);
+        $this->assertEquals([], $tokens);
     }
 
-    public function testGetCasTokensFromFalse()
+    public function testGetCasTokensFromFalse(): void
     {
         // 'false' is also a value, with a token
         $return = $this->cache->set('test key', false);
 
-        $this->assertEquals(true, $return);
+        $this->assertTrue($return);
 
-        $this->assertEquals(false, $this->cache->get('test key', $token));
+        $this->assertFalse($this->cache->get('test key', $token));
         $this->assertNotNull($token);
 
-        $this->assertEquals(array('test key' => false), $this->cache->getMulti(array('test key'), $tokens));
+        $this->assertEquals(['test key' => false], $this->cache->getMulti(['test key'], $tokens));
         $this->assertNotNull($tokens['test key']);
     }
 
-    public function testGetCasTokensOverridesTokenValue()
+    public function testGetCasTokensOverridesTokenValue(): void
     {
         $token = 'some-value';
-        $tokens = array('some-value');
+        $tokens = ['some-value'];
 
-        $this->assertEquals(false, $this->cache->get('test key', $token));
-        $this->assertEquals(null, $token);
+        $this->assertFalse($this->cache->get('test key', $token));
+        $this->assertNull($token);
 
-        $this->assertEquals(array(), $this->cache->getMulti(array('test key'), $tokens));
-        $this->assertEquals(array(), $tokens);
+        $this->assertEquals([], $this->cache->getMulti(['test key'], $tokens));
+        $this->assertEquals([], $tokens);
     }
 
-    public function testSetExpired()
+    public function testSetExpired(): void
     {
         $return = $this->cache->set('test key', 'value', time() - 2);
-        $this->assertEquals(true, $return);
-        $this->assertEquals(false, $this->cache->get('test key'));
+        $this->assertTrue($return);
+        $this->assertFalse($this->cache->get('test key'));
 
         // test if we can add to, but not replace or touch an expired value; it
         // should be treated as if the value doesn't exist)
         $return = $this->cache->replace('test key', 'value');
-        $this->assertEquals(false, $return);
+        $this->assertFalse($return);
         $return = $this->cache->touch('test key', time() + 2);
-        $this->assertEquals(false, $return);
+        $this->assertFalse($return);
         $return = $this->cache->add('test key', 'value');
-        $this->assertEquals(true, $return);
+        $this->assertTrue($return);
     }
 
-    public function testSetMulti()
+    public function testSetMulti(): void
     {
-        $items = array(
+        $items = [
             'test key' => 'value',
             'key2' => 'value2',
-        );
+        ];
 
         $return = $this->cache->setMulti($items);
 
@@ -135,12 +137,12 @@ class AdapterTest extends AdapterTestCase
         $this->assertEquals('value2', $this->cache->get('key2'));
     }
 
-    public function testSetMultiIntegerKeys()
+    public function testSetMultiIntegerKeys(): void
     {
-        $items = array(
+        $items = [
             '0' => 'value',
             '1' => 'value2',
-        );
+        ];
 
         $return = $this->cache->setMulti($items);
 
@@ -150,71 +152,71 @@ class AdapterTest extends AdapterTestCase
         $this->assertEquals('value2', $this->cache->get('1'));
     }
 
-    public function testSetMultiExpired()
+    public function testSetMultiExpired(): void
     {
-        $items = array(
+        $items = [
             'test key' => 'value',
             'key2' => 'value2',
-        );
+        ];
 
         $return = $this->cache->setMulti($items, time() - 2);
 
         $expect = array_fill_keys(array_keys($items), true);
         $this->assertEquals($expect, $return);
-        $this->assertEquals(false, $this->cache->get('test key'));
-        $this->assertEquals(false, $this->cache->get('key2'));
+        $this->assertFalse($this->cache->get('test key'));
+        $this->assertFalse($this->cache->get('key2'));
     }
 
-    public function testGetAndSetMultiVeryLongKeys()
+    public function testGetAndSetMultiVeryLongKeys(): void
     {
-        $items = array(
+        $items = [
             'this-is-turning-out-to-be-a-rather-unusually-long-key' => 'value',
             '12345678901234567890123456789012345678901234567890' => 'value',
-        );
+        ];
 
         $this->cache->setMulti($items);
 
         $this->assertEquals($items, $this->cache->getMulti(array_keys($items)));
     }
 
-    public function testDelete()
+    public function testDelete(): void
     {
         $this->cache->set('test key', 'value');
 
         $return = $this->cache->delete('test key');
 
-        $this->assertEquals(true, $return);
-        $this->assertEquals(false, $this->cache->get('test key'));
+        $this->assertTrue($return);
+        $this->assertFalse($this->cache->get('test key'));
 
         // delete non-existing key
         $return = $this->cache->delete('key2');
 
-        $this->assertEquals(false, $return);
-        $this->assertEquals(false, $this->cache->get('key2'));
+        $this->assertFalse($return);
+        $this->assertFalse($this->cache->get('key2'));
     }
 
-    public function testDeleteMulti()
+    public function testDeleteMulti(): void
     {
-        $items = array(
+        $items = [
             'test key' => 'value',
             'key2' => 'value2',
-        );
+        ];
 
         $this->cache->setMulti($items);
         $return = $this->cache->deleteMulti(array_keys($items));
 
         $expect = array_fill_keys(array_keys($items), true);
         $this->assertEquals($expect, $return);
-        $this->assertEquals(false, $this->cache->get('test key'));
-        $this->assertEquals(false, $this->cache->get('key2'));
+        $this->assertFalse($this->cache->get('test key'));
+        $this->assertFalse($this->cache->get('key2'));
 
         // delete all non-existing key (they've been deleted already)
         $return = $this->cache->deleteMulti(array_keys($items));
 
         $expect = array_fill_keys(array_keys($items), false);
         $this->assertEquals($expect, $return);
-        $this->assertEquals(false, $this->cache->get('test key'));
-        $this->assertEquals(false, $this->cache->get('key2'));
+        $this->assertFalse($this->cache->get('test key'));
+        $this->assertFalse($this->cache->get('key2'));
 
         // delete existing & non-existing key
         $this->cache->set('test key', 'value');
@@ -223,70 +225,70 @@ class AdapterTest extends AdapterTestCase
         $expect = array_fill_keys(array_keys($items), false);
         $expect['test key'] = true;
         $this->assertEquals($expect, $return);
-        $this->assertEquals(false, $this->cache->get('test key'));
-        $this->assertEquals(false, $this->cache->get('key2'));
+        $this->assertFalse($this->cache->get('test key'));
+        $this->assertFalse($this->cache->get('key2'));
     }
 
-    public function testAdd()
+    public function testAdd(): void
     {
         $return = $this->cache->add('test key', 'value');
 
-        $this->assertEquals(true, $return);
+        $this->assertTrue($return);
         $this->assertEquals('value', $this->cache->get('test key'));
     }
 
-    public function testAddFail()
+    public function testAddFail(): void
     {
         $this->cache->set('test key', 'value');
         $return = $this->cache->add('test key', 'value-2');
 
-        $this->assertEquals(false, $return);
+        $this->assertFalse($return);
         $this->assertEquals('value', $this->cache->get('test key'));
     }
 
-    public function testAddExpired()
+    public function testAddExpired(): void
     {
         $return = $this->cache->add('test key', 'value', time() - 2);
 
-        $this->assertEquals(true, $return);
-        $this->assertEquals(false, $this->cache->get('test key'));
+        $this->assertTrue($return);
+        $this->assertFalse($this->cache->get('test key'));
     }
 
-    public function testReplace()
+    public function testReplace(): void
     {
         $this->cache->set('test key', 'value');
         $return = $this->cache->replace('test key', 'value-2');
 
-        $this->assertEquals(true, $return);
+        $this->assertTrue($return);
         $this->assertEquals('value-2', $this->cache->get('test key'));
     }
 
-    public function testReplaceFail()
+    public function testReplaceFail(): void
     {
         $return = $this->cache->replace('test key', 'value');
 
-        $this->assertEquals(false, $return);
-        $this->assertEquals(false, $this->cache->get('test key'));
+        $this->assertFalse($return);
+        $this->assertFalse($this->cache->get('test key'));
     }
 
-    public function testReplaceExpired()
+    public function testReplaceExpired(): void
     {
         $this->cache->set('test key', 'value');
         $return = $this->cache->replace('test key', 'value', time() - 2);
 
-        $this->assertEquals(true, $return);
-        $this->assertEquals(false, $this->cache->get('test key'));
+        $this->assertTrue($return);
+        $this->assertFalse($this->cache->get('test key'));
     }
 
-    public function testReplaceSameValue()
+    public function testReplaceSameValue(): void
     {
         $this->cache->set('test key', 'value');
         $return = $this->cache->replace('test key', 'value');
 
-        $this->assertEquals(true, $return);
+        $this->assertTrue($return);
     }
 
-    public function testCas()
+    public function testCas(): void
     {
         $this->cache->set('test key', 'value');
 
@@ -294,19 +296,19 @@ class AdapterTest extends AdapterTestCase
         $this->cache->get('test key', $token);
         $return = $this->cache->cas($token, 'test key', 'updated-value');
 
-        $this->assertEquals(true, $return);
+        $this->assertTrue($return);
         $this->assertEquals('updated-value', $this->cache->get('test key'));
 
         // token via getMulti()
-        $this->cache->getMulti(array('test key'), $tokens);
+        $this->cache->getMulti(['test key'], $tokens);
         $token = $tokens['test key'];
         $return = $this->cache->cas($token, 'test key', 'updated-value-2');
 
-        $this->assertEquals(true, $return);
+        $this->assertTrue($return);
         $this->assertEquals('updated-value-2', $this->cache->get('test key'));
     }
 
-    public function testCasFail()
+    public function testCasFail(): void
     {
         $this->cache->set('test key', 'value');
 
@@ -319,11 +321,11 @@ class AdapterTest extends AdapterTestCase
         // attempt CAS, which should now fail (token no longer valid)
         $return = $this->cache->cas($token, 'test key', 'updated-value-2');
 
-        $this->assertEquals(false, $return);
+        $this->assertFalse($return);
         $this->assertEquals('updated-value', $this->cache->get('test key'));
     }
 
-    public function testCasFail2()
+    public function testCasFail2(): void
     {
         $this->cache->set('test key', 'value');
 
@@ -336,11 +338,11 @@ class AdapterTest extends AdapterTestCase
         // attempt CAS, which should now fail (token no longer valid)
         $return = $this->cache->cas($token, 'test key', 'updated-value-2');
 
-        $this->assertEquals(false, $return);
-        $this->assertEquals(false, $this->cache->get('test key'));
+        $this->assertFalse($return);
+        $this->assertFalse($this->cache->get('test key'));
     }
 
-    public function testCasExpired()
+    public function testCasExpired(): void
     {
         $this->cache->set('test key', 'value');
 
@@ -348,29 +350,29 @@ class AdapterTest extends AdapterTestCase
         $this->cache->get('test key', $token);
         $return = $this->cache->cas($token, 'test key', 'updated-value', time() - 2);
 
-        $this->assertEquals(true, $return);
-        $this->assertEquals(false, $this->cache->get('test key'));
+        $this->assertTrue($return);
+        $this->assertFalse($this->cache->get('test key'));
     }
 
-    public function testCasSameValue()
+    public function testCasSameValue(): void
     {
         $this->cache->set('test key', 'value');
         $this->cache->get('test key', $token);
         $return = $this->cache->cas($token, 'test key', 'value');
 
-        $this->assertEquals(true, $return);
+        $this->assertTrue($return);
     }
 
-    public function testCasNoOriginalValue()
+    public function testCasNoOriginalValue(): void
     {
         $this->cache->get('test key', $token);
         $return = $this->cache->cas($token, 'test key', 'value');
 
-        $this->assertEquals(false, $return);
-        $this->assertEquals(false, $this->cache->get('test key'));
+        $this->assertFalse($return);
+        $this->assertFalse($this->cache->get('test key'));
     }
 
-    public function testIncrement()
+    public function testIncrement(): void
     {
         // set initial value
         $return = $this->cache->increment('test key', 1, 1);
@@ -390,40 +392,40 @@ class AdapterTest extends AdapterTestCase
         $this->assertEquals(2, $this->cache->get('test key'));
     }
 
-    public function testIncrementFail()
+    public function testIncrementFail(): void
     {
         $return = $this->cache->increment('test key', -1, 0);
-        $this->assertEquals(false, $return);
-        $this->assertEquals(false, $this->cache->get('test key'));
+        $this->assertFalse($return);
+        $this->assertFalse($this->cache->get('test key'));
 
         $return = $this->cache->increment('test key', 5, -2);
-        $this->assertEquals(false, $return);
-        $this->assertEquals(false, $this->cache->get('test key'));
+        $this->assertFalse($return);
+        $this->assertFalse($this->cache->get('test key'));
 
         // non-numeric value in cache
         $this->cache->set('test key', 'value');
         $return = $this->cache->increment('test key', 1, 1);
-        $this->assertEquals(false, $return);
+        $this->assertFalse($return);
         $this->assertEquals('value', $this->cache->get('test key'));
     }
 
-    public function testIncrementExpired()
+    public function testIncrementExpired(): void
     {
         // set initial value
         $return = $this->cache->increment('test key', 1, 1, time() - 2);
 
         $this->assertEquals(1, $return);
-        $this->assertEquals(false, $this->cache->get('test key'));
+        $this->assertFalse($this->cache->get('test key'));
 
         // set initial value (not expired) & increment (expired)
         $this->cache->increment('test key', 1, 1);
         $return = $this->cache->increment('test key', 1, 1, time() - 2);
 
         $this->assertEquals(2, $return);
-        $this->assertEquals(false, $this->cache->get('test key'));
+        $this->assertFalse($this->cache->get('test key'));
     }
 
-    public function testDecrement()
+    public function testDecrement(): void
     {
         // set initial value
         $return = $this->cache->decrement('test key', 1, 1);
@@ -449,91 +451,91 @@ class AdapterTest extends AdapterTestCase
         $this->assertEquals(0, $this->cache->get('test key'));
     }
 
-    public function testDecrementFail()
+    public function testDecrementFail(): void
     {
         $return = $this->cache->decrement('test key', -1, 0);
-        $this->assertEquals(false, $return);
-        $this->assertEquals(false, $this->cache->get('test key'));
+        $this->assertFalse($return);
+        $this->assertFalse($this->cache->get('test key'));
 
         $return = $this->cache->decrement('test key', 5, -2);
-        $this->assertEquals(false, $return);
-        $this->assertEquals(false, $this->cache->get('test key'));
+        $this->assertFalse($return);
+        $this->assertFalse($this->cache->get('test key'));
 
         // non-numeric value in cache
         $this->cache->set('test key', 'value');
         $return = $this->cache->increment('test key', 1, 1);
-        $this->assertEquals(false, $return);
+        $this->assertFalse($return);
         $this->assertEquals('value', $this->cache->get('test key'));
     }
 
-    public function testDecrementExpired()
+    public function testDecrementExpired(): void
     {
         // set initial value
         $return = $this->cache->decrement('test key', 1, 1, time() - 2);
 
         $this->assertEquals(1, $return);
-        $this->assertEquals(false, $this->cache->get('test key'));
+        $this->assertFalse($this->cache->get('test key'));
 
         // set initial value (not expired) & increment (expired)
         $this->cache->decrement('test key', 1, 1);
         $return = $this->cache->decrement('test key', 1, 1, time() - 2);
 
         $this->assertEquals(0, $return);
-        $this->assertEquals(false, $this->cache->get('test key'));
+        $this->assertFalse($this->cache->get('test key'));
     }
 
-    public function testTouch()
+    public function testTouch(): void
     {
         $this->cache->set('test key', 'value');
 
         // not yet expired
         $return = $this->cache->touch('test key', time() + 2);
-        $this->assertEquals(true, $return);
+        $this->assertTrue($return);
         $this->assertEquals('value', $this->cache->get('test key'));
     }
 
-    public function testTouchExpired()
+    public function testTouchExpired(): void
     {
         $this->cache->set('test key', 'value');
 
         // expired
         $return = $this->cache->touch('test key', time() - 2);
-        $this->assertEquals(true, $return);
-        $this->assertEquals(false, $this->cache->get('test key'));
+        $this->assertTrue($return);
+        $this->assertFalse($this->cache->get('test key'));
     }
 
-    public function testFlush()
+    public function testFlush(): void
     {
         $this->cache->set('test key', 'value');
         $return = $this->cache->flush();
 
-        $this->assertEquals(true, $return);
-        $this->assertEquals(false, $this->cache->get('test key'));
+        $this->assertTrue($return);
+        $this->assertFalse($this->cache->get('test key'));
     }
 
-    public function testCollectionGetParentKey()
+    public function testCollectionGetParentKey(): void
     {
         $collection = $this->cache->getCollection($this->collectionName);
 
         $this->cache->set('key', 'value');
 
         $this->assertEquals('value', $this->cache->get('key'));
-        $this->assertEquals(false, $collection->get('key'));
+        $this->assertFalse($collection->get('key'));
     }
 
-    public function testCollectionGetCollectionKey()
+    public function testCollectionGetCollectionKey(): void
     {
         $collection = $this->cache->getCollection($this->collectionName);
 
         $collection->set('key', 'value');
 
-        $this->assertEquals(false, $this->cache->get('key'));
+        $this->assertFalse($this->cache->get('key'));
         $this->assertEquals('value', $collection->get('key'));
 
         $collection->flush();
     }
 
-    public function testCollectionSetSameKey()
+    public function testCollectionSetSameKey(): void
     {
         $collection = $this->cache->getCollection($this->collectionName);
 
@@ -546,7 +548,7 @@ class AdapterTest extends AdapterTestCase
         $collection->flush();
     }
 
-    public function testCollectionFlushParent()
+    public function testCollectionFlushParent(): void
     {
         $collection = $this->cache->getCollection($this->collectionName);
 
@@ -555,13 +557,13 @@ class AdapterTest extends AdapterTestCase
 
         $this->cache->flush();
 
-        $this->assertEquals(false, $this->cache->get('key'));
-        $this->assertEquals(false, $collection->get('key'));
+        $this->assertFalse($this->cache->get('key'));
+        $this->assertFalse($collection->get('key'));
 
         $collection->flush();
     }
 
-    public function testCollectionFlushCollection()
+    public function testCollectionFlushCollection(): void
     {
         $collection = $this->cache->getCollection($this->collectionName);
 
@@ -571,6 +573,6 @@ class AdapterTest extends AdapterTestCase
         $collection->flush();
 
         $this->assertEquals('value', $this->cache->get('key'));
-        $this->assertEquals(false, $collection->get('key'));
+        $this->assertFalse($collection->get('key'));
     }
 }

@@ -1,21 +1,24 @@
 <?php
 
+declare(strict_types=1);
+
 namespace MatthiasMullie\Scrapbook\Tests\Adapters;
 
-use MatthiasMullie\Scrapbook\Tests\PHPUnitCompat\CompatTestCase;
+use MatthiasMullie\Scrapbook\Adapters\MemoryStore;
+use PHPUnit\Framework\TestCase;
 
 /**
  * @group default
  * @group MemoryStore
  */
-class MemoryStoreTest extends CompatTestCase
+class MemoryStoreTest extends TestCase
 {
-    public function testLRU()
+    public function testLRU(): void
     {
         // all of the below 'valueX' have a (serialized) size of 13b
         $limit = strlen(serialize('value1')) + strlen(serialize('value2'));
         // cache should be able to handle only 2 of the below values at once
-        $cache = new \MatthiasMullie\Scrapbook\Adapters\MemoryStore($limit);
+        $cache = new MemoryStore($limit);
 
         $cache->set('key1', 'value1');
         $cache->set('key2', 'value2');
@@ -27,16 +30,16 @@ class MemoryStoreTest extends CompatTestCase
         $cache->set('key1', 'value4');
 
         $this->assertEquals('value4', $cache->get('key1'));
-        $this->assertEquals(false, $cache->get('key2'));
+        $this->assertFalse($cache->get('key2'));
         $this->assertEquals('value3', $cache->get('key3'));
     }
 
-    public function testLRUNoDoubleCount()
+    public function testLRUNoDoubleCount(): void
     {
         // all of the below 'valueX' have a (serialized) size of 13b
         $limit = strlen(serialize('value1')) + strlen(serialize('value2'));
         // cache should be able to handle only 2 of the below values at once
-        $cache = new \MatthiasMullie\Scrapbook\Adapters\MemoryStore($limit);
+        $cache = new MemoryStore($limit);
 
         // writing to same key more than once should not double-count it
         $cache->set('key1', 'value1');
@@ -47,12 +50,12 @@ class MemoryStoreTest extends CompatTestCase
         $this->assertEquals('value3', $cache->get('key2'));
     }
 
-    public function testLRUInParentAfterParentSet()
+    public function testLRUInParentAfterParentSet(): void
     {
         // all of the below 'valueX' have a (serialized) size of 13b
         $limit = strlen(serialize('value1')) + strlen(serialize('value2'));
         // cache should be able to handle only 2 of the below values at once
-        $cache = new \MatthiasMullie\Scrapbook\Adapters\MemoryStore($limit);
+        $cache = new MemoryStore($limit);
         $collection = $cache->getCollection('collection');
 
         $cache->set('key1', 'value1');
@@ -63,17 +66,17 @@ class MemoryStoreTest extends CompatTestCase
 
         $cache->set('key3', 'value3');
 
-        $this->assertEquals(false, $cache->get('key1'));
+        $this->assertFalse($cache->get('key1'));
         $this->assertEquals('value2', $collection->get('key2'));
         $this->assertEquals('value3', $cache->get('key3'));
     }
 
-    public function testLRUInCollectionAfterParentSet()
+    public function testLRUInCollectionAfterParentSet(): void
     {
         // all of the below 'valueX' have a (serialized) size of 13b
         $limit = strlen(serialize('value1')) + strlen(serialize('value2'));
         // cache should be able to handle only 2 of the below values at once
-        $cache = new \MatthiasMullie\Scrapbook\Adapters\MemoryStore($limit);
+        $cache = new MemoryStore($limit);
         $collection = $cache->getCollection('collection');
 
         $collection->set('key1', 'value1');
@@ -84,17 +87,17 @@ class MemoryStoreTest extends CompatTestCase
 
         $cache->set('key3', 'value3');
 
-        $this->assertEquals(false, $collection->get('key1'));
+        $this->assertFalse($collection->get('key1'));
         $this->assertEquals('value2', $cache->get('key2'));
         $this->assertEquals('value3', $cache->get('key3'));
     }
 
-    public function testLRUInParentAfterCollectionSet()
+    public function testLRUInParentAfterCollectionSet(): void
     {
         // all of the below 'valueX' have a (serialized) size of 13b
         $limit = strlen(serialize('value1')) + strlen(serialize('value2'));
         // cache should be able to handle only 2 of the below values at once
-        $cache = new \MatthiasMullie\Scrapbook\Adapters\MemoryStore($limit);
+        $cache = new MemoryStore($limit);
         $collection = $cache->getCollection('collection');
 
         $cache->set('key1', 'value1');
@@ -105,17 +108,17 @@ class MemoryStoreTest extends CompatTestCase
 
         $collection->set('key3', 'value3');
 
-        $this->assertEquals(false, $cache->get('key1'));
+        $this->assertFalse($cache->get('key1'));
         $this->assertEquals('value2', $collection->get('key2'));
         $this->assertEquals('value3', $collection->get('key3'));
     }
 
-    public function testLRUInCollectionAfterCollectionSet()
+    public function testLRUInCollectionAfterCollectionSet(): void
     {
         // all of the below 'valueX' have a (serialized) size of 13b
         $limit = strlen(serialize('value1')) + strlen(serialize('value2'));
         // cache should be able to handle only 2 of the below values at once
-        $cache = new \MatthiasMullie\Scrapbook\Adapters\MemoryStore($limit);
+        $cache = new MemoryStore($limit);
         $collection = $cache->getCollection('collection');
 
         $collection->set('key1', 'value1');
@@ -126,14 +129,14 @@ class MemoryStoreTest extends CompatTestCase
 
         $collection->set('key3', 'value3');
 
-        $this->assertEquals(false, $collection->get('key1'));
+        $this->assertFalse($collection->get('key1'));
         $this->assertEquals('value2', $cache->get('key2'));
         $this->assertEquals('value3', $collection->get('key3'));
     }
 
-    public function testFlushInCollection()
+    public function testFlushInCollection(): void
     {
-        $cache = new \MatthiasMullie\Scrapbook\Adapters\MemoryStore();
+        $cache = new MemoryStore();
         $collection = $cache->getCollection('collection');
 
         $cache->set('key1', 'value1');
@@ -141,8 +144,8 @@ class MemoryStoreTest extends CompatTestCase
 
         // test that flush in collection works
         $result = $collection->flush();
-        $this->assertEquals(true, $result);
-        $this->assertEquals(false, $collection->get('key2'));
+        $this->assertTrue($result);
+        $this->assertFalse($collection->get('key2'));
 
         // test that parent didn't get flushed
         $this->assertEquals('value1', $cache->get('key1'));
@@ -152,7 +155,7 @@ class MemoryStoreTest extends CompatTestCase
         $property = $object->getProperty('items');
         $property->setAccessible(true);
         $items = $property->getValue($cache);
-        $this->assertEquals(array('key1'), array_keys($items));
+        $this->assertEquals(['key1'], array_keys($items));
 
         // verify that size has been updated correctly
         $property = $object->getProperty('size');
@@ -161,9 +164,9 @@ class MemoryStoreTest extends CompatTestCase
         $this->assertEquals(strlen(serialize('value1')), $size);
     }
 
-    public function testFlushInParent()
+    public function testFlushInParent(): void
     {
-        $cache = new \MatthiasMullie\Scrapbook\Adapters\MemoryStore();
+        $cache = new MemoryStore();
         $collection = $cache->getCollection('collection');
 
         $cache->set('key1', 'value1');
@@ -171,18 +174,18 @@ class MemoryStoreTest extends CompatTestCase
 
         // test that flush in parent works
         $result = $cache->flush();
-        $this->assertEquals(true, $result);
-        $this->assertEquals(false, $cache->get('key1'));
+        $this->assertTrue($result);
+        $this->assertFalse($cache->get('key1'));
 
         // test that collection got flushed as well
-        $this->assertEquals(false, $collection->get('key2'));
+        $this->assertFalse($collection->get('key2'));
 
         // verify that items of parent & collection are gone entirely
         $object = new \ReflectionObject($cache);
         $property = $object->getProperty('items');
         $property->setAccessible(true);
         $items = $property->getValue($cache);
-        $this->assertEquals(array(), array_keys($items));
+        $this->assertEquals([], array_keys($items));
 
         // verify that size has been updated correctly
         $property = $object->getProperty('size');

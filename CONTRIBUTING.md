@@ -61,7 +61,7 @@ make test ADAPTER=MySQL,PostgreSQL,SQLite
 Or with a specific PHP version:
 
 ```sh
-make test PHP=7.0 ADAPTER=MySQL,PostgreSQL,SQLite
+make test PHP=8.0 ADAPTER=MySQL,PostgreSQL,SQLite
 ```
 
 GitHub Actions have been [configured](.github/workflows/test.yml) to run supported

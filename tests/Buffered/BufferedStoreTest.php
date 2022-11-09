@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace MatthiasMullie\Scrapbook\Tests\Buffered;
 
 use MatthiasMullie\Scrapbook\Buffered\BufferedStore;
@@ -8,18 +10,15 @@ use MatthiasMullie\Scrapbook\Tests\AdapterTestCase;
 
 class BufferedStoreTest extends AdapterTestCase
 {
-    /**
-     * @var BufferedStore
-     */
-    protected $buffered;
+    protected BufferedStore $buffered;
 
-    public function setAdapter(KeyValueStore $adapter)
+    public function setAdapter(KeyValueStore $adapter): void
     {
         $this->cache = $adapter;
         $this->buffered = new BufferedStore($adapter);
     }
 
-    public function testGetFromCache()
+    public function testGetFromCache(): void
     {
         // test if value set via buffered cache can be located
         // in buffer & in real cache
@@ -28,7 +27,7 @@ class BufferedStoreTest extends AdapterTestCase
         $this->assertEquals('value', $this->cache->get('key'));
     }
 
-    public function testSetFromCache()
+    public function testSetFromCache(): void
     {
         // test if existing value in cache can be fetched from
         // buffer & real cache
@@ -37,7 +36,7 @@ class BufferedStoreTest extends AdapterTestCase
         $this->assertEquals('value', $this->cache->get('key'));
     }
 
-    public function testSetFromBuffer()
+    public function testSetFromBuffer(): void
     {
         // test if value that has been set via buffer is actually
         // read from buffer (by deleting it from real cache to make
@@ -45,10 +44,10 @@ class BufferedStoreTest extends AdapterTestCase
         $this->buffered->set('key', 'value');
         $this->cache->delete('key');
         $this->assertEquals('value', $this->buffered->get('key'));
-        $this->assertEquals(false, $this->cache->get('key'));
+        $this->assertFalse($this->cache->get('key'));
     }
 
-    public function testGetFromBuffer()
+    public function testGetFromBuffer(): void
     {
         // test if value that has been get via buffer is actually
         // read from buffer (by deleting it from real cache to make
@@ -57,6 +56,6 @@ class BufferedStoreTest extends AdapterTestCase
         $this->buffered->get('key');
         $this->cache->delete('key');
         $this->assertEquals('value', $this->buffered->get('key'));
-        $this->assertEquals(false, $this->cache->get('key'));
+        $this->assertFalse($this->cache->get('key'));
     }
 }

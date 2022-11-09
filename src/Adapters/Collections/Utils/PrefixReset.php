@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace MatthiasMullie\Scrapbook\Adapters\Collections\Utils;
 
 use MatthiasMullie\Scrapbook\KeyValueStore;
@@ -11,25 +13,16 @@ use MatthiasMullie\Scrapbook\KeyValueStore;
  */
 class PrefixReset extends PrefixKeys
 {
-    /**
-     * @var string
-     */
-    protected $collection;
+    protected string $collection;
 
-    /**
-     * @param string $name
-     */
-    public function __construct(KeyValueStore $cache, $name)
+    public function __construct(KeyValueStore $cache, string $name)
     {
         $this->cache = $cache;
         $this->collection = $name;
         parent::__construct($cache, $this->getPrefix());
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function flush()
+    public function flush(): bool
     {
         $index = $this->cache->increment($this->collection);
         $this->setPrefix($this->collection.':'.$index.':');
@@ -37,10 +30,7 @@ class PrefixReset extends PrefixKeys
         return false !== $index;
     }
 
-    /**
-     * @return string
-     */
-    protected function getPrefix()
+    protected function getPrefix(): string
     {
         /*
          * It's easy enough to just set a prefix to be used, but we can not

@@ -1,30 +1,26 @@
 <?php
 
+declare(strict_types=1);
+
 namespace MatthiasMullie\Scrapbook\Tests;
 
 use MatthiasMullie\Scrapbook\Exception\Exception;
-use MatthiasMullie\Scrapbook\KeyValueStore;
 use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\TestSuite;
 
 class AdapterTestProvider
 {
     /**
-     * @var KeyValueStore[]
+     * @var AdapterProvider[]
      */
-    protected static $adapters = array();
+    protected static array $adapters = [];
+
+    protected TestCase $testCase;
 
     /**
-     * @var TestCase
-     */
-    protected $testCase;
-
-    /**
-     * @param TestCase $testCase
-     *
      * @throws Exception
      */
-    public function __construct(/* TestCase|\PHPUnit_Framework_TestCase */ $testCase)
+    public function __construct(TestCase $testCase)
     {
         if (!$testCase instanceof AdapterProviderTestInterface) {
             $class = get_class($testCase);
@@ -34,14 +30,10 @@ class AdapterTestProvider
         $this->testCase = $testCase;
     }
 
-    /**
-     * @return TestSuite
-     */
-    public function getSuite()
+    public function getSuite(): TestSuite
     {
         $suite = new TestSuite('Test integration');
 
-        $i = 0;
         foreach ($this->getAdapterProviders() as $name => $adapterProvider) {
             $class = new \ReflectionClass(get_class($this->testCase));
             $tests = new TestSuite($class);
@@ -49,15 +41,13 @@ class AdapterTestProvider
             // we can't use --filter to narrow down on specific adapters
             // (because we're not using dataProvider), but we can make sure it's
             // properly split up into groups & then use --group
-            static::injectGroup($tests, $name);
+            $this->injectGroup($tests, $name);
 
             // and let's make sure to inject the specific adapter into the test
-            static::injectAdapter($tests, $adapterProvider);
+            $this->injectAdapter($tests, $adapterProvider);
 
             // let's add all of the integrations tests for every adapter
             $suite->addTest($tests);
-
-            ++$i;
         }
 
         return $suite;
@@ -67,24 +57,13 @@ class AdapterTestProvider
      * Injecting an adapter must be done recursively: there are some methods
      * that get input from dataProviders, so they're wrapped in another class
      * that we must unwrap in order to assign the adapter.
-     *
-     * @param TestSuite $suite
      */
-    protected function injectAdapter(/* TestSuite|\PHPUnit_Framework_TestSuite */ $suite, AdapterProvider $adapterProvider)
+    protected function injectAdapter(TestSuite|AdapterTestCase $suite, AdapterProvider $adapterProvider): void
     {
         foreach ($suite as $test) {
-            /*
-             * Testing for both current (namespace) and old (underscored)
-             * PHPUnit class names, because (even though we stub this class)
-             * $test may be a child of TestSuite/PHPUnit_Framework_TestSuite,
-             * which the stub can't account for.
-             * The PHPUnit_Framework_TestSuite part can be removed when support
-             * for PHPUnit<6.0 is removed
-             */
-            if ($test instanceof TestSuite || $test instanceof \PHPUnit_Framework_TestSuite) {
+            if ($test instanceof TestSuite) {
                 $this->injectAdapter($test, $adapterProvider);
             } else {
-                /* @var AdapterTestCase $test */
                 $test->setAdapter($adapterProvider->getAdapter());
                 $test->setCollectionName($adapterProvider->getCollectionName());
             }
@@ -95,25 +74,14 @@ class AdapterTestProvider
      * Because some tests are wrapped inside a dataProvider suite, we need to
      * make sure that the groups are recursively assigned to each suite until we
      * reach the child.
-     *
-     * @param TestSuite $suite
-     * @param string$group
      */
-    protected function injectGroup(/* TestSuite|\PHPUnit_Framework_TestSuite */ $suite, $group)
+    protected function injectGroup(TestSuite $suite, string $group): void
     {
         $tests = $suite->tests();
-        $suite->setGroupDetails(array('default' => $tests, $group => $tests));
+        $suite->setGroupDetails(['default' => $tests, $group => $tests]);
 
         foreach ($suite->tests() as $test) {
-            /*
-             * Testing for both current (namespace) and old (underscored)
-             * PHPUnit class names, because (even though we stub this class)
-             * $test may be a child of TestSuite/PHPUnit_Framework_TestSuite,
-             * which the stub can't account for.
-             * The PHPUnit_Framework_TestSuite part can be removed when support
-             * for PHPUnit<6.0 is removed
-             */
-            if ($test instanceof TestSuite || $test instanceof \PHPUnit_Framework_TestSuite) {
+            if ($test instanceof TestSuite) {
                 $this->injectGroup($test, $group);
             }
         }
@@ -122,7 +90,7 @@ class AdapterTestProvider
     /**
      * @return AdapterProvider[]
      */
-    public function getAdapterProviders()
+    public function getAdapterProviders(): array
     {
         // re-use adapters across tests - if we keep initializing clients, they
         // may fail because of too much connections (and it's just overhead...)
@@ -149,16 +117,14 @@ class AdapterTestProvider
     /**
      * @return string[]
      */
-    protected function getAllAdapterProviders()
+    protected function getAllAdapterProviders(): array
     {
         $files = glob(__DIR__.'/Providers/*Provider.php');
 
         // since we're PSR-4, just stripping .php from the filename = classnames
         // also strip "Provider" suffix, which will again be appended later
-        $adapters = array_map(function ($file) {
+        return array_map(static function ($file) {
             return basename($file, 'Provider.php');
         }, $files);
-
-        return $adapters;
     }
 }

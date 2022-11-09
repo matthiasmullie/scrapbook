@@ -5,9 +5,8 @@ $finder = PhpCsFixer\Finder::create()
     ->in(__DIR__);
 
 $config = new PhpCsFixer\Config();
-return $config->setRules(array(
-        '@Symfony' => true,
-        'array_syntax' => array('syntax' => 'long'),
-    ))
+
+return $config
+    ->setRules(['@Symfony' => true])
     ->setFinder($finder)
     ->setUsingCache(false);

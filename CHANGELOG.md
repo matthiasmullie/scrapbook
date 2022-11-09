@@ -1,6 +1,20 @@
 # Changelog
 
 
+## [1.5.0] - 2022-11-10
+### Added
+- Compatibility with psr/cache version 3
+- Compatibility with psr/simple-cache version 3
+
+### Changed
+- Type declarations everywhere
+
+### Removed
+- Removed support for PHP versions <8.0
+- Removed support for Couchbase SDK <3.0
+- Removed support for APC (not APCu)
+
+
 ## [1.4.9] - 2022-11-10
 ### Added
 - Added support for Couchbase v3.x & 4.x versions
@@ -319,3 +333,4 @@
 [1.4.7]: https://github.com/matthiasmullie/scrapbook/compare/1.4.6...1.4.7
 [1.4.8]: https://github.com/matthiasmullie/scrapbook/compare/1.4.7...1.4.8
 [1.4.9]: https://github.com/matthiasmullie/scrapbook/compare/1.4.8...1.4.9
+[1.5.0]: https://github.com/matthiasmullie/scrapbook/compare/1.4.9...1.5.0

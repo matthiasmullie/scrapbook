@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace MatthiasMullie\Scrapbook\Adapters;
 
 use MatthiasMullie\Scrapbook\Adapters\Collections\Memcached as Collection;
@@ -17,20 +19,14 @@ use MatthiasMullie\Scrapbook\KeyValueStore;
  */
 class Memcached implements KeyValueStore
 {
-    /**
-     * @var \Memcached
-     */
-    protected $client;
+    protected \Memcached $client;
 
     public function __construct(\Memcached $client)
     {
         $this->client = $client;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function get($key, &$token = null)
+    public function get(string $key, mixed &$token = null): mixed
     {
         /**
          * Wouldn't it be awesome if I just used the obvious method?
@@ -42,7 +38,7 @@ class Memcached implements KeyValueStore
          *
          * @see https://github.com/php-memcached-dev/php-memcached/issues/21
          */
-        $values = $this->getMulti(array($key), $tokens);
+        $values = $this->getMulti([$key], $tokens);
 
         if (!isset($values[$key])) {
             $token = null;
@@ -55,17 +51,14 @@ class Memcached implements KeyValueStore
         return $values[$key];
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getMulti(array $keys, array &$tokens = null)
+    public function getMulti(array $keys, array &$tokens = null): array
     {
-        $tokens = array();
+        $tokens = [];
         if (empty($keys)) {
-            return array();
+            return [];
         }
 
-        $keys = array_map(array($this, 'encode'), $keys);
+        $keys = array_map([$this, 'encode'], $keys);
 
         if (defined('\Memcached::GET_EXTENDED')) {
             $return = $this->client->getMulti($keys, \Memcached::GET_EXTENDED);
@@ -80,21 +73,18 @@ class Memcached implements KeyValueStore
             $this->throwExceptionOnClientCallFailure($return);
         }
 
-        $keys = array_map(array($this, 'decode'), array_keys($return));
+        $keys = array_map([$this, 'decode'], array_keys($return));
         $return = array_combine($keys, $return);
 
         // HHVMs getMulti() returns null instead of empty array for no results,
         // so normalize that
-        $tokens = $tokens ?: array();
+        $tokens = $tokens ?: [];
         $tokens = array_combine($keys, $tokens);
 
-        return $return ?: array();
+        return $return ?: [];
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function set($key, $value, $expire = 0)
+    public function set(string $key, mixed $value, int $expire = 0): bool
     {
         if ($this->deleteIfExpired($key, $expire)) {
             return true;
@@ -105,13 +95,10 @@ class Memcached implements KeyValueStore
         return $this->client->set($key, $value, $expire);
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function setMulti(array $items, $expire = 0)
+    public function setMulti(array $items, int $expire = 0): array
     {
         if (empty($items)) {
-            return array();
+            return [];
         }
 
         $keys = array_keys($items);
@@ -126,31 +113,25 @@ class Memcached implements KeyValueStore
             }
         }
 
-        $keys = array_map(array($this, 'encode'), array_keys($items));
+        $keys = array_map([$this, 'encode'], array_keys($items));
         $items = array_combine($keys, $items);
         $success = $this->client->setMulti($items, $expire);
-        $keys = array_map(array($this, 'decode'), array_keys($items));
+        $keys = array_map([$this, 'decode'], array_keys($items));
 
         return array_fill_keys($keys, $success);
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function delete($key)
+    public function delete(string $key): bool
     {
         $key = $this->encode($key);
 
         return $this->client->delete($key);
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function deleteMulti(array $keys)
+    public function deleteMulti(array $keys): array
     {
         if (empty($keys)) {
-            return array();
+            return [];
         }
 
         if (!method_exists($this->client, 'deleteMulti')) {
@@ -164,10 +145,10 @@ class Memcached implements KeyValueStore
              */
             $values = $this->getMulti($keys);
 
-            $keys = array_map(array($this, 'encode'), array_keys($values));
+            $keys = array_map([$this, 'encode'], array_keys($values));
             $this->client->setMulti(array_fill_keys($keys, ''), time() - 1);
 
-            $return = array();
+            $return = [];
             foreach ($keys as $key) {
                 $key = $this->decode($key);
                 $return[$key] = array_key_exists($key, $values);
@@ -176,9 +157,9 @@ class Memcached implements KeyValueStore
             return $return;
         }
 
-        $keys = array_map(array($this, 'encode'), $keys);
+        $keys = array_map([$this, 'encode'], $keys);
         $result = (array) $this->client->deleteMulti($keys);
-        $keys = array_map(array($this, 'decode'), array_keys($result));
+        $keys = array_map([$this, 'decode'], array_keys($result));
         $result = array_combine($keys, $result);
 
         /*
@@ -195,10 +176,7 @@ class Memcached implements KeyValueStore
         return $result;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function add($key, $value, $expire = 0)
+    public function add(string $key, mixed $value, int $expire = 0): bool
     {
         $key = $this->encode($key);
 
@@ -210,10 +188,7 @@ class Memcached implements KeyValueStore
         return $success;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function replace($key, $value, $expire = 0)
+    public function replace(string $key, mixed $value, int $expire = 0): bool
     {
         $key = $this->encode($key);
 
@@ -225,10 +200,7 @@ class Memcached implements KeyValueStore
         return $success;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function cas($token, $key, $value, $expire = 0)
+    public function cas(mixed $token, string $key, mixed $value, int $expire = 0): bool
     {
         if (!is_float($token) && !is_int($token)) {
             return false;
@@ -244,10 +216,7 @@ class Memcached implements KeyValueStore
         return $success;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function increment($key, $offset = 1, $initial = 0, $expire = 0)
+    public function increment(string $key, int $offset = 1, int $initial = 0, int $expire = 0): int|false
     {
         if ($offset <= 0 || $initial < 0) {
             return false;
@@ -262,10 +231,7 @@ class Memcached implements KeyValueStore
         return $this->doIncrement($key, $offset, $initial, $expire);
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function decrement($key, $offset = 1, $initial = 0, $expire = 0)
+    public function decrement(string $key, int $offset = 1, int $initial = 0, int $expire = 0): int|false
     {
         if ($offset <= 0 || $initial < 0) {
             return false;
@@ -278,10 +244,7 @@ class Memcached implements KeyValueStore
         return $this->doIncrement($key, -$offset, $initial, $expire);
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function touch($key, $expire)
+    public function touch(string $key, int $expire): bool
     {
         if ($this->deleteIfExpired($key, $expire)) {
             return true;
@@ -303,18 +266,12 @@ class Memcached implements KeyValueStore
         return $this->cas($token, $key, $value, $expire);
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function flush()
+    public function flush(): bool
     {
         return $this->client->flush();
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getCollection($name)
+    public function getCollection(string $name): KeyValueStore
     {
         return new Collection($this, $name);
     }
@@ -323,15 +280,8 @@ class Memcached implements KeyValueStore
      * Shared between increment/decrement: both have mostly the same logic
      * (decrement just increments a negative value), but need their validation
      * split up (increment won't accept negative values).
-     *
-     * @param string $key
-     * @param int    $offset
-     * @param int    $initial
-     * @param int    $expire
-     *
-     * @return int|bool
      */
-    protected function doIncrement($key, $offset, $initial, $expire)
+    protected function doIncrement(string $key, int $offset, int $initial, int $expire): int|false
     {
         $value = $this->get($key, $token);
         if (false === $value) {
@@ -364,16 +314,12 @@ class Memcached implements KeyValueStore
      * @see https://github.com/wikimedia/mediawiki/commit/be76d869#diff-75b7c03970b5e43de95ff95f5faa6ef1R100
      * @see https://github.com/wikimedia/mediawiki/blob/master/includes/libs/objectcache/MemcachedBagOStuff.php#L116
      *
-     * @param string $key
-     *
-     * @return string
-     *
      * @throws InvalidKey
      */
-    protected function encode($key)
+    protected function encode(string $key): string
     {
         $regex = '/[^\x21\x22\x24\x26-\x39\x3b-\x7e]+/';
-        $key = preg_replace_callback($regex, function ($match) {
+        $key = preg_replace_callback($regex, static function (array $match): string {
             return rawurlencode($match[0]);
         }, $key);
 
@@ -386,18 +332,14 @@ class Memcached implements KeyValueStore
 
     /**
      * Decode a key encoded with encode().
-     *
-     * @param string $key
-     *
-     * @return string
      */
-    protected function decode($key)
+    protected function decode(string $key): string
     {
         // matches %20, %7F, ... but not %21, %22, ...
         // (=the encoded versions for those encoded in encode)
         $regex = '/%(?!2[1246789]|3[0-9]|3[B-F]|[4-6][0-9A-F]|5[0-9A-E])[0-9A-Z]{2}/i';
 
-        return preg_replace_callback($regex, function ($match) {
+        return preg_replace_callback($regex, static function (array $match): string {
             return rawurldecode($match[0]);
         }, $key);
     }
@@ -408,11 +350,10 @@ class Memcached implements KeyValueStore
      * delete it (instead of performing the already expired operation).
      *
      * @param string|string[] $key
-     * @param int             $expire
      *
      * @return bool True if expired
      */
-    protected function deleteIfExpired($key, $expire)
+    protected function deleteIfExpired(string|array $key, int $expire): bool
     {
         if ($expire < 0 || ($expire > 2592000 && $expire < time())) {
             $this->deleteMulti((array) $key);
@@ -428,14 +369,10 @@ class Memcached implements KeyValueStore
      * HHVM (used to) reject(s) such cache keys.
      *
      * @see https://github.com/facebook/hhvm/pull/7654
-     *
-     * @param int $expire
-     *
-     * @return array
      */
-    protected function setMultiNumericItemsForHHVM(array $items, array $nums, $expire = 0)
+    protected function setMultiNumericItemsForHHVM(array $items, array $nums, int $expire = 0): array
     {
-        $success = array();
+        $success = [];
         $nums = array_intersect_key($items, array_fill_keys($nums, null));
         foreach ($nums as $k => $v) {
             $success[$k] = $this->set((string) $k, $v, $expire);
@@ -454,11 +391,9 @@ class Memcached implements KeyValueStore
      * indicates a failure in the operation.
      * The exception will contain debug information about the failure.
      *
-     * @param mixed $result
-     *
      * @throws OperationFailed
      */
-    protected function throwExceptionOnClientCallFailure($result)
+    protected function throwExceptionOnClientCallFailure(mixed $result): void
     {
         if (false !== $result) {
             return;

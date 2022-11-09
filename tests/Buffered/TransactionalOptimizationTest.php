@@ -1,7 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace MatthiasMullie\Scrapbook\Tests\Buffered;
 
+use MatthiasMullie\Scrapbook\Adapters\MemoryStore;
 use MatthiasMullie\Scrapbook\Buffered\TransactionalStore;
 use MatthiasMullie\Scrapbook\Exception\UnbegunTransaction;
 use MatthiasMullie\Scrapbook\KeyValueStore;
@@ -9,27 +12,24 @@ use MatthiasMullie\Scrapbook\Tests\AdapterTestCase;
 
 class TransactionalOptimizationTest extends AdapterTestCase
 {
-    /**
-     * @var TransactionalStore
-     */
-    protected $transactionalCache;
+    protected TransactionalStore $transactionalCache;
 
-    public function setAdapter(KeyValueStore $adapter)
+    public function setAdapter(KeyValueStore $adapter): void
     {
         $this->cache = $adapter;
         $this->transactionalCache = new TransactionalStore($adapter);
     }
 
-    protected function compatSetUp()
+    protected function setUp(): void
     {
-        parent::compatSetUp();
+        parent::setUp();
 
         $this->transactionalCache->begin();
     }
 
-    protected function compatTearDown()
+    protected function tearDown(): void
     {
-        parent::compatTearDown();
+        parent::tearDown();
 
         try {
             $this->transactionalCache->rollback();
@@ -41,16 +41,16 @@ class TransactionalOptimizationTest extends AdapterTestCase
     /**
      * Confirm that multiple set() calls are combined into 1 setMulti().
      */
-    public function testOptimizedSet()
+    public function testOptimizedSet(): void
     {
-        $mock = $this->getMockBuilder('MatthiasMullie\\Scrapbook\\Adapters\\MemoryStore')
+        $mock = $this->getMockBuilder(MemoryStore::class)
             ->disableOriginalConstructor()
             ->getMock();
         $mock->expects($this->once())
             ->method('setMulti')
-            ->will($this->returnCallback(function ($items, $expire) {
+            ->willReturnCallback(static function ($items) {
                 return array_fill_keys(array_keys($items), true);
-            }));
+            });
         $mock->expects($this->exactly(0))
             ->method('set')
             ->willReturn(true);
@@ -66,16 +66,16 @@ class TransactionalOptimizationTest extends AdapterTestCase
      * Confirm that multiple set() calls with different expiration times
      * are combined into multiple setMulti() calls.
      */
-    public function testOptimizedSetMultipleExpiration()
+    public function testOptimizedSetMultipleExpiration(): void
     {
-        $mock = $this->getMockBuilder('MatthiasMullie\\Scrapbook\\Adapters\\MemoryStore')
+        $mock = $this->getMockBuilder(MemoryStore::class)
             ->disableOriginalConstructor()
             ->getMock();
         $mock->expects($this->exactly(2))
             ->method('setMulti')
-            ->will($this->returnCallback(function ($items, $expire) {
+            ->willReturnCallback(static function ($items) {
                 return array_fill_keys(array_keys($items), true);
-            }));
+            });
         $mock->expects($this->exactly(0))
             ->method('set')
             ->willReturn(true);
@@ -94,21 +94,21 @@ class TransactionalOptimizationTest extends AdapterTestCase
      * the order of operations being changed (e.g. CAS is executed
      * before SET).
      */
-    public function testCasCombination()
+    public function testCasCombination(): void
     {
         $this->transactionalCache->set('key', 'value');
         $this->assertEquals('value', $this->transactionalCache->get('key'));
-        $this->assertEquals(false, $this->cache->get('key'));
+        $this->assertFalse($this->cache->get('key'));
 
         $this->transactionalCache->get('key', $token);
         $success = $this->transactionalCache->cas($token, 'key', 'value2');
         $this->assertTrue($success);
         $this->assertEquals('value2', $this->transactionalCache->get('key'));
-        $this->assertEquals(false, $this->cache->get('key'));
+        $this->assertFalse($this->cache->get('key'));
 
         $this->transactionalCache->set('key', 'value3');
         $this->assertEquals('value3', $this->transactionalCache->get('key'));
-        $this->assertEquals(false, $this->cache->get('key'));
+        $this->assertFalse($this->cache->get('key'));
 
         $success = $this->transactionalCache->commit();
         $this->assertTrue($success);
@@ -119,17 +119,17 @@ class TransactionalOptimizationTest extends AdapterTestCase
     /**
      * @see testCasCombination
      */
-    public function testCasCombination2()
+    public function testCasCombination2(): void
     {
         $this->transactionalCache->set('key', 'value');
         $this->assertEquals('value', $this->transactionalCache->get('key'));
-        $this->assertEquals(false, $this->cache->get('key'));
+        $this->assertFalse($this->cache->get('key'));
 
         $this->transactionalCache->get('key', $token);
         $success = $this->transactionalCache->cas($token, 'key', 'value2');
         $this->assertTrue($success);
         $this->assertEquals('value2', $this->transactionalCache->get('key'));
-        $this->assertEquals(false, $this->cache->get('key'));
+        $this->assertFalse($this->cache->get('key'));
 
         $success = $this->transactionalCache->commit();
         $this->assertTrue($success);
@@ -141,7 +141,7 @@ class TransactionalOptimizationTest extends AdapterTestCase
      * Increments are combined through a complex process. This verifies
      * that the offset is correctly adjusted throughout this process.
      */
-    public function testMultipleIncrementsOffset()
+    public function testMultipleIncrementsOffset(): void
     {
         $this->cache->set('key', 3);
 
@@ -167,19 +167,19 @@ class TransactionalOptimizationTest extends AdapterTestCase
      * Increments are combined through a complex process. This verifies
      * that the initial value is correctly adjusted throughout this process.
      */
-    public function testMultipleIncrementsInitial()
+    public function testMultipleIncrementsInitial(): void
     {
         $this->transactionalCache->increment('key', 2, 10);
         $this->assertEquals(10, $this->transactionalCache->get('key'));
-        $this->assertEquals(false, $this->cache->get('key'));
+        $this->assertFalse($this->cache->get('key'));
 
         $this->transactionalCache->increment('key', 1, 30);
         $this->assertEquals(11, $this->transactionalCache->get('key'));
-        $this->assertEquals(false, $this->cache->get('key'));
+        $this->assertFalse($this->cache->get('key'));
 
         $this->transactionalCache->increment('key', 3, 50);
         $this->assertEquals(14, $this->transactionalCache->get('key'));
-        $this->assertEquals(false, $this->cache->get('key'));
+        $this->assertFalse($this->cache->get('key'));
 
         $success = $this->transactionalCache->commit();
         $this->assertTrue($success);
@@ -191,7 +191,7 @@ class TransactionalOptimizationTest extends AdapterTestCase
      * Decrements are combined through a complex process. This verifies
      * that the offset is correctly adjusted throughout this process.
      */
-    public function testMultipleDecrementsOffset()
+    public function testMultipleDecrementsOffset(): void
     {
         $this->cache->set('key', 20);
 
@@ -217,19 +217,19 @@ class TransactionalOptimizationTest extends AdapterTestCase
      * Decrements are combined through a complex process. This verifies
      * that the initial value is correctly adjusted throughout this process.
      */
-    public function testMultipleDecrementsInitial()
+    public function testMultipleDecrementsInitial(): void
     {
         $this->transactionalCache->decrement('key', 2, 10);
         $this->assertEquals(10, $this->transactionalCache->get('key'));
-        $this->assertEquals(false, $this->cache->get('key'));
+        $this->assertFalse($this->cache->get('key'));
 
         $this->transactionalCache->decrement('key', 1, 30);
         $this->assertEquals(9, $this->transactionalCache->get('key'));
-        $this->assertEquals(false, $this->cache->get('key'));
+        $this->assertFalse($this->cache->get('key'));
 
         $this->transactionalCache->decrement('key', 3, 50);
         $this->assertEquals(6, $this->transactionalCache->get('key'));
-        $this->assertEquals(false, $this->cache->get('key'));
+        $this->assertFalse($this->cache->get('key'));
 
         $success = $this->transactionalCache->commit();
         $this->assertTrue($success);
@@ -241,7 +241,7 @@ class TransactionalOptimizationTest extends AdapterTestCase
      * Increments & decrements are combined through a complex process. This verifies
      * that the initial value is correctly adjusted throughout this process.
      */
-    public function testMixedIncrementDecrementsOffset()
+    public function testMixedIncrementDecrementsOffset(): void
     {
         $this->cache->set('key', 20);
 
@@ -267,19 +267,19 @@ class TransactionalOptimizationTest extends AdapterTestCase
      * Increments & decrements are combined through a complex process. This verifies
      * that the initial value is correctly adjusted throughout this process.
      */
-    public function testMixedIncrementDecrementsInitial()
+    public function testMixedIncrementDecrementsInitial(): void
     {
         $this->transactionalCache->increment('key', 2, 10);
         $this->assertEquals(10, $this->transactionalCache->get('key'));
-        $this->assertEquals(false, $this->cache->get('key'));
+        $this->assertFalse($this->cache->get('key'));
 
         $this->transactionalCache->decrement('key', 1, 30);
         $this->assertEquals(9, $this->transactionalCache->get('key'));
-        $this->assertEquals(false, $this->cache->get('key'));
+        $this->assertFalse($this->cache->get('key'));
 
         $this->transactionalCache->increment('key', 3, 50);
         $this->assertEquals(12, $this->transactionalCache->get('key'));
-        $this->assertEquals(false, $this->cache->get('key'));
+        $this->assertFalse($this->cache->get('key'));
 
         $success = $this->transactionalCache->commit();
         $this->assertTrue($success);
@@ -291,7 +291,7 @@ class TransactionalOptimizationTest extends AdapterTestCase
      * Decrements & increments are combined through a complex process. This verifies
      * that the initial value is correctly adjusted throughout this process.
      */
-    public function testMixedDecrementIncrementsOffset()
+    public function testMixedDecrementIncrementsOffset(): void
     {
         $this->cache->set('key', 20);
 
@@ -317,19 +317,19 @@ class TransactionalOptimizationTest extends AdapterTestCase
      * Decrements & increments are combined through a complex process. This verifies
      * that the initial value is correctly adjusted throughout this process.
      */
-    public function testMixedDecrementIncrementsInitial()
+    public function testMixedDecrementIncrementsInitial(): void
     {
         $this->transactionalCache->decrement('key', 2, 10);
         $this->assertEquals(10, $this->transactionalCache->get('key'));
-        $this->assertEquals(false, $this->cache->get('key'));
+        $this->assertFalse($this->cache->get('key'));
 
         $this->transactionalCache->increment('key', 1, 30);
         $this->assertEquals(11, $this->transactionalCache->get('key'));
-        $this->assertEquals(false, $this->cache->get('key'));
+        $this->assertFalse($this->cache->get('key'));
 
         $this->transactionalCache->decrement('key', 3, 50);
         $this->assertEquals(8, $this->transactionalCache->get('key'));
-        $this->assertEquals(false, $this->cache->get('key'));
+        $this->assertFalse($this->cache->get('key'));
 
         $success = $this->transactionalCache->commit();
         $this->assertTrue($success);

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace MatthiasMullie\Scrapbook\Tests\Buffered;
 
 use MatthiasMullie\Scrapbook\Buffered\TransactionalStore;
@@ -9,27 +11,24 @@ use MatthiasMullie\Scrapbook\Tests\AdapterTestCase;
 
 class TransactionalStoreTest extends AdapterTestCase
 {
-    /**
-     * @var TransactionalStore
-     */
-    protected $transactionalCache;
+    protected TransactionalStore $transactionalCache;
 
-    public function setAdapter(KeyValueStore $adapter)
+    public function setAdapter(KeyValueStore $adapter): void
     {
         $this->cache = $adapter;
         $this->transactionalCache = new TransactionalStore($adapter);
     }
 
-    protected function compatSetUp()
+    protected function setUp(): void
     {
-        parent::compatSetUp();
+        parent::setUp();
 
         $this->transactionalCache->begin();
     }
 
-    protected function compatTearDown()
+    protected function tearDown(): void
     {
-        parent::compatTearDown();
+        parent::tearDown();
 
         try {
             $this->transactionalCache->rollback();
@@ -38,13 +37,13 @@ class TransactionalStoreTest extends AdapterTestCase
         }
     }
 
-    public function testGetAndSet()
+    public function testGetAndSet(): void
     {
         $this->transactionalCache->set('key', 'value');
 
         // check that the value is only set on transactionalCache, not yet on real cache
         $this->assertEquals('value', $this->transactionalCache->get('key'));
-        $this->assertEquals(false, $this->cache->get('key'));
+        $this->assertFalse($this->cache->get('key'));
 
         $success = $this->transactionalCache->commit();
         $this->assertTrue($success);
@@ -54,20 +53,16 @@ class TransactionalStoreTest extends AdapterTestCase
         $this->assertEquals('value', $this->cache->get('key'));
     }
 
-    public function testGetFail()
+    public function testGetFail(): void
     {
-        $this->assertEquals(false, $this->transactionalCache->get('key'));
-        $this->assertEquals(false, $this->cache->get('key'));
+        $this->assertFalse($this->transactionalCache->get('key'));
+        $this->assertFalse($this->cache->get('key'));
     }
 
-    public function testGetMulti()
+    public function testGetMulti(): void
     {
-        $localValues = array(
-            'key' => 'value',
-        );
-        $cacheValues = array(
-            'key2' => 'value2',
-        );
+        $localValues = ['key' => 'value'];
+        $cacheValues = ['key2' => 'value2'];
 
         foreach ($localValues as $key => $value) {
             $this->transactionalCache->set($key, $value);
@@ -85,18 +80,18 @@ class TransactionalStoreTest extends AdapterTestCase
         $this->cache->delete('key2');
     }
 
-    public function testSetMulti()
+    public function testSetMulti(): void
     {
-        $this->transactionalCache->setMulti(array(
+        $this->transactionalCache->setMulti([
             'key' => 'value',
             'key2' => 'value2',
-        ));
+        ]);
 
         // check that the values are only set on transactionalCache, not yet on real cache
         $this->assertEquals('value', $this->transactionalCache->get('key'));
         $this->assertEquals('value2', $this->transactionalCache->get('key2'));
-        $this->assertEquals(false, $this->cache->get('key'));
-        $this->assertEquals(false, $this->cache->get('key2'));
+        $this->assertFalse($this->cache->get('key'));
+        $this->assertFalse($this->cache->get('key2'));
 
         $success = $this->transactionalCache->commit();
         $this->assertTrue($success);
@@ -108,56 +103,56 @@ class TransactionalStoreTest extends AdapterTestCase
         $this->assertEquals('value2', $this->cache->get('key2'));
     }
 
-    public function testDelete()
+    public function testDelete(): void
     {
         $this->cache->set('key', 'value');
 
         $this->transactionalCache->delete('key');
 
         // check that the value has been deleted from transactionalCache (only)
-        $this->assertEquals(false, $this->transactionalCache->get('key'));
+        $this->assertFalse($this->transactionalCache->get('key'));
         $this->assertEquals('value', $this->cache->get('key'));
 
         $success = $this->transactionalCache->commit();
         $this->assertTrue($success);
 
         // check that the value has also been deleted from real cache
-        $this->assertEquals(false, $this->transactionalCache->get('key'));
-        $this->assertEquals(false, $this->cache->get('key'));
+        $this->assertFalse($this->transactionalCache->get('key'));
+        $this->assertFalse($this->cache->get('key'));
     }
 
-    public function testDeleteMulti()
+    public function testDeleteMulti(): void
     {
-        $this->cache->setMulti(array(
+        $this->cache->setMulti([
             'key' => 'value',
             'key2' => 'value2',
-        ));
+        ]);
 
-        $this->transactionalCache->deleteMulti(array('key', 'key2'));
+        $this->transactionalCache->deleteMulti(['key', 'key2']);
 
         // check that the values have been deleted from transactionalCache (only)
-        $this->assertEquals(false, $this->transactionalCache->get('key'));
+        $this->assertFalse($this->transactionalCache->get('key'));
         $this->assertEquals('value', $this->cache->get('key'));
-        $this->assertEquals(false, $this->transactionalCache->get('key2'));
+        $this->assertFalse($this->transactionalCache->get('key2'));
         $this->assertEquals('value2', $this->cache->get('key2'));
 
         $success = $this->transactionalCache->commit();
         $this->assertTrue($success);
 
         // check that the values have also been deleted from real cache
-        $this->assertEquals(false, $this->transactionalCache->get('key'));
-        $this->assertEquals(false, $this->cache->get('key'));
-        $this->assertEquals(false, $this->transactionalCache->get('key2'));
-        $this->assertEquals(false, $this->cache->get('key2'));
+        $this->assertFalse($this->transactionalCache->get('key'));
+        $this->assertFalse($this->cache->get('key'));
+        $this->assertFalse($this->transactionalCache->get('key2'));
+        $this->assertFalse($this->cache->get('key2'));
     }
 
-    public function testAdd()
+    public function testAdd(): void
     {
         $this->transactionalCache->add('key', 'value');
 
         // check that the value is only set on transactionalCache, not yet on real cache
         $this->assertEquals('value', $this->transactionalCache->get('key'));
-        $this->assertEquals(false, $this->cache->get('key'));
+        $this->assertFalse($this->cache->get('key'));
 
         $success = $this->transactionalCache->commit();
         $this->assertTrue($success);
@@ -167,7 +162,7 @@ class TransactionalStoreTest extends AdapterTestCase
         $this->assertEquals('value', $this->cache->get('key'));
     }
 
-    public function testAddFailImmediately()
+    public function testAddFailImmediately(): void
     {
         $this->cache->set('key', 'value');
         $success = $this->transactionalCache->add('key', 'value2');
@@ -182,7 +177,7 @@ class TransactionalStoreTest extends AdapterTestCase
         $this->assertEquals('value', $this->cache->get('key'));
     }
 
-    public function testAddFailDeferred()
+    public function testAddFailDeferred(): void
     {
         $this->transactionalCache->add('key', 'value');
 
@@ -201,7 +196,7 @@ class TransactionalStoreTest extends AdapterTestCase
         $this->assertEquals('value2', $this->cache->get('key'));
     }
 
-    public function testReplace()
+    public function testReplace(): void
     {
         $this->cache->set('key', 'value');
         $this->transactionalCache->replace('key', 'value2');
@@ -218,7 +213,7 @@ class TransactionalStoreTest extends AdapterTestCase
         $this->assertEquals('value2', $this->cache->get('key'));
     }
 
-    public function testReplaceFailImmediately()
+    public function testReplaceFailImmediately(): void
     {
         $success = $this->transactionalCache->replace('key', 'value');
         $this->assertFalse($success);
@@ -228,11 +223,11 @@ class TransactionalStoreTest extends AdapterTestCase
         $this->assertTrue($success);
 
         // check that the value is not replaced on transactionalCache, nor on real cache
-        $this->assertEquals(false, $this->transactionalCache->get('key'));
-        $this->assertEquals(false, $this->cache->get('key'));
+        $this->assertFalse($this->transactionalCache->get('key'));
+        $this->assertFalse($this->cache->get('key'));
     }
 
-    public function testReplaceFailDeferred()
+    public function testReplaceFailDeferred(): void
     {
         $this->cache->set('key', 'value');
         $this->transactionalCache->replace('key', 'value2');
@@ -242,17 +237,17 @@ class TransactionalStoreTest extends AdapterTestCase
 
         // check that the value has been replaced in buffered cache but not yet in real cache
         $this->assertEquals('value2', $this->transactionalCache->get('key'));
-        $this->assertEquals(false, $this->cache->get('key'));
+        $this->assertFalse($this->cache->get('key'));
 
         $success = $this->transactionalCache->commit();
         $this->assertFalse($success);
 
         // check that the commit failed & the values did not persist
-        $this->assertEquals(false, $this->transactionalCache->get('key'));
-        $this->assertEquals(false, $this->cache->get('key'));
+        $this->assertFalse($this->transactionalCache->get('key'));
+        $this->assertFalse($this->cache->get('key'));
     }
 
-    public function testCas()
+    public function testCas(): void
     {
         $this->cache->set('key', 'value');
 
@@ -272,7 +267,7 @@ class TransactionalStoreTest extends AdapterTestCase
         $this->assertEquals('updated-value', $this->cache->get('key'));
     }
 
-    public function testConsecutiveCas()
+    public function testConsecutiveCas(): void
     {
         $this->cache->set('key', 'value');
 
@@ -294,7 +289,7 @@ class TransactionalStoreTest extends AdapterTestCase
         $this->assertEquals('updated-value2', $this->cache->get('key'));
     }
 
-    public function testCasFailImmediately()
+    public function testCasFailImmediately(): void
     {
         $this->cache->set('key', 'value');
 
@@ -312,7 +307,7 @@ class TransactionalStoreTest extends AdapterTestCase
         $this->assertEquals('value', $this->cache->get('key'));
     }
 
-    public function testCasFailDeferred()
+    public function testCasFailDeferred(): void
     {
         $this->cache->set('key', 'value');
 
@@ -335,7 +330,7 @@ class TransactionalStoreTest extends AdapterTestCase
         $this->assertEquals('conflicting-value', $this->cache->get('key'));
     }
 
-    public function testIncrement()
+    public function testIncrement(): void
     {
         $this->cache->set('key', 1);
         $this->transactionalCache->increment('key', 1, 1);
@@ -352,13 +347,13 @@ class TransactionalStoreTest extends AdapterTestCase
         $this->assertEquals(2, $this->cache->get('key'));
     }
 
-    public function testIncrementInitialize()
+    public function testIncrementInitialize(): void
     {
         $this->transactionalCache->increment('key', 1, 1);
 
         // check that the value has been set on transactionalCache (only)
         $this->assertEquals(1, $this->transactionalCache->get('key'));
-        $this->assertEquals(false, $this->cache->get('key'));
+        $this->assertFalse($this->cache->get('key'));
 
         $success = $this->transactionalCache->commit();
         $this->assertTrue($success);
@@ -368,7 +363,7 @@ class TransactionalStoreTest extends AdapterTestCase
         $this->assertEquals(1, $this->cache->get('key'));
     }
 
-    public function testDecrement()
+    public function testDecrement(): void
     {
         $this->cache->set('key', 1);
         $this->transactionalCache->decrement('key', 1, 1);
@@ -400,13 +395,13 @@ class TransactionalStoreTest extends AdapterTestCase
         $this->assertEquals(0, $this->cache->get('key'));
     }
 
-    public function testDecrementInitialize()
+    public function testDecrementInitialize(): void
     {
         $this->transactionalCache->decrement('key', 1, 0);
 
         // check that the value has been set on transactionalCache (only)
         $this->assertEquals(0, $this->transactionalCache->get('key'));
-        $this->assertEquals(false, $this->cache->get('key'));
+        $this->assertFalse($this->cache->get('key'));
 
         $success = $this->transactionalCache->commit();
         $this->assertTrue($success);
@@ -431,7 +426,7 @@ class TransactionalStoreTest extends AdapterTestCase
         $this->assertEquals(0, $this->cache->get('key'));
     }
 
-    public function testTouch()
+    public function testTouch(): void
     {
         $this->cache->set('key', 'value');
         $this->cache->set('key2', 'value2');
@@ -442,7 +437,7 @@ class TransactionalStoreTest extends AdapterTestCase
         // expiration times are set on local, but not yet on real cache
         $this->assertEquals('value', $this->transactionalCache->get('key'));
         $this->assertEquals('value', $this->cache->get('key'));
-        $this->assertEquals(false, $this->transactionalCache->get('key2'));
+        $this->assertFalse($this->transactionalCache->get('key2'));
         $this->assertEquals('value2', $this->cache->get('key2'));
 
         $success = $this->transactionalCache->commit();
@@ -451,11 +446,11 @@ class TransactionalStoreTest extends AdapterTestCase
         // expiration times have persisted on real cache too
         $this->assertEquals('value', $this->transactionalCache->get('key'));
         $this->assertEquals('value', $this->cache->get('key'));
-        $this->assertEquals(false, $this->transactionalCache->get('key2'));
-        $this->assertEquals(false, $this->cache->get('key2'));
+        $this->assertFalse($this->transactionalCache->get('key2'));
+        $this->assertFalse($this->cache->get('key2'));
     }
 
-    public function testFlush()
+    public function testFlush(): void
     {
         $this->cache->set('key', 'value');
         $this->transactionalCache->set('key2', 'value2');
@@ -463,22 +458,22 @@ class TransactionalStoreTest extends AdapterTestCase
         $this->transactionalCache->flush();
 
         // check that real cache still isn't flushed, but memory is
-        $this->assertEquals(false, $this->transactionalCache->get('key'));
+        $this->assertFalse($this->transactionalCache->get('key'));
         $this->assertEquals('value', $this->cache->get('key'));
-        $this->assertEquals(false, $this->transactionalCache->get('key2'));
-        $this->assertEquals(false, $this->cache->get('key2'));
+        $this->assertFalse($this->transactionalCache->get('key2'));
+        $this->assertFalse($this->cache->get('key2'));
 
         $success = $this->transactionalCache->commit();
         $this->assertTrue($success);
 
         // everything should be gone by now!
-        $this->assertEquals(false, $this->transactionalCache->get('key'));
-        $this->assertEquals(false, $this->cache->get('key'));
-        $this->assertEquals(false, $this->transactionalCache->get('key2'));
-        $this->assertEquals(false, $this->cache->get('key2'));
+        $this->assertFalse($this->transactionalCache->get('key'));
+        $this->assertFalse($this->cache->get('key'));
+        $this->assertFalse($this->transactionalCache->get('key2'));
+        $this->assertFalse($this->cache->get('key2'));
     }
 
-    public function testRollback()
+    public function testRollback(): void
     {
         $this->cache->set('key', 'value');
 
@@ -499,7 +494,7 @@ class TransactionalStoreTest extends AdapterTestCase
         $this->assertEquals('value', $this->cache->get('key2'));
     }
 
-    public function testNestedTransactionCommit()
+    public function testNestedTransactionCommit(): void
     {
         // transaction has already been started in adapterProvider,
         // let's write to it
@@ -508,7 +503,7 @@ class TransactionalStoreTest extends AdapterTestCase
         // verify that the value has not yet been committed to real cache, but
         // can be read from the transactional layer
         $this->assertEquals('value', $this->transactionalCache->get('key'));
-        $this->assertEquals(false, $this->cache->get('key'));
+        $this->assertFalse($this->cache->get('key'));
 
         // start a nested transaction & store another value
         $this->transactionalCache->begin();
@@ -517,9 +512,9 @@ class TransactionalStoreTest extends AdapterTestCase
         // verify that none of the values have not yet been committed to real
         // cache, but both can be read from the transactional layer
         $this->assertEquals('value', $this->transactionalCache->get('key'));
-        $this->assertEquals(false, $this->cache->get('key'));
+        $this->assertFalse($this->cache->get('key'));
         $this->assertEquals('value', $this->transactionalCache->get('key2'));
-        $this->assertEquals(false, $this->cache->get('key2'));
+        $this->assertFalse($this->cache->get('key2'));
 
         // commit nested transaction
         $success = $this->transactionalCache->commit();
@@ -528,9 +523,9 @@ class TransactionalStoreTest extends AdapterTestCase
         // verify that none of the values have not yet been committed to real
         // cache, but both can be read from the transactional layer
         $this->assertEquals('value', $this->transactionalCache->get('key'));
-        $this->assertEquals(false, $this->cache->get('key'));
+        $this->assertFalse($this->cache->get('key'));
         $this->assertEquals('value', $this->transactionalCache->get('key2'));
-        $this->assertEquals(false, $this->cache->get('key2'));
+        $this->assertFalse($this->cache->get('key2'));
 
         // commit parent transaction
         $success = $this->transactionalCache->commit();
@@ -544,7 +539,7 @@ class TransactionalStoreTest extends AdapterTestCase
         $this->assertEquals('value', $this->cache->get('key2'));
     }
 
-    public function testNestedTransactionRollback()
+    public function testNestedTransactionRollback(): void
     {
         // transaction has already been started in adapterProvider,
         // let's write to it
@@ -565,9 +560,9 @@ class TransactionalStoreTest extends AdapterTestCase
         // (but hasn't yet been committed to real cache), but that the value
         // in the rolled back transaction is gone)
         $this->assertEquals('value', $this->transactionalCache->get('key'));
-        $this->assertEquals(false, $this->cache->get('key'));
-        $this->assertEquals(false, $this->transactionalCache->get('key2'));
-        $this->assertEquals(false, $this->cache->get('key2'));
+        $this->assertFalse($this->cache->get('key'));
+        $this->assertFalse($this->transactionalCache->get('key2'));
+        $this->assertFalse($this->cache->get('key2'));
 
         // commit parent transaction
         $success = $this->transactionalCache->commit();
@@ -578,7 +573,7 @@ class TransactionalStoreTest extends AdapterTestCase
         // is gone
         $this->assertEquals('value', $this->transactionalCache->get('key'));
         $this->assertEquals('value', $this->cache->get('key'));
-        $this->assertEquals(false, $this->transactionalCache->get('key2'));
-        $this->assertEquals(false, $this->cache->get('key2'));
+        $this->assertFalse($this->transactionalCache->get('key2'));
+        $this->assertFalse($this->cache->get('key2'));
     }
 }

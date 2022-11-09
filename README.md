@@ -15,7 +15,7 @@ Documentation: https://www.scrapbook.cash - API reference: https://docs.scrapboo
   * [Memcached](#memcached)
   * [Redis](#redis)
   * [Couchbase](#couchbase)
-  * [APC(u)](#apcu)
+  * [APCu](#apcu)
   * [MySQL](#mysql)
   * [PostgreSQL](#postgresql)
   * [SQLite](#sqlite)
@@ -37,7 +37,7 @@ Documentation: https://www.scrapbook.cash - API reference: https://docs.scrapboo
 
 # Installation & usage
 
-Simply add a dependency on matthiasmullie/scrapbook to your composer.json file
+Simply add a dependency on `matthiasmullie/scrapbook` to your `composer.json` file
 if you use [Composer](https://getcomposer.org/) to manage the dependencies of
 your project:
 
@@ -149,15 +149,14 @@ $cache = new \MatthiasMullie\Scrapbook\Adapters\Couchbase($collection, $bucketMa
 ```
 
 
-## APC(u)
+## APCu
 
 *APC is a free and open opcode cache for PHP. Its goal is to provide a free,
 open, and robust framework for caching and optimizing PHP intermediate code.*
 
 With APC, there is no "cache server", the data is just cached on the executing
 machine and available to all PHP processes on that machine. The PECL
-[APC](https://pecl.php.net/package/APC) or [APCu](https://pecl.php.net/package/APCu)
-extensions can be used.
+[APCu](https://pecl.php.net/package/APCu) extension can be used.
 
 ```php
 // create Scrapbook KeyValueStore object
@@ -176,7 +175,7 @@ Just don't expect the same kind of performance you'd expect from a dedicated
 cache server.
 
 But there could be a good reason to use a database-based cache: it's convenient
-if you already use a database and it may have other benefits (like persistent
+if you already use a database, and it may have other benefits (like persistent
 storage, replication.)
 
 ```php
@@ -196,7 +195,7 @@ Just don't expect the same kind of performance you'd expect from a dedicated
 cache server.
 
 But there could be a good reason to use a database-based cache: it's convenient
-if you already use a database and it may have other benefits (like persistent
+if you already use a database, and it may have other benefits (like persistent
 storage, replication.)
 
 ```php
@@ -235,7 +234,7 @@ provides.
 
 ```php
 // create Flysystem object
-$adapter = new \League\Flysystem\Adapter\Local('/path/to/cache', LOCK_EX);
+$adapter = new \League\Flysystem\Local\LocalFilesystemAdapter('/path/to/cache', null, LOCK_EX);
 $filesystem = new \League\Flysystem\Filesystem($adapter);
 // create Scrapbook KeyValueStore object
 $cache = new \MatthiasMullie\Scrapbook\Adapters\Flysystem($filesystem);
@@ -549,24 +548,17 @@ $sessionPool = new \MatthiasMullie\Scrapbook\Psr6\Pool($sessionCache);
 
 # Compatibility
 
-Where possible, Scrapbook supports PHP versions 5.3 up to the current
-version, as well as HHVM. Differences in the exact implementation of the cache
-backends across these versions & platforms will be mitigated within Scrapbook
-to ensure uniform behavior.
+Scrapbook supports PHP versions 8.0 up to the current version.
+Differences in implementation of the cache backends across these versions &
+platforms will be mitigated within Scrapbook to ensure uniform behavior.
 
 Compatibility with all of these versions & platforms can be confirmed with the
-provided docker-compose config for PHP versions 5.6 and onwards.
-Even though officially supported by Scrapbook, lower PHP versions (down to 5.3)
-are no longer actively being tested because dependencies required for testing
-have since diverged too much.
+provided docker-compose config for PHP versions 8.0 and onwards.
 
-Cache backends that do not have an implementation for a particular version or
-platform ([Flysystem](#filesystem), on older PHP versions) are obviously not
-supported.
-
-Compatibility with old software versions will not be broken easily. Not unless
-there is a compelling reason to do so, like security or performance
-implications. Syntactic sugar is not a reason to break compatibility.
+Compatibility with old software versions will not be broken easily.
+Not unless  there is a compelling reason to do so, like security or performance
+implications, or compatibility with other software.
+Syntactic sugar alone is not a reason to break compatibility.
 
 
 # License

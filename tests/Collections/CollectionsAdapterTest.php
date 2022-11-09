@@ -1,21 +1,23 @@
 <?php
 
+declare(strict_types=1);
+
 namespace MatthiasMullie\Scrapbook\Tests\Collections;
 
 use MatthiasMullie\Scrapbook\Tests\AdapterTest;
 
 class CollectionsAdapterTest extends AdapterTest
 {
-    protected function compatSetUp()
+    protected function setUp(): void
     {
-        parent::compatSetUp();
+        parent::setUp();
 
         // I'll do this here instead of in setAdapter, because that runs before
         // the test suite, but I want a new collection for every single test
         $this->cache = $this->cache->getCollection($this->collectionName);
     }
 
-    public function testCollectionGetParentKey()
+    public function testCollectionGetParentKey(): void
     {
         $this->markTestSkipped(
             'This test is invalid for collections derived from collections. '.
@@ -23,7 +25,7 @@ class CollectionsAdapterTest extends AdapterTest
         );
     }
 
-    public function testCollectionGetCollectionKey()
+    public function testCollectionGetCollectionKey(): void
     {
         $this->markTestSkipped(
             'This test is invalid for collections derived from collections. '.
@@ -31,7 +33,7 @@ class CollectionsAdapterTest extends AdapterTest
         );
     }
 
-    public function testCollectionSetSameKey()
+    public function testCollectionSetSameKey(): void
     {
         $this->markTestSkipped(
             'This test is invalid for collections derived from collections. '.
@@ -39,7 +41,7 @@ class CollectionsAdapterTest extends AdapterTest
         );
     }
 
-    public function testCollectionFlushParent()
+    public function testCollectionFlushParent(): void
     {
         $this->markTestSkipped(
             'This test is invalid for collections derived from collections. '.
@@ -47,7 +49,7 @@ class CollectionsAdapterTest extends AdapterTest
         );
     }
 
-    public function testCollectionFlushCollection()
+    public function testCollectionFlushCollection(): void
     {
         $this->markTestSkipped(
             'This test is invalid for collections derived from collections. '.

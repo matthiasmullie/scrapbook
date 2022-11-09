@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace MatthiasMullie\Scrapbook\Adapters\Collections;
 
 use MatthiasMullie\Scrapbook\Adapters\Redis as Adapter;
@@ -13,20 +15,13 @@ use MatthiasMullie\Scrapbook\Adapters\Redis as Adapter;
  */
 class Redis extends Adapter
 {
-    /**
-     * @param \Redis $client
-     * @param int    $database
-     */
-    public function __construct($client, $database)
+    public function __construct(\Redis $client, int $database)
     {
         parent::__construct($client);
         $this->client->select($database);
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function flush()
+    public function flush(): bool
     {
         return $this->client->flushDB();
     }

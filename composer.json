@@ -1,7 +1,7 @@
 {
   "name": "matthiasmullie/scrapbook",
   "type": "library",
-  "description": "Scrapbook is a PHP cache library, with adapters for e.g. Memcached, Redis, Couchbase, APC(u), SQL and additional capabilities (e.g. transactions, stampede protection) built on top.",
+  "description": "Scrapbook is a PHP cache library, with adapters for e.g. Memcached, Redis, Couchbase, APCu, SQL and additional capabilities (e.g. transactions, stampede protection) built on top.",
   "keywords": [
     "cache", "caching",
     "key", "value", "store",
@@ -28,27 +28,27 @@
     }
   ],
   "require": {
-    "php": ">=5.3.0",
-    "psr/cache": "^1.0||~2.0",
-    "psr/simple-cache": "^1.0||~2.0"
+    "php": ">=8.0.0",
+    "psr/cache": "^2.0||^3.0",
+    "psr/simple-cache": "^2.0||^3.0"
   },
   "require-dev": {
     "ext-pcntl": "*",
-    "phpunit/phpunit": ">=4.8",
+    "phpunit/phpunit": ">=9.0",
     "friendsofphp/php-cs-fixer": ">=2.0"
   },
   "suggest": {
-    "ext-apc": ">=3.1.1",
-    "ext-couchbase": ">=2.0.0",
+    "ext-apcu": ">=4.0.0",
+    "ext-couchbase": ">=3.0.0",
     "ext-memcached": ">=2.0.0",
-    "ext-redis": ">=2.2.0 || 0.0.0.0",
+    "ext-redis": ">=2.2.0||0.0.0.0",
     "ext-pdo": ">=0.1.0",
-    "couchbase/couchbase": ">=2.0",
+    "couchbase/couchbase": ">=3.0",
     "league/flysystem": ">=1.0"
   },
   "provide": {
-    "psr/cache-implementation": "^1.0||~2.0",
-    "psr/simple-cache-implementation": "^1.0||~2.0"
+    "psr/cache-implementation": "^1.0||^2.0||^3.0",
+    "psr/simple-cache-implementation": "^1.0||^2.0||^3.0"
   },
   "autoload": {
     "psr-4": {

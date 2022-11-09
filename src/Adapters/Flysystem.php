@@ -1,10 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace MatthiasMullie\Scrapbook\Adapters;
 
 use League\Flysystem\FileExistsException;
 use League\Flysystem\FileNotFoundException;
 use League\Flysystem\Filesystem;
+use League\Flysystem\Local\LocalFilesystemAdapter;
 use League\Flysystem\UnableToDeleteFile;
 use League\Flysystem\UnableToReadFile;
 use League\Flysystem\UnableToWriteFile;
@@ -12,7 +15,7 @@ use MatthiasMullie\Scrapbook\Adapters\Collections\Flysystem as Collection;
 use MatthiasMullie\Scrapbook\KeyValueStore;
 
 /**
- * Flysystem 1.x and 2.x adapter. Data will be written to League\Flysystem\Filesystem.
+ * Flysystem 1.x, 2.x & 3.x adapter. Data will be written to League\Flysystem\Filesystem.
  *
  * Flysystem doesn't allow locking files, though. To guarantee interference from
  * other processes, we'll create separate lock-files to flag a cache key in use.
@@ -23,26 +26,24 @@ use MatthiasMullie\Scrapbook\KeyValueStore;
  */
 class Flysystem implements KeyValueStore
 {
-    /**
-     * @var Filesystem
-     */
-    protected $filesystem;
+    protected Filesystem $filesystem;
 
-    /**
-     * @var int
-     */
-    protected $version;
+    protected int $version;
 
     public function __construct(Filesystem $filesystem)
     {
         $this->filesystem = $filesystem;
-        $this->version = class_exists('League\Flysystem\Local\LocalFilesystemAdapter') ? 2 : 1;
+
+        if (!class_exists(LocalFilesystemAdapter::class)) {
+            $this->version = 1;
+        } elseif (!method_exists($filesystem, 'has')) {
+            $this->version = 2;
+        } else {
+            $this->version = 3;
+        }
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function get($key, &$token = null)
+    public function get(string $key, mixed &$token = null): mixed
     {
         $token = null;
 
@@ -56,19 +57,16 @@ class Flysystem implements KeyValueStore
             return false;
         }
 
-        $value = unserialize($data[1]);
+        $value = unserialize($data[1], ['allowed_classes' => true]);
         $token = $data[1];
 
         return $value;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getMulti(array $keys, array &$tokens = null)
+    public function getMulti(array $keys, array &$tokens = null): array
     {
-        $results = array();
-        $tokens = array();
+        $results = [];
+        $tokens = [];
         foreach ($keys as $key) {
             $token = null;
             $value = $this->get($key, $token);
@@ -82,10 +80,7 @@ class Flysystem implements KeyValueStore
         return $results;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function set($key, $value, $expire = 0)
+    public function set(string $key, mixed $value, int $expire = 0): bool
     {
         // we don't really need a lock for this operation, but we need to make
         // sure it's not locked by another operation, which we could overwrite
@@ -116,7 +111,7 @@ class Flysystem implements KeyValueStore
 
             return false;
         } catch (UnableToWriteFile $e) {
-            // v2.x
+            // v2.x/3.x
             $this->unlock($key);
 
             return false;
@@ -125,23 +120,19 @@ class Flysystem implements KeyValueStore
         return $this->unlock($key);
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function setMulti(array $items, $expire = 0)
+    public function setMulti(array $items, int $expire = 0): array
     {
-        $success = array();
+        $success = [];
         foreach ($items as $key => $value) {
+            // PHP treats numeric keys as integers, but they're allowed
+            $key = (string) $key;
             $success[$key] = $this->set($key, $value, $expire);
         }
 
         return $success;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function delete($key)
+    public function delete(string $key): bool
     {
         if (!$this->exists($key)) {
             return false;
@@ -163,19 +154,16 @@ class Flysystem implements KeyValueStore
 
             return false;
         } catch (UnableToDeleteFile $e) {
-            // v2.x
+            // v2.x/3.x
             $this->unlock($key);
 
             return false;
         }
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function deleteMulti(array $keys)
+    public function deleteMulti(array $keys): array
     {
-        $success = array();
+        $success = [];
         foreach ($keys as $key) {
             $success[$key] = $this->delete($key);
         }
@@ -183,10 +171,7 @@ class Flysystem implements KeyValueStore
         return $success;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function add($key, $value, $expire = 0)
+    public function add(string $key, mixed $value, int $expire = 0): bool
     {
         if (!$this->lock($key)) {
             return false;
@@ -211,17 +196,14 @@ class Flysystem implements KeyValueStore
 
             return false;
         } catch (UnableToWriteFile $e) {
-            // v2.x
+            // v2.x/3.x
             $this->unlock($key);
 
             return false;
         }
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function replace($key, $value, $expire = 0)
+    public function replace(string $key, mixed $value, int $expire = 0): bool
     {
         if (!$this->lock($key)) {
             return false;
@@ -250,17 +232,14 @@ class Flysystem implements KeyValueStore
 
             return false;
         } catch (UnableToWriteFile $e) {
-            // v2.x
+            // v2.x/3.x
             $this->unlock($key);
 
             return false;
         }
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function cas($token, $key, $value, $expire = 0)
+    public function cas(mixed $token, string $key, mixed $value, int $expire = 0): bool
     {
         if (!$this->lock($key)) {
             return false;
@@ -290,17 +269,14 @@ class Flysystem implements KeyValueStore
 
             return false;
         } catch (UnableToWriteFile $e) {
-            // v2.x
+            // v2.x/3.x
             $this->unlock($key);
 
             return false;
         }
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function increment($key, $offset = 1, $initial = 0, $expire = 0)
+    public function increment(string $key, int $offset = 1, int $initial = 0, int $expire = 0): int|false
     {
         if ($offset <= 0 || $initial < 0) {
             return false;
@@ -309,10 +285,7 @@ class Flysystem implements KeyValueStore
         return $this->doIncrement($key, $offset, $initial, $expire);
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function decrement($key, $offset = 1, $initial = 0, $expire = 0)
+    public function decrement(string $key, int $offset = 1, int $initial = 0, int $expire = 0): int|false
     {
         if ($offset <= 0 || $initial < 0) {
             return false;
@@ -321,10 +294,7 @@ class Flysystem implements KeyValueStore
         return $this->doIncrement($key, -$offset, $initial, $expire);
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function touch($key, $expire)
+    public function touch(string $key, int $expire): bool
     {
         if (!$this->lock($key)) {
             return false;
@@ -354,17 +324,14 @@ class Flysystem implements KeyValueStore
 
             return false;
         } catch (UnableToWriteFile $e) {
-            // v2.x
+            // v2.x/3.x
             $this->unlock($key);
 
             return false;
         }
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function flush()
+    public function flush(): bool
     {
         $files = $this->filesystem->listContents('.');
         foreach ($files as $file) {
@@ -383,7 +350,7 @@ class Flysystem implements KeyValueStore
                 // don't care if we failed to unlink something, might have
                 // been deleted by another process in the meantime...
             } catch (UnableToDeleteFile $e) {
-                // v2.x
+                // v2.x/3.x
                 // don't care if we failed to unlink something, might have
                 // been deleted by another process in the meantime...
             }
@@ -392,10 +359,7 @@ class Flysystem implements KeyValueStore
         return true;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getCollection($name)
+    public function getCollection(string $name): KeyValueStore
     {
         /*
          * A better solution could be to simply construct a new object for a
@@ -421,15 +385,8 @@ class Flysystem implements KeyValueStore
      * Shared between increment/decrement: both have mostly the same logic
      * (decrement just increments a negative value), but need their validation
      * split up (increment won't accept negative values).
-     *
-     * @param string $key
-     * @param int    $offset
-     * @param int    $initial
-     * @param int    $expire
-     *
-     * @return int|bool
      */
-    protected function doIncrement($key, $offset, $initial, $expire)
+    protected function doIncrement(string $key, int $offset, int $initial, int $expire): int|false
     {
         $current = $this->get($key, $token);
         if (false === $current) {
@@ -451,12 +408,7 @@ class Flysystem implements KeyValueStore
         return $success ? $value : false;
     }
 
-    /**
-     * @param string $key
-     *
-     * @return bool
-     */
-    protected function exists($key)
+    protected function exists(string $key): bool
     {
         $data = $this->read($key);
         if (false === $data) {
@@ -479,12 +431,8 @@ class Flysystem implements KeyValueStore
      * Obtain a lock for a given key.
      * It'll try to get a lock for a couple of times, but ultimately give up if
      * no lock can be obtained in a reasonable time.
-     *
-     * @param string $key
-     *
-     * @return bool
      */
-    protected function lock($key)
+    protected function lock(string $key): bool
     {
         $path = md5($key).'.lock';
 
@@ -497,7 +445,7 @@ class Flysystem implements KeyValueStore
                 // v1.x
                 usleep(200);
             } catch (UnableToWriteFile $e) {
-                // v2.x
+                // v2.x/3.x
                 usleep(200);
             }
         }
@@ -507,12 +455,8 @@ class Flysystem implements KeyValueStore
 
     /**
      * Release the lock for a given key.
-     *
-     * @param string $key
-     *
-     * @return bool
      */
-    protected function unlock($key)
+    protected function unlock(string $key): bool
     {
         $path = md5($key).'.lock';
         try {
@@ -521,7 +465,7 @@ class Flysystem implements KeyValueStore
             // v1.x
             return false;
         } catch (UnableToDeleteFile $e) {
-            // v2.x
+            // v2.x/3.x
             return false;
         }
 
@@ -536,12 +480,8 @@ class Flysystem implements KeyValueStore
      *
      * The first case (relative time) will be normalized into a fixed absolute
      * timestamp.
-     *
-     * @param int $time
-     *
-     * @return int
      */
-    protected function normalizeTime($time)
+    protected function normalizeTime(int $time): int
     {
         // 0 = infinity
         if (!$time) {
@@ -558,13 +498,8 @@ class Flysystem implements KeyValueStore
 
     /**
      * Build value, token & expiration time to be stored in cache file.
-     *
-     * @param string $value
-     * @param int    $expire
-     *
-     * @return string
      */
-    protected function wrap($value, $expire)
+    protected function wrap(mixed $value, int $expire): string
     {
         $expire = $this->normalizeTime($expire);
 
@@ -573,12 +508,8 @@ class Flysystem implements KeyValueStore
 
     /**
      * Fetch stored data from cache file.
-     *
-     * @param string $key
-     *
-     * @return bool|array
      */
-    protected function read($key)
+    protected function read(string $key): array|false
     {
         $path = $this->path($key);
         try {
@@ -589,7 +520,7 @@ class Flysystem implements KeyValueStore
             // (outside process may have removed it since)
             return false;
         } catch (UnableToReadFile $e) {
-            // v2.x
+            // v2.x/3.x
             // unlikely given previous 'exists' check, but let's play safe...
             // (outside process may have removed it since)
             return false;
@@ -597,7 +528,7 @@ class Flysystem implements KeyValueStore
 
         if (false === $data) {
             // in theory, a file could still be deleted between Flysystem's
-            // assertPresent & the time it actually fetched the content
+            // assertPresent & the time it actually fetched the content;
             // extremely unlikely though
             return false;
         }
@@ -608,12 +539,7 @@ class Flysystem implements KeyValueStore
         return $data;
     }
 
-    /**
-     * @param string $key
-     *
-     * @return string
-     */
-    protected function path($key)
+    protected function path(string $key): string
     {
         return md5($key).'.cache';
     }

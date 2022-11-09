@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace MatthiasMullie\Scrapbook\Adapters\Collections;
 
 use MatthiasMullie\Scrapbook\Adapters\Collections\Utils\PrefixReset;
@@ -19,10 +21,7 @@ use MatthiasMullie\Scrapbook\Adapters\Memcached as Adapter;
  */
 class Memcached extends PrefixReset
 {
-    /**
-     * @param string $name
-     */
-    public function __construct(Adapter $cache, $name)
+    public function __construct(Adapter $cache, string $name)
     {
         parent::__construct($cache, $name);
     }

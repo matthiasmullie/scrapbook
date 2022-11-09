@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace MatthiasMullie\Scrapbook\Psr6;
 
 use MatthiasMullie\Scrapbook\KeyValueStore;
@@ -21,22 +23,16 @@ class Pool implements CacheItemPoolInterface
      *
      * @var string
      */
-    /* public */ const KEY_INVALID_CHARACTERS = '{}()/\@:';
+    protected const KEY_INVALID_CHARACTERS = '{}()/\@:';
 
-    /**
-     * @var KeyValueStore
-     */
-    protected $store;
+    protected KeyValueStore $store;
 
-    /**
-     * @var Repository
-     */
-    protected $repository;
+    protected Repository $repository;
 
     /**
      * @var Item[]
      */
-    protected $deferred = array();
+    protected array $deferred = [];
 
     public function __construct(KeyValueStore $store)
     {
@@ -50,10 +46,7 @@ class Pool implements CacheItemPoolInterface
         $this->commit();
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getItem($key)
+    public function getItem(string $key): CacheItemInterface
     {
         $this->assertValidKey($key);
         if (array_key_exists($key, $this->deferred)) {
@@ -86,9 +79,9 @@ class Pool implements CacheItemPoolInterface
      *
      * @return Item[]
      */
-    public function getItems(array $keys = array())
+    public function getItems(array $keys = []): iterable
     {
-        $items = array();
+        $items = [];
         foreach ($keys as $key) {
             $this->assertValidKey($key);
 
@@ -98,32 +91,21 @@ class Pool implements CacheItemPoolInterface
         return $items;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function hasItem($key)
+    public function hasItem(string $key): bool
     {
         $this->assertValidKey($key);
 
-        $item = $this->getItem($key);
-
-        return $item->isHit();
+        return $this->getItem($key)->isHit();
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function clear()
+    public function clear(): bool
     {
-        $this->deferred = array();
+        $this->deferred = [];
 
         return $this->store->flush();
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function deleteItem($key)
+    public function deleteItem(string $key): bool
     {
         $this->assertValidKey($key);
 
@@ -135,10 +117,7 @@ class Pool implements CacheItemPoolInterface
         return true;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function deleteItems(array $keys)
+    public function deleteItems(array $keys): bool
     {
         foreach ($keys as $key) {
             $this->assertValidKey($key);
@@ -153,14 +132,10 @@ class Pool implements CacheItemPoolInterface
         return true;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function save(CacheItemInterface $item)
+    public function save(CacheItemInterface $item): bool
     {
         if (!$item instanceof Item) {
-            throw new InvalidArgumentException('MatthiasMullie\Scrapbook\Psr6\Pool can only save
-                MatthiasMullie\Scrapbook\Psr6\Item objects');
+            throw new InvalidArgumentException('MatthiasMullie\Scrapbook\Psr6\Pool can only save MatthiasMullie\Scrapbook\Psr6\Item objects');
         }
 
         if (!$item->hasChanged()) {
@@ -179,14 +154,10 @@ class Pool implements CacheItemPoolInterface
         return $this->store->set($item->getKey(), $item->get(), $expire);
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function saveDeferred(CacheItemInterface $item)
+    public function saveDeferred(CacheItemInterface $item): bool
     {
         if (!$item instanceof Item) {
-            throw new InvalidArgumentException('MatthiasMullie\Scrapbook\Psr6\Pool can only save
-                MatthiasMullie\Scrapbook\Psr6\Item objects');
+            throw new InvalidArgumentException('MatthiasMullie\Scrapbook\Psr6\Pool can only save MatthiasMullie\Scrapbook\Psr6\Item objects');
         }
 
         $this->deferred[$item->getKey()] = $item;
@@ -198,13 +169,10 @@ class Pool implements CacheItemPoolInterface
         return true;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function commit()
+    public function commit(): bool
     {
-        $deferred = array();
-        foreach ($this->deferred as $key => $item) {
+        $deferred = [];
+        foreach ($this->deferred as $item) {
             if ($item->isExpired()) {
                 // already expired: don't even save it
                 continue;
@@ -221,26 +189,20 @@ class Pool implements CacheItemPoolInterface
         $success = true;
         foreach ($deferred as $expire => $items) {
             $status = $this->store->setMulti($items, $expire);
-            $success &= !in_array(false, $status);
+            $success = $success && !in_array(false, $status, true);
             unset($deferred[$expire]);
         }
 
-        return (bool) $success;
+        return $success;
     }
 
     /**
      * Throws an exception if $key is invalid.
      *
-     * @param string $key
-     *
      * @throws InvalidArgumentException
      */
-    protected function assertValidKey($key)
+    protected function assertValidKey(string $key): void
     {
-        if (!is_string($key)) {
-            throw new InvalidArgumentException('Invalid key: '.var_export($key, true).'. Key should be a string.');
-        }
-
         // valid key according to PSR-6 rules
         $invalid = preg_quote(static::KEY_INVALID_CHARACTERS, '/');
         if (preg_match('/['.$invalid.']/', $key)) {

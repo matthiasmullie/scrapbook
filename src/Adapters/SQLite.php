@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace MatthiasMullie\Scrapbook\Adapters;
 
 /**
@@ -12,13 +14,10 @@ namespace MatthiasMullie\Scrapbook\Adapters;
  */
 class SQLite extends MySQL
 {
-    /**
-     * {@inheritdoc}
-     */
-    public function setMulti(array $items, $expire = 0)
+    public function setMulti(array $items, int $expire = 0): array
     {
         if (empty($items)) {
-            return array();
+            return [];
         }
 
         $expire = $this->expire($expire);
@@ -32,15 +31,15 @@ class SQLite extends MySQL
             VALUES (:key, :value, :expire)"
         );
 
-        $success = array();
+        $success = [];
         foreach ($items as $key => $value) {
             $value = $this->serialize($value);
 
-            $statement->execute(array(
+            $statement->execute([
                 ':key' => $key,
                 ':value' => $value,
                 ':expire' => $expire,
-            ));
+            ]);
 
             $success[$key] = (bool) $statement->rowCount();
         }
@@ -48,10 +47,7 @@ class SQLite extends MySQL
         return $success;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function add($key, $value, $expire = 0)
+    public function add(string $key, mixed $value, int $expire = 0): bool
     {
         $value = $this->serialize($value);
         $expire = $this->expire($expire);
@@ -64,27 +60,21 @@ class SQLite extends MySQL
             VALUES (:key, :value, :expire)"
         );
 
-        $statement->execute(array(
+        $statement->execute([
             ':key' => $key,
             ':value' => $value,
             ':expire' => $expire,
-        ));
+        ]);
 
         return 1 === $statement->rowCount();
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function flush()
+    public function flush(): bool
     {
         return false !== $this->client->exec("DELETE FROM $this->table");
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    protected function init()
+    protected function init(): void
     {
         $this->client->exec(
             "CREATE TABLE IF NOT EXISTS $this->table (

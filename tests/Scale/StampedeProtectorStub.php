@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace MatthiasMullie\Scrapbook\Tests\Scale;
 
 use MatthiasMullie\Scrapbook\Scale\StampedeProtector;
@@ -13,15 +15,10 @@ class StampedeProtectorStub extends StampedeProtector
 {
     /**
      * Amount of times sleep() was called.
-     *
-     * @var int
      */
-    public $count = 0;
+    public int $count = 0;
 
-    /**
-     * {@inheritdoc}
-     */
-    protected function sleep()
+    protected function sleep(): bool
     {
         ++$this->count;
 
