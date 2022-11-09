@@ -1,9 +1,10 @@
 # Changelog
 
 
-## [1.4.9] - 2022-11-03
+## [1.4.9] - 2022-11-09
 ### Added
 - Added support for Couchbase v3.x & 4.x versions
+- Added psr/cache & psr/simple-cache 2.0 compatibility to composer.json
 
 ### Fixed
 - Fixed (invalid) APCUIterator check

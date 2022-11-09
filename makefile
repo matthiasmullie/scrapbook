@@ -9,8 +9,8 @@ install:
 	./composer.phar install
 	cp composer.json composer.bak
 	./composer.phar require league/flysystem
-	./composer.phar require cache/integration-tests
 	test `php-config --vernum` -ge 70400 && ./composer.phar require couchbase/couchbase
+	./composer.phar require cache/integration-tests --with-all-dependencies
 	mv composer.bak composer.json
 	rm composer.phar
 
