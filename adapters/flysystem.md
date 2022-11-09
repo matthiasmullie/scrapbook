@@ -11,7 +11,7 @@ composer: [ 'composer require league/flysystem' ]
 
 ```php
 // create Flysystem object
-$adapter = new \League\Flysystem\Adapter\Local('/path/to/cache', LOCK_EX);
+$adapter = new \League\Flysystem\Local\LocalFilesystemAdapter('/path/to/cache', null, LOCK_EX);
 $filesystem = new \League\Flysystem\Filesystem($adapter);
 
 // create Scrapbook KeyValueStore object
