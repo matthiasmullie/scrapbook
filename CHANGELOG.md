@@ -1,7 +1,7 @@
 # Changelog
 
 
-## [1.4.9] - 2022-11-09
+## [1.4.9] - 2022-11-10
 ### Added
 - Added support for Couchbase v3.x & 4.x versions
 - Added psr/cache & psr/simple-cache 2.0 compatibility to composer.json
@@ -10,6 +10,7 @@
 - Fixed (invalid) APCUIterator check
 - Improved handling of Memcached's untimely expiration purge
 - Fixed Redis in-/decrement return value for non-existing values with negative expiration
+- Fixed StampedeProtector lock time
 
 ### Changed
 - Dropped built-in server health check option with Couchbase SDK v3.x/4.x support

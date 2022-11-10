@@ -30,10 +30,10 @@ use MatthiasMullie\Scrapbook\KeyValueStore;
  * these processes will poll the cache to see if the value has already been
  * stored in the meantime.
  *
- * The stampede protection will only be temporary, for $sla seconds. We
+ * The stampede protection will only be temporary, for $sla milliseconds. We
  * need to limit it because the first process (tasked with filling the cache
  * after executing the expensive operation) may fail/crash/... If the expensive
- * operation fails to conclude in < $sla seconds.
+ * operation fails to conclude in < $sla milliseconds.
  * This class guarantees that the stampede will hold off for $sla amount of time
  * but after that, all follow-up requests will go through without cached values
  * and cause a stampede after all, if the initial process fails to complete
@@ -51,11 +51,11 @@ class StampedeProtector implements KeyValueStore
     protected $cache = array();
 
     /**
-     * Amount of time, in seconds, this class guarantees protection.
+     * Amount of time, in milliseconds, this class guarantees protection.
      *
      * @var int
      */
-    protected $sla = 1;
+    protected $sla;
 
     /**
      * Amount of times every process will poll within $sla time.
@@ -66,9 +66,9 @@ class StampedeProtector implements KeyValueStore
 
     /**
      * @param KeyValueStore $cache The real cache we'll buffer for
-     * @param int           $sla   Stampede protection time, in seconds
+     * @param int           $sla   Stampede protection time, in milliseconds
      */
-    public function __construct(KeyValueStore $cache, $sla = 1)
+    public function __construct(KeyValueStore $cache, $sla = 1000)
     {
         $this->cache = $cache;
         $this->sla = $sla;
@@ -252,8 +252,12 @@ class StampedeProtector implements KeyValueStore
              * that are both in the process of protecting - first one to add()
              * wins (and those are returned by the function, so those that are
              * failed to protect can be considered protected)
+             *
+             * Note: lock is held for longer (rounded up to the closest second)
+             * than SLA because it can't be held in milliseconds. Should be fine.
+             * @see https://github.com/matthiasmullie/scrapbook/issues/48#issuecomment-1309990096
              */
-            $success[$key] = $this->cache->add($this->stampedeKey($key), '', $this->sla);
+            $success[$key] = $this->cache->add($this->stampedeKey($key), '', ceil($this->sla / 1000));
         }
 
         return array_keys(array_filter($success));
@@ -267,7 +271,7 @@ class StampedeProtector implements KeyValueStore
      */
     protected function sleep()
     {
-        $break = $this->sla * 1000 / $this->attempts;
+        $break = $this->sla / $this->attempts;
         usleep(1000 * $break);
 
         return true;
