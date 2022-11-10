@@ -15,7 +15,7 @@ use MatthiasMullie\Scrapbook\Adapters\Collections\Flysystem as Collection;
 use MatthiasMullie\Scrapbook\KeyValueStore;
 
 /**
- * Flysystem 1.x, 2.x & 3.x adapter. Data will be written to League\Flysystem\Filesystem.
+ * Flysystem adapter. Data will be written to League\Flysystem\Filesystem.
  *
  * Flysystem doesn't allow locking files, though. To guarantee interference from
  * other processes, we'll create separate lock-files to flag a cache key in use.

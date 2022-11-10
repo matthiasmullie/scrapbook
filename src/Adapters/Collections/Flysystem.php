@@ -10,7 +10,7 @@ use League\Flysystem\UnableToDeleteFile;
 use MatthiasMullie\Scrapbook\Adapters\Flysystem as Adapter;
 
 /**
- * Flysystem 1.x and 2.x adapter for a subset of data, in a subfolder.
+ * Flysystem adapter for a subset of data, in a subfolder.
  *
  * @author Matthias Mullie <scrapbook@mullie.eu>
  * @copyright Copyright (c) 2014, Matthias Mullie. All rights reserved
