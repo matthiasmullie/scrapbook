@@ -1,4 +1,4 @@
-ARG version
+ARG version=cli
 FROM php:$version
 
 WORKDIR /var/www
