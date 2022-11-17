@@ -44,4 +44,7 @@ test:
 	docker-compose stop -t0 $$RELEVANT_CONTAINERS;\
 	exit $$TEST_STATUS
 
+php-cs-fixer:
+	docker-compose run --no-deps php vendor/bin/php-cs-fixer fix
+
 .PHONY: docs

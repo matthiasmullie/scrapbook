@@ -11,6 +11,7 @@ services:
       - ./src:/var/www/src
       - ./tests:/var/www/tests
       - ./build:/var/www/build
+      - ./.php-cs-fixer.php:/var/www/.php-cs-fixer.php
       - ./phpunit.xml:/var/www/phpunit.xml
     depends_on:
       couchbase:
