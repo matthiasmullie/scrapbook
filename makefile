@@ -1,8 +1,6 @@
 # defaults for `make test`
-PHP ?= '8.1'
-ADAPTER ?= 'Apc,Couchbase,Flysystem,Memcached,MemoryStore,MySQL,PostgreSQL,Redis,SQLite'
-UP ?= 1
-DOWN ?= 1
+PHP ?= 8.1
+ADAPTER ?= Apc,Couchbase,Flysystem,Memcached,MemoryStore,MySQL,PostgreSQL,Redis,SQLite
 
 install:
 	wget -q -O - https://getcomposer.org/installer | php
@@ -33,18 +31,17 @@ docs:
 		done <<< \$$(git rev-parse --abbrev-ref HEAD && git tag --sort=-v:refname);\
 		sed -i \"s|\$$TEMPLATE|\$$HTML|g\" ../docs/index.html"
 
-up:
-	docker-compose up --no-deps -d $(filter-out apc flysystem memorystore sqlite, $(shell echo $(ADAPTER) | tr "A-Z," "a-z ")) php-$(PHP)
-
-down:
-	docker-compose stop -t0 $(filter-out apc flysystem memorystore sqlite, $(shell echo $(ADAPTER) | tr "A-Z," "a-z ")) php-$(PHP)
-
 test:
 	# Usage:
 	# make test - tests all adapters on latest PHP version
 	# make test PHP=8.0 ADAPTER=Memcached - tests Memcached on PHP 8.0
-	[ $(UP) -eq 1 ] && make up PHP=$(PHP) ADAPTER=$(ADAPTER) || true
-	$(eval cmd='docker-compose run --no-deps php-$(PHP) env XDEBUG_MODE=coverage vendor/bin/phpunit --group $(ADAPTER)')
-	eval $(cmd); status=$$?; [ $(DOWN) -eq 1 ] && make down PHP=$(PHP) ADAPTER=$(ADAPTER); exit $$status
+	TEST_CONTAINER="php-$(PHP)";\
+	DEPENDENT_CONTAINERS="$(filter-out apc flysystem memorystore sqlite, $(shell echo $(ADAPTER) | tr 'A-Z,' 'a-z '))";\
+	RELEVANT_CONTAINERS="$$TEST_CONTAINER $(filter-out apc flysystem memorystore sqlite, $(shell echo $(ADAPTER) | tr 'A-Z,' 'a-z '))";\
+	docker-compose up --no-deps -d $$DEPENDENT_CONTAINERS;\
+	docker-compose run --no-deps $$TEST_CONTAINER env XDEBUG_MODE=coverage vendor/bin/phpunit --group $(ADAPTER) --coverage-clover build/coverage-$(PHP)-$(ADAPTER).clover;\
+	TEST_STATUS=$$?;\
+	docker-compose stop -t0 $$RELEVANT_CONTAINERS;\
+	exit $$TEST_STATUS
 
 .PHONY: docs

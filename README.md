@@ -1,7 +1,7 @@
 [![Scrapbook PHP cache](https://www.scrapbook.cash/public/logo_side.png)](https://www.scrapbook.cash)
 
 [![Build status](https://img.shields.io/github/workflow/status/matthiasmullie/scrapbook/test-suite?style=flat-square)](https://github.com/matthiasmullie/scrapbook/actions/workflows/test.yml)
-[![Code coverage](https://img.shields.io/codecov/c/github/matthiasmullie/scrapbook?style=flat-square)](https://codecov.io/github/matthiasmullie/scrapbook)
+[![Code coverage](https://img.shields.io/codecov/c/gh/matthiasmullie/scrapbook?style=flat-square)](https://codecov.io/gh/matthiasmullie/scrapbook)
 [![Latest version](https://img.shields.io/packagist/v/matthiasmullie/scrapbook?style=flat-square)](https://packagist.org/packages/matthiasmullie/scrapbook)
 [![Downloads total](https://img.shields.io/packagist/dt/matthiasmullie/scrapbook?style=flat-square)](https://packagist.org/packages/matthiasmullie/scrapbook)
 [![License](https://img.shields.io/packagist/l/matthiasmullie/scrapbook?style=flat-square)](https://github.com/matthiasmullie/scrapbook/blob/master/LICENSE)
