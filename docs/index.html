@@ -3,10 +3,33 @@
 <head>
     <meta charset="utf-8" />
     <title>Scrapbook documentation</title>
+    <style>
+        body {
+            font-family: "Open Sans", "HelveticaNeue", "Helvetica Neue", Helvetica, Arial, sans-serif;
+        }
+        h1 {
+            color: #2d3237;
+            font-size: 1.5em;
+            font-weight: 400;
+        }
+        ul {
+            list-style: none;
+            padding: 0;
+            columns: 3;
+        }
+        li {
+            margin-bottom: 10px;
+        }
+        a {
+            color: #5f8cb4;
+        }
+        a:hover {
+            color: #666;
+        }
+    </style>
 </head>
 <body>
-    <h1>Scrapbook documentation</h1>
-    <p>Versions:</p>
+    <h1>Versions</h1>
     <!-- Use `make docs` to generate documentation -->
     <ul>
         {{#TAGS}}<li><a href="{{.}}/index.html">{{.}}</a></li>{{/TAGS}}
