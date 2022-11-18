@@ -1,0 +1,15 @@
+/.github
+/.idea
+/build
+/docs
+/vendor
+/.dockerignore
+/.gitattributes
+/.gitignore
+/CHANGELOG.md
+/composer.lock
+/CONTRIBUTING.md
+/Dockerfile
+/docker-compose.yml
+/LICENSE
+/README.md
