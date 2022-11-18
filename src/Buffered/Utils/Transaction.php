@@ -73,12 +73,12 @@ class Transaction implements KeyValueStore
         $value = $this->local->get($key, $token);
 
         // short-circuit reading from real cache if we have an uncommitted flush
-        if ($this->suspend && null === $token) {
+        if ($this->suspend && $token === null) {
             // flush hasn't been committed yet, don't read from real cache!
             return false;
         }
 
-        if (false === $value) {
+        if ($value === false) {
             if ($this->local->expired($key)) {
                 /*
                  * Item used to exist in local cache, but is now expired. This
@@ -95,7 +95,7 @@ class Transaction implements KeyValueStore
         }
 
         // no value = quit early, don't generate a useless token
-        if (false === $value) {
+        if ($value === false) {
             return false;
         }
 
@@ -153,7 +153,7 @@ class Transaction implements KeyValueStore
         // store the value in memory, so that when we ask for it again later in
         // this same request, we get the value we just set
         $success = $this->local->set($key, $value, $expire);
-        if (false === $success) {
+        if ($success === false) {
             return false;
         }
 
@@ -182,7 +182,7 @@ class Transaction implements KeyValueStore
         // check the current value to see if it currently exists, so we can
         // properly return true/false as would be expected from KeyValueStore
         $value = $this->get($key);
-        if (false === $value) {
+        if ($value === false) {
             return false;
         }
 
@@ -228,14 +228,14 @@ class Transaction implements KeyValueStore
     {
         // before adding, make sure the value doesn't yet exist (in real cache,
         // nor in memory)
-        if (false !== $this->get($key)) {
+        if ($this->get($key) !== false) {
             return false;
         }
 
         // store the value in memory, so that when we ask for it again later
         // in this same request, we get the value we just set
         $success = $this->local->set($key, $value, $expire);
-        if (false === $success) {
+        if ($success === false) {
             return false;
         }
 
@@ -248,14 +248,14 @@ class Transaction implements KeyValueStore
     {
         // before replacing, make sure the value actually exists (in real cache,
         // or already created in memory)
-        if (false === $this->get($key)) {
+        if ($this->get($key) === false) {
             return false;
         }
 
         // store the value in memory, so that when we ask for it again later
         // in this same request, we get the value we just set
         $success = $this->local->set($key, $value, $expire);
-        if (false === $success) {
+        if ($success === false) {
             return false;
         }
 
@@ -299,7 +299,7 @@ class Transaction implements KeyValueStore
 
         // "CAS" value to local cache/memory
         $success = $this->local->set($key, $value, $expire);
-        if (false === $success) {
+        if ($success === false) {
             return false;
         }
 
@@ -320,7 +320,7 @@ class Transaction implements KeyValueStore
         // increment in memory (where we may not have anything yet, so we should
         // adjust our initial value to what's already in real cache)
         $value = $this->get($key);
-        if (false === $value) {
+        if ($value === false) {
             $value = $initial - $offset;
         }
 
@@ -332,7 +332,7 @@ class Transaction implements KeyValueStore
         // in this same request, we get the value we just set
         $value = max(0, $value + $offset);
         $success = $this->local->set($key, $value, $expire);
-        if (false === $success) {
+        if ($success === false) {
             return false;
         }
 
@@ -351,7 +351,7 @@ class Transaction implements KeyValueStore
         // increment in memory (where we may not have anything yet, so we should
         // adjust our initial value to what's already in real cache)
         $value = $this->get($key);
-        if (false === $value) {
+        if ($value === false) {
             $value = $initial + $offset;
         }
 
@@ -363,7 +363,7 @@ class Transaction implements KeyValueStore
         // in this same request, we get the value we just set
         $value = max(0, $value - $offset);
         $success = $this->local->set($key, $value, $expire);
-        if (false === $success) {
+        if ($success === false) {
             return false;
         }
 
@@ -377,12 +377,12 @@ class Transaction implements KeyValueStore
         // grab existing value (from real cache or memory) and re-save (to
         // memory) with updated expiration time
         $value = $this->get($key);
-        if (false === $value) {
+        if ($value === false) {
             return false;
         }
 
         $success = $this->local->set($key, true, $expire);
-        if (false === $success) {
+        if ($success === false) {
             return false;
         }
 
@@ -398,7 +398,7 @@ class Transaction implements KeyValueStore
         }
 
         $success = $this->local->flush();
-        if (false === $success) {
+        if ($success === false) {
             return false;
         }
 

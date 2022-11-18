@@ -46,7 +46,7 @@ class Apc implements KeyValueStore
         }
 
         $value = $this->fetch($key, $success);
-        if (false === $success) {
+        if ($success === false) {
             $token = null;
 
             return false;
@@ -73,7 +73,7 @@ class Apc implements KeyValueStore
         }
 
         $values = $this->fetch($keys);
-        if (false === $values) {
+        if ($values === false) {
             return [];
         }
 
@@ -203,7 +203,7 @@ class Apc implements KeyValueStore
         if ($ttl < 0) {
             // don't add - it's expired already; just check if it already
             // existed to return true/false as expected from add()
-            return false === $this->get($key);
+            return $this->get($key) === false;
         }
 
         // lock required for CAS
@@ -225,7 +225,7 @@ class Apc implements KeyValueStore
         // APC doesn't support replace; I'll use get to check key existence,
         // then safely replace with cas
         $current = $this->get($key, $token);
-        if (false === $current) {
+        if ($current === false) {
             return false;
         }
 
@@ -258,7 +258,7 @@ class Apc implements KeyValueStore
         // get current value, to compare with token
         $compare = $this->fetch($key);
 
-        if (false === $compare) {
+        if ($compare === false) {
             $this->unlock($key);
 
             return false;
@@ -319,7 +319,7 @@ class Apc implements KeyValueStore
         }
 
         // get existing TTL & quit early if it's that one already
-        $iterator = new \APCUIterator('/^'.preg_quote($key, '/').'$/', \APC_ITER_VALUE | \APC_ITER_TTL, 1, \APC_LIST_ACTIVE);
+        $iterator = new \APCUIterator('/^' . preg_quote($key, '/') . '$/', \APC_ITER_VALUE | \APC_ITER_TTL, 1, \APC_LIST_ACTIVE);
         if (!$iterator->valid()) {
             return false;
         }
@@ -371,7 +371,7 @@ class Apc implements KeyValueStore
          * PHP, then CAS the new value = 1 operation + CAS.
          */
         $value = $this->get($key, $token);
-        if (false === $value) {
+        if ($value === false) {
             // don't even set initial value, it's already expired...
             if ($ttl < 0) {
                 return $initial;
@@ -515,7 +515,7 @@ class Apc implements KeyValueStore
      */
     protected function expire(string|array $key = [], int $ttl = 0): void
     {
-        if (0 === $ttl) {
+        if ($ttl === 0) {
             // when storing indefinitely, there's no point in keeping it around,
             // it won't just expire
             return;

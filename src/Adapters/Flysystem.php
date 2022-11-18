@@ -53,7 +53,7 @@ class Flysystem implements KeyValueStore
         }
 
         $data = $this->read($key);
-        if (false === $data) {
+        if ($data === false) {
             return false;
         }
 
@@ -71,7 +71,7 @@ class Flysystem implements KeyValueStore
             $token = null;
             $value = $this->get($key, $token);
 
-            if (null !== $token) {
+            if ($token !== null) {
                 $results[$key] = $value;
                 $tokens[$key] = $token;
             }
@@ -89,7 +89,7 @@ class Flysystem implements KeyValueStore
         }
 
         $expire = $this->normalizeTime($expire);
-        if (0 !== $expire && $expire < time()) {
+        if ($expire !== 0 && $expire < time()) {
             $this->unlock($key);
 
             // don't waste time storing (and later comparing expiration
@@ -100,7 +100,7 @@ class Flysystem implements KeyValueStore
         $path = $this->path($key);
         $data = $this->wrap($value, $expire);
         try {
-            if (1 === $this->version) {
+            if ($this->version === 1) {
                 $this->filesystem->put($path, $data);
             } else {
                 $this->filesystem->write($path, $data);
@@ -219,7 +219,7 @@ class Flysystem implements KeyValueStore
         $data = $this->wrap($value, $expire);
 
         try {
-            if (1 === $this->version) {
+            if ($this->version === 1) {
                 $this->filesystem->update($path, $data);
             } else {
                 $this->filesystem->write($path, $data);
@@ -256,7 +256,7 @@ class Flysystem implements KeyValueStore
         $data = $this->wrap($value, $expire);
 
         try {
-            if (1 === $this->version) {
+            if ($this->version === 1) {
                 $this->filesystem->update($path, $data);
             } else {
                 $this->filesystem->write($path, $data);
@@ -301,7 +301,7 @@ class Flysystem implements KeyValueStore
         }
 
         $value = $this->get($key);
-        if (false === $value) {
+        if ($value === false) {
             $this->unlock($key);
 
             return false;
@@ -311,7 +311,7 @@ class Flysystem implements KeyValueStore
         $data = $this->wrap($value, $expire);
 
         try {
-            if (1 === $this->version) {
+            if ($this->version === 1) {
                 $this->filesystem->update($path, $data);
             } else {
                 $this->filesystem->write($path, $data);
@@ -336,8 +336,8 @@ class Flysystem implements KeyValueStore
         $files = $this->filesystem->listContents('.');
         foreach ($files as $file) {
             try {
-                if ('dir' === $file['type']) {
-                    if (1 === $this->version) {
+                if ($file['type'] === 'dir') {
+                    if ($this->version === 1) {
                         $this->filesystem->deleteDir($file['path']);
                     } else {
                         $this->filesystem->deleteDirectory($file['path']);
@@ -372,7 +372,7 @@ class Flysystem implements KeyValueStore
          * But I can just create a new object that changes the path to write at,
          * by prefixing it with a subfolder!
          */
-        if (1 === $this->version) {
+        if ($this->version === 1) {
             $this->filesystem->createDir($name);
         } else {
             $this->filesystem->createDirectory($name);
@@ -389,7 +389,7 @@ class Flysystem implements KeyValueStore
     protected function doIncrement(string $key, int $offset, int $initial, int $expire): int|false
     {
         $current = $this->get($key, $token);
-        if (false === $current) {
+        if ($current === false) {
             $success = $this->add($key, $initial, $expire);
 
             return $success ? $initial : false;
@@ -411,12 +411,12 @@ class Flysystem implements KeyValueStore
     protected function exists(string $key): bool
     {
         $data = $this->read($key);
-        if (false === $data) {
+        if ($data === false) {
             return false;
         }
 
         $expire = $data[0];
-        if (0 !== $expire && $expire < time()) {
+        if ($expire !== 0 && $expire < time()) {
             // expired, don't keep it around
             $path = $this->path($key);
             $this->filesystem->delete($path);
@@ -434,7 +434,7 @@ class Flysystem implements KeyValueStore
      */
     protected function lock(string $key): bool
     {
-        $path = md5($key).'.lock';
+        $path = md5($key) . '.lock';
 
         for ($i = 0; $i < 25; ++$i) {
             try {
@@ -458,7 +458,7 @@ class Flysystem implements KeyValueStore
      */
     protected function unlock(string $key): bool
     {
-        $path = md5($key).'.lock';
+        $path = md5($key) . '.lock';
         try {
             $this->filesystem->delete($path);
         } catch (FileNotFoundException $e) {
@@ -503,7 +503,7 @@ class Flysystem implements KeyValueStore
     {
         $expire = $this->normalizeTime($expire);
 
-        return $expire."\n".serialize($value);
+        return $expire . "\n" . serialize($value);
     }
 
     /**
@@ -526,7 +526,7 @@ class Flysystem implements KeyValueStore
             return false;
         }
 
-        if (false === $data) {
+        if ($data === false) {
             // in theory, a file could still be deleted between Flysystem's
             // assertPresent & the time it actually fetched the content;
             // extremely unlikely though
@@ -541,6 +541,6 @@ class Flysystem implements KeyValueStore
 
     protected function path(string $key): string
     {
-        return md5($key).'.cache';
+        return md5($key) . '.cache';
     }
 }

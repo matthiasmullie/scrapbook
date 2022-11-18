@@ -87,7 +87,7 @@ abstract class SQL implements KeyValueStore
             "SELECT k, v
             FROM $this->table
             WHERE
-                k IN (".implode(',', $quoted).') AND
+                k IN (" . implode(',', $quoted) . ') AND
                 (e IS NULL OR e > :expire)'
         );
         $statement->execute([':expire' => date('Y-m-d H:i:s')]);
@@ -143,7 +143,7 @@ abstract class SQL implements KeyValueStore
 
         $statement->execute([':key' => $key]);
 
-        return 1 === $statement->rowCount();
+        return $statement->rowCount() === 1;
     }
 
     public function deleteMulti(array $keys): array
@@ -163,7 +163,7 @@ abstract class SQL implements KeyValueStore
 
         $statement = $this->client->query(
             "DELETE FROM $this->table
-            WHERE k IN (".implode(',', $quoted).')'
+            WHERE k IN (" . implode(',', $quoted) . ')'
         );
 
         /*
@@ -171,7 +171,7 @@ abstract class SQL implements KeyValueStore
          * any. Otherwise, we'll use the getMulti() results to figure out which
          * couldn't be deleted because they didn't exist at that time.
          */
-        $success = 0 !== $statement->rowCount();
+        $success = $statement->rowCount() !== 0;
         $success = array_fill_keys($keys, $success);
         foreach ($keys as $key) {
             if (!array_key_exists($key, $items)) {
@@ -200,7 +200,7 @@ abstract class SQL implements KeyValueStore
             ':expire' => $expire,
         ]);
 
-        return 1 === $statement->rowCount();
+        return $statement->rowCount() === 1;
     }
 
     public function replace(string $key, mixed $value, int $expire = 0): bool
@@ -222,7 +222,7 @@ abstract class SQL implements KeyValueStore
             ':expire' => $expire,
         ]);
 
-        if (1 === $statement->rowCount()) {
+        if ($statement->rowCount() === 1) {
             return true;
         }
 
@@ -262,7 +262,7 @@ abstract class SQL implements KeyValueStore
             ':token' => $token,
         ]);
 
-        if (1 === $statement->rowCount()) {
+        if ($statement->rowCount() === 1) {
             return true;
         }
 
@@ -318,13 +318,13 @@ abstract class SQL implements KeyValueStore
             ':expire' => $expire,
         ]);
 
-        return 1 === $statement->rowCount();
+        return $statement->rowCount() === 1;
     }
 
     public function flush(): bool
     {
         // TRUNCATE doesn't work on SQLite - DELETE works for all
-        return false !== $this->client->exec("DELETE FROM $this->table");
+        return $this->client->exec("DELETE FROM $this->table") !== false;
     }
 
     public function getCollection(string $name): KeyValueStore
@@ -349,7 +349,7 @@ abstract class SQL implements KeyValueStore
         $this->clearExpired();
 
         $value = $this->get($key);
-        if (false === $value) {
+        if ($value === false) {
             $return = $this->add($key, $initial, $expire);
 
             if ($return) {
@@ -398,7 +398,7 @@ abstract class SQL implements KeyValueStore
      */
     protected function expire(int $expire): string|null
     {
-        if (0 === $expire) {
+        if ($expire === 0) {
             return null;
         }
 

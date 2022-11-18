@@ -248,6 +248,6 @@ class StampedeProtector implements KeyValueStore
             throw new InvalidKey("Invalid key: $key. Keys with suffix '$suffix' are reserved.");
         }
 
-        return $key.$suffix;
+        return $key . $suffix;
     }
 }

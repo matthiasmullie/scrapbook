@@ -25,9 +25,9 @@ class PrefixReset extends PrefixKeys
     public function flush(): bool
     {
         $index = $this->cache->increment($this->collection);
-        $this->setPrefix($this->collection.':'.$index.':');
+        $this->setPrefix($this->collection . ':' . $index . ':');
 
-        return false !== $index;
+        return $index !== false;
     }
 
     protected function getPrefix(): string
@@ -40,10 +40,10 @@ class PrefixReset extends PrefixKeys
          */
         $index = $this->cache->get($this->collection);
 
-        if (false === $index) {
+        if ($index === false) {
             $index = $this->cache->set($this->collection, 1);
         }
 
-        return $this->collection.':'.$index.':';
+        return $this->collection . ':' . $index . ':';
     }
 }

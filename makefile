@@ -3,20 +3,18 @@ PHP ?= 8.1
 ADAPTER ?= Apc,Couchbase,Flysystem,Memcached,MemoryStore,MySQL,PostgreSQL,Redis,SQLite
 
 install:
-	wget -q -O - https://getcomposer.org/installer | php
-	./composer.phar install
+	wget -q -O - https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+	composer install
 	cp composer.json composer.bak
-	./composer.phar require league/flysystem
-	./composer.phar require couchbase/couchbase
+	composer require league/flysystem
+	composer require couchbase/couchbase
 	mv composer.bak composer.json
-	rm composer.phar
 
 docs:
 	docker run --rm -v $$(pwd)/docs:/data/docs -w /data php:cli bash -c "\
 		apt-get update && apt-get install -y wget git zip unzip;\
 		docker-php-ext-install zip;\
-		wget -q -O - https://getcomposer.org/installer | php;\
-		mv composer.phar /usr/local/bin/composer;\
+		wget -q -O - https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer;\
 		wget -q https://phpdoc.org/phpDocumentor.phar;\
 		TEMPLATE=\$$(grep -o "{{#TAGS}}.*{{/TAGS}}" docs/index.html);\
 		HTML='';\
@@ -44,7 +42,7 @@ test:
 	docker-compose stop -t0 $$RELEVANT_CONTAINERS;\
 	exit $$TEST_STATUS
 
-php-cs-fixer:
-	docker-compose run --no-deps php vendor/bin/php-cs-fixer fix
+format:
+	docker-compose run --no-deps php sh -c "vendor/bin/php-cs-fixer fix && vendor/bin/phpcbf --standard=ruleset.xml"
 
 .PHONY: docs

@@ -24,7 +24,7 @@ class MemoryStore extends PrefixKeys
 
     public function __construct(Adapter $cache, string $name)
     {
-        parent::__construct($cache, $name.':');
+        parent::__construct($cache, $name . ':');
     }
 
     public function flush(): bool

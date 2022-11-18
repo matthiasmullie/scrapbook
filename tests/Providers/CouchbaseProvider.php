@@ -50,7 +50,7 @@ class CouchbaseProvider extends AdapterProvider
 
             $info = $bucket->ping();
             foreach ($info['services']['kv'] as $kv) {
-                $healthy = $healthy && 'ok' === $kv['state'];
+                $healthy = $healthy && $kv['state'] === 'ok';
             }
 
             if ($healthy) {

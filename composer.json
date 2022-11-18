@@ -34,8 +34,9 @@
   },
   "require-dev": {
     "ext-pcntl": "*",
+    "friendsofphp/php-cs-fixer": ">=2.0",
     "phpunit/phpunit": ">=9.0",
-    "friendsofphp/php-cs-fixer": ">=2.0"
+    "squizlabs/php_codesniffer": ">=3.0"
   },
   "suggest": {
     "ext-apcu": ">=4.0.0",

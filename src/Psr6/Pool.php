@@ -146,7 +146,7 @@ class Pool implements CacheItemPoolInterface
              * changed, the value for this key is in cache) and if it doesn't,
              * well then nothing is in cache.
              */
-            return null !== $item->get();
+            return $item->get() !== null;
         }
 
         $expire = $item->getExpiration();
@@ -205,8 +205,8 @@ class Pool implements CacheItemPoolInterface
     {
         // valid key according to PSR-6 rules
         $invalid = preg_quote(static::KEY_INVALID_CHARACTERS, '/');
-        if (preg_match('/['.$invalid.']/', $key)) {
-            throw new InvalidArgumentException('Invalid key: '.$key.'. Contains (a) character(s) reserved for future extension: '.static::KEY_INVALID_CHARACTERS);
+        if (preg_match('/[' . $invalid . ']/', $key)) {
+            throw new InvalidArgumentException('Invalid key: ' . $key . '. Contains (a) character(s) reserved for future extension: ' . static::KEY_INVALID_CHARACTERS);
         }
     }
 }

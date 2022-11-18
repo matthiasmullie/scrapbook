@@ -18,7 +18,7 @@ class FlysystemProvider extends AdapterProvider
         $path = '/tmp/cache';
 
         if (!is_writable($path)) {
-            throw new Exception($path.' is not writable.');
+            throw new Exception($path . ' is not writable.');
         }
 
         if (class_exists(LocalFilesystemAdapter::class)) {

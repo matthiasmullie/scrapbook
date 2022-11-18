@@ -31,8 +31,8 @@ class Flysystem extends Adapter
         $files = $this->filesystem->listContents($this->collection);
         foreach ($files as $file) {
             try {
-                if ('dir' === $file['type']) {
-                    if (1 === $this->version) {
+                if ($file['type'] === 'dir') {
+                    if ($this->version === 1) {
                         $this->filesystem->deleteDir($file['path']);
                     } else {
                         $this->filesystem->deleteDirectory($file['path']);
@@ -56,6 +56,6 @@ class Flysystem extends Adapter
 
     protected function path(string $key): string
     {
-        return $this->collection.'/'.parent::path($key);
+        return $this->collection . '/' . parent::path($key);
     }
 }

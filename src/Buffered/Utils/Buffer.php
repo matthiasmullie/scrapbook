@@ -41,7 +41,7 @@ class Buffer extends MemoryStore
         }
 
         $expire = $this->items[$key][1];
-        if (0 !== $expire && $expire < time()) {
+        if ($expire !== 0 && $expire < time()) {
             // not permanent & already expired
             return false;
         }
@@ -63,7 +63,7 @@ class Buffer extends MemoryStore
      */
     public function expired(string $key): bool
     {
-        if (false !== $this->get($key)) {
+        if ($this->get($key) !== false) {
             // returned a value, clearly not yet expired
             return false;
         }

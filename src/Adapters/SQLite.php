@@ -66,12 +66,12 @@ class SQLite extends MySQL
             ':expire' => $expire,
         ]);
 
-        return 1 === $statement->rowCount();
+        return $statement->rowCount() === 1;
     }
 
     public function flush(): bool
     {
-        return false !== $this->client->exec("DELETE FROM $this->table");
+        return $this->client->exec("DELETE FROM $this->table") !== false;
     }
 
     protected function init(): void

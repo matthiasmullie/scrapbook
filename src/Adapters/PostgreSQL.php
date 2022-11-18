@@ -18,14 +18,14 @@ class PostgreSQL extends SQL
 
     public function flush(): bool
     {
-        return false !== $this->client->exec("TRUNCATE TABLE $this->table");
+        return $this->client->exec("TRUNCATE TABLE $this->table") !== false;
     }
 
     public function get(string $key, mixed &$token = null): mixed
     {
         $return = parent::get($key, $token);
 
-        if (null !== $token) {
+        if ($token !== null) {
             // BYTEA data return streams - we actually need the data in
             // serialized format, not some silly stream
             $token = $this->serialize($return);
@@ -71,13 +71,13 @@ class PostgreSQL extends SQL
 
         // ON CONFLICT is not supported in versions < 9.5, in which case we'll
         // have to fall back on add/replace
-        if ('42601' === $statement->errorCode()) {
+        if ($statement->errorCode() === '42601') {
             $this->conflictSupport = false;
 
             return $this->set($key, $value, $expire);
         }
 
-        return 1 === $statement->rowCount();
+        return $statement->rowCount() === 1;
     }
 
     protected function init(): void

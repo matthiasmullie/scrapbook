@@ -119,7 +119,7 @@ class AdapterTestProvider
      */
     protected function getAllAdapterProviders(): array
     {
-        $files = glob(__DIR__.'/Providers/*Provider.php');
+        $files = glob(__DIR__ . '/Providers/*Provider.php');
 
         // since we're PSR-4, just stripping .php from the filename = classnames
         // also strip "Provider" suffix, which will again be appended later

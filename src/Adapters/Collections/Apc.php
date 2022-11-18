@@ -18,12 +18,12 @@ class Apc extends PrefixKeys
 {
     public function __construct(Adapter $cache, string $name)
     {
-        parent::__construct($cache, 'collection:'.$name.':');
+        parent::__construct($cache, 'collection:' . $name . ':');
     }
 
     public function flush(): bool
     {
-        $iterator = new \APCUIterator('/^'.preg_quote($this->prefix, '/').'/', \APC_ITER_KEY);
+        $iterator = new \APCUIterator('/^' . preg_quote($this->prefix, '/') . '/', \APC_ITER_KEY);
         apcu_delete($iterator);
 
         return true;

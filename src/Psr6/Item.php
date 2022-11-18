@@ -70,7 +70,7 @@ class Item implements CacheItemInterface
     public function get(): mixed
     {
         // value was already set on this object, return that one!
-        if (null !== $this->value) {
+        if ($this->value !== null) {
             return $this->value;
         }
 
@@ -99,7 +99,7 @@ class Item implements CacheItemInterface
     {
         $this->changed = true;
 
-        if (null === $expiration) {
+        if ($expiration === null) {
             $this->expire = 0;
         } else {
             // convert datetime to unix timestamp
@@ -122,7 +122,7 @@ class Item implements CacheItemInterface
             // this is allowed, but just defaults to infinite
             $this->expire = 0;
         } else {
-            throw new InvalidArgumentException('Invalid time: '.serialize($time).'. Must be integer or instance of DateInterval.');
+            throw new InvalidArgumentException('Invalid time: ' . serialize($time) . '. Must be integer or instance of DateInterval.');
         }
         $this->changed = true;
 
@@ -145,7 +145,7 @@ class Item implements CacheItemInterface
     {
         $expire = $this->getExpiration();
 
-        return 0 !== $expire && $expire < time();
+        return $expire !== 0 && $expire < time();
     }
 
     /**

@@ -62,9 +62,9 @@ class StampedeProtectorTest extends AdapterTestCase
         }
 
         $pid = pcntl_fork();
-        if (-1 === $pid) {
+        if ($pid === -1) {
             // can't fork, ignore this test...
-        } elseif (0 === $pid) {
+        } elseif ($pid === 0) {
             // request non-existing key: this should make us go in stampede-
             // protection mode if another process/thread requests it again...
             $this->protector->get('key');
@@ -85,7 +85,7 @@ class StampedeProtectorTest extends AdapterTestCase
              * start testing stampede protection until the other thread has done
              * the first request though, so let's wait a bit...
              */
-            while ([] === $this->cache->getMulti(['key', 'key.stampede'])) {
+            while ($this->cache->getMulti(['key', 'key.stampede']) === []) {
                 usleep(10);
             }
 
@@ -162,9 +162,9 @@ class StampedeProtectorTest extends AdapterTestCase
         $this->cache->set('key2', 'value2');
 
         $pid = pcntl_fork();
-        if (-1 === $pid) {
+        if ($pid === -1) {
             // can't fork, ignore this test...
-        } elseif (0 === $pid) {
+        } elseif ($pid === 0) {
             // request non-existing key: this should make us go in stampede-
             // protection mode if another process/thread requests it again...
             $this->protector->getMulti(['key', 'key2']);
@@ -185,7 +185,7 @@ class StampedeProtectorTest extends AdapterTestCase
              * start testing stampede protection until the other thread has done
              * the first request though, so let's wait a bit...
              */
-            while ([] === $this->cache->getMulti(['key', 'key.stampede'])) {
+            while ($this->cache->getMulti(['key', 'key.stampede']) === []) {
                 usleep(10);
             }
 

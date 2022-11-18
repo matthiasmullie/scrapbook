@@ -13,6 +13,7 @@ services:
       - ./build:/var/www/build
       - ./.php-cs-fixer.php:/var/www/.php-cs-fixer.php
       - ./phpunit.xml:/var/www/phpunit.xml
+      - ./ruleset.xml:/var/www/ruleset.xml
     depends_on:
       couchbase:
         condition: service_healthy

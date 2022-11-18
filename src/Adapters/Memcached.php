@@ -170,7 +170,7 @@ class Memcached implements KeyValueStore
          * to replace the error codes by falses.
          */
         foreach ($result as $key => $status) {
-            $result[$key] = true === $status;
+            $result[$key] = $status === true;
         }
 
         return $result;
@@ -284,7 +284,7 @@ class Memcached implements KeyValueStore
     protected function doIncrement(string $key, int $offset, int $initial, int $expire): int|false
     {
         $value = $this->get($key, $token);
-        if (false === $value) {
+        if ($value === false) {
             $success = $this->add($key, $initial, $expire);
 
             return $success ? $initial : false;
@@ -395,7 +395,7 @@ class Memcached implements KeyValueStore
      */
     protected function throwExceptionOnClientCallFailure(mixed $result): void
     {
-        if (false !== $result) {
+        if ($result !== false) {
             return;
         }
 

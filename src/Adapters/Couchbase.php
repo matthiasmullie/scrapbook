@@ -52,7 +52,7 @@ class Couchbase implements KeyValueStore
 
         try {
             $options = new \Couchbase\GetOptions();
-            $options = null === $this->timeout ? $options : $options->timeout($this->timeout);
+            $options = $this->timeout === null ? $options : $options->timeout($this->timeout);
             $result = $this->collection->get($key, $options);
             $token = $result->cas();
 
@@ -79,7 +79,7 @@ class Couchbase implements KeyValueStore
             $token = null;
             $value = $this->get($key, $token);
 
-            if (null !== $token) {
+            if ($token !== null) {
                 $results[$key] = $value;
                 $tokens[$key] = $token;
             }
@@ -100,7 +100,7 @@ class Couchbase implements KeyValueStore
 
         try {
             $options = new \Couchbase\UpsertOptions();
-            $options = null === $this->timeout ? $options : $options->timeout($this->timeout);
+            $options = $this->timeout === null ? $options : $options->timeout($this->timeout);
             $options = $options->expiry($expire);
             $this->collection->upsert($key, $value, $options);
 
@@ -133,7 +133,7 @@ class Couchbase implements KeyValueStore
 
         try {
             $options = new \Couchbase\RemoveOptions();
-            $options = null === $this->timeout ? $options : $options->timeout($this->timeout);
+            $options = $this->timeout === null ? $options : $options->timeout($this->timeout);
             $this->collection->remove($key, $options);
 
             return true;
@@ -165,7 +165,7 @@ class Couchbase implements KeyValueStore
 
         try {
             $options = new \Couchbase\InsertOptions();
-            $options = null === $this->timeout ? $options : $options->timeout($this->timeout);
+            $options = $this->timeout === null ? $options : $options->timeout($this->timeout);
             $options = $options->expiry($expire);
             $this->collection->insert($key, $value, $options);
 
@@ -189,7 +189,7 @@ class Couchbase implements KeyValueStore
 
         try {
             $options = new \Couchbase\ReplaceOptions();
-            $options = null === $this->timeout ? $options : $options->timeout($this->timeout);
+            $options = $this->timeout === null ? $options : $options->timeout($this->timeout);
             $options = $options->expiry($expire);
             $this->collection->replace($key, $value, $options);
 
@@ -211,12 +211,12 @@ class Couchbase implements KeyValueStore
 
         $value = $this->serialize($value);
 
-        if (null === $token) {
+        if ($token === null) {
             return false;
         }
         try {
             $options = new \Couchbase\ReplaceOptions();
-            $options = null === $this->timeout ? $options : $options->timeout($this->timeout);
+            $options = $this->timeout === null ? $options : $options->timeout($this->timeout);
             $options = $options->expiry($expire);
             $options = $options->cas($token);
             $this->collection->replace($key, $value, $options);
@@ -265,7 +265,7 @@ class Couchbase implements KeyValueStore
 
         try {
             $options = new \Couchbase\GetAndTouchOptions();
-            $options = null === $this->timeout ? $options : $options->timeout($this->timeout);
+            $options = $this->timeout === null ? $options : $options->timeout($this->timeout);
             $this->collection->getAndTouch($key, $expire, $options);
 
             return true;
@@ -310,7 +310,7 @@ class Couchbase implements KeyValueStore
         $this->assertValidKey($key);
 
         $value = $this->get($key, $token);
-        if (false === $value) {
+        if ($value === false) {
             $success = $this->add($key, $initial, $expire);
 
             return $success ? $initial : false;
@@ -359,7 +359,7 @@ class Couchbase implements KeyValueStore
         }
 
         $unserialized = @unserialize($value, ['allowed_classes' => true]);
-        if (false === $unserialized) {
+        if ($unserialized === false) {
             return $value;
         }
 

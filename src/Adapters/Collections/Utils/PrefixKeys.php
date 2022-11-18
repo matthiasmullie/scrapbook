@@ -132,11 +132,11 @@ class PrefixKeys implements KeyValueStore
 
     protected function prefix(string $key): string
     {
-        return $this->prefix.$key;
+        return $this->prefix . $key;
     }
 
     protected function unfix(string $key): string
     {
-        return preg_replace('/^'.preg_quote($this->prefix, '/').'/', '', $key);
+        return preg_replace('/^' . preg_quote($this->prefix, '/') . '/', '', $key);
     }
 }

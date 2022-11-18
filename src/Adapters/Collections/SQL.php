@@ -22,7 +22,7 @@ class SQL extends PrefixKeys
 
     public function __construct(Adapter $cache, \PDO $client, string $table, string $name)
     {
-        parent::__construct($cache, 'collection:'.$name.':');
+        parent::__construct($cache, 'collection:' . $name . ':');
         $this->client = $client;
         $this->table = $table;
     }
@@ -36,7 +36,7 @@ class SQL extends PrefixKeys
         );
 
         return $statement->execute([
-            ':key' => $this->prefix.'%',
+            ':key' => $this->prefix . '%',
         ]);
     }
 }

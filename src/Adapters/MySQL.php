@@ -33,7 +33,7 @@ class MySQL extends SQL
         ]);
 
         // 1 = insert; 2 = update
-        return 1 === $statement->rowCount() || 2 === $statement->rowCount();
+        return $statement->rowCount() === 1 || $statement->rowCount() === 2;
     }
 
     public function setMulti(array $items, int $expire = 0): array
@@ -64,7 +64,7 @@ class MySQL extends SQL
 
         $statement = $this->client->prepare(
             "REPLACE INTO $this->table (k, v, e)
-            VALUES ".implode(',', $query)
+            VALUES " . implode(',', $query)
         );
 
         $statement->execute($params);
@@ -101,12 +101,12 @@ class MySQL extends SQL
             ':expire' => $expire,
         ]);
 
-        return 1 === $statement->rowCount();
+        return $statement->rowCount() === 1;
     }
 
     public function flush(): bool
     {
-        return false !== $this->client->exec("TRUNCATE TABLE $this->table");
+        return $this->client->exec("TRUNCATE TABLE $this->table") !== false;
     }
 
     protected function init(): void

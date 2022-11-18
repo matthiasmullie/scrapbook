@@ -20,7 +20,7 @@ class CollectionsAdapterTest extends AdapterTest
     public function testCollectionGetParentKey(): void
     {
         $this->markTestSkipped(
-            'This test is invalid for collections derived from collections. '.
+            'This test is invalid for collections derived from collections. ' .
             "They don't keep nesting, there's only server/collection."
         );
     }
@@ -28,7 +28,7 @@ class CollectionsAdapterTest extends AdapterTest
     public function testCollectionGetCollectionKey(): void
     {
         $this->markTestSkipped(
-            'This test is invalid for collections derived from collections. '.
+            'This test is invalid for collections derived from collections. ' .
             "They don't keep nesting, there's only server/collection."
         );
     }
@@ -36,7 +36,7 @@ class CollectionsAdapterTest extends AdapterTest
     public function testCollectionSetSameKey(): void
     {
         $this->markTestSkipped(
-            'This test is invalid for collections derived from collections. '.
+            'This test is invalid for collections derived from collections. ' .
             "They don't keep nesting, there's only server/collection."
         );
     }
@@ -44,7 +44,7 @@ class CollectionsAdapterTest extends AdapterTest
     public function testCollectionFlushParent(): void
     {
         $this->markTestSkipped(
-            'This test is invalid for collections derived from collections. '.
+            'This test is invalid for collections derived from collections. ' .
             "They don't keep nesting, there's only server/collection."
         );
     }
@@ -52,7 +52,7 @@ class CollectionsAdapterTest extends AdapterTest
     public function testCollectionFlushCollection(): void
     {
         $this->markTestSkipped(
-            'This test is invalid for collections derived from collections. '.
+            'This test is invalid for collections derived from collections. ' .
             "They don't keep nesting, there's only server/collection."
         );
     }

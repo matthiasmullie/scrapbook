@@ -38,7 +38,7 @@ class BufferCollection extends MemoryStoreCollection
      */
     public function expired(string $key): bool
     {
-        if (false !== $this->get($key)) {
+        if ($this->get($key) !== false) {
             // returned a value, clearly not yet expired
             return false;
         }

@@ -161,7 +161,7 @@ class Defer
         $cache = $this->cache;
         $callback = static function (mixed $originalValue, string $key, mixed $value, int $expire) use ($cache): bool {
             // check if given (local) CAS token was known
-            if (null === $originalValue) {
+            if ($originalValue === null) {
                 return false;
             }
 
@@ -203,7 +203,7 @@ class Defer
             if (in_array($this->keys[$key][0], ['set', 'add', 'replace', 'cas'])) {
                 // we're trying to increment a key that's only just being stored
                 // in this transaction - might as well combine those
-                $symbol = 'increment' === $this->keys[$key][1] ? 1 : -1;
+                $symbol = $this->keys[$key][1] === 'increment' ? 1 : -1;
                 $this->keys[$key][2]['value'] += $symbol * $offset;
                 $this->keys[$key][2]['expire'] = $expire;
             } elseif (in_array($this->keys[$key][0], ['increment', 'decrement'])) {
@@ -212,10 +212,10 @@ class Defer
 
                 // we may be combining an increment with a decrement
                 // we must carefully figure out how these 2 apply against each other
-                $symbol = 'increment' === $this->keys[$key][0] ? 1 : -1;
+                $symbol = $this->keys[$key][0] === 'increment' ? 1 : -1;
                 $previous = $symbol * $this->keys[$key][2]['offset'];
 
-                $symbol = 'increment' === $operation ? 1 : -1;
+                $symbol = $operation === 'increment' ? 1 : -1;
                 $current = $symbol * $offset;
 
                 $offset = (int) ($previous + $current);
@@ -298,7 +298,7 @@ class Defer
             // success (true) or failure (false)
             [, $callback, $args] = $update;
             $success = call_user_func_array($callback, $args);
-            if (false === $success) {
+            if ($success === false) {
                 $this->rollback($old, $new);
 
                 return false;
