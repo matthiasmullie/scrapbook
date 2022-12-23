@@ -1,5 +1,5 @@
 # defaults for `make test`
-PHP ?= 8.1
+PHP ?=
 ADAPTER ?= Apc,Couchbase,Flysystem,Memcached,MemoryStore,MySQL,PostgreSQL,Redis,SQLite
 
 install:
@@ -33,7 +33,7 @@ test:
 	# Usage:
 	# make test - tests all adapters on latest PHP version
 	# make test PHP=8.0 ADAPTER=Memcached - tests Memcached on PHP 8.0
-	TEST_CONTAINER="php-$(PHP)";\
+	test "$(PHP)" && TEST_CONTAINER=php-$(PHP) || TEST_CONTAINER=php;\
 	DEPENDENT_CONTAINERS="$(filter-out apc flysystem memorystore sqlite, $(shell echo $(ADAPTER) | tr 'A-Z,' 'a-z '))";\
 	RELEVANT_CONTAINERS="$$TEST_CONTAINER $(filter-out apc flysystem memorystore sqlite, $(shell echo $(ADAPTER) | tr 'A-Z,' 'a-z '))";\
 	docker-compose up --no-deps -d $$DEPENDENT_CONTAINERS;\

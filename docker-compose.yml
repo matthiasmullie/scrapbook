@@ -1,4 +1,5 @@
 version: '3.8'
+
 services:
   php: &default-php
     tty: true
@@ -37,6 +38,12 @@ services:
       <<: *default-php-build
       args:
         version: 8.1-cli
+  php-8.2:
+    <<: *default-php
+    build:
+      <<: *default-php-build
+      args:
+        version: 8.2-cli
   couchbase:
     build:
       context: .
