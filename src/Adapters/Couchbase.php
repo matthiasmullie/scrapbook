@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace MatthiasMullie\Scrapbook\Adapters;
 
+use DateTime;
 use MatthiasMullie\Scrapbook\Adapters\Collections\Couchbase as Collection;
 use MatthiasMullie\Scrapbook\Exception\InvalidKey;
 use MatthiasMullie\Scrapbook\KeyValueStore;
@@ -101,7 +102,7 @@ class Couchbase implements KeyValueStore
         try {
             $options = new \Couchbase\UpsertOptions();
             $options = $this->timeout === null ? $options : $options->timeout($this->timeout);
-            $options = $options->expiry($expire);
+            $options = $options->expiry($this->expire($expire));
             $this->collection->upsert($key, $value, $options);
 
             return true;
@@ -166,7 +167,7 @@ class Couchbase implements KeyValueStore
         try {
             $options = new \Couchbase\InsertOptions();
             $options = $this->timeout === null ? $options : $options->timeout($this->timeout);
-            $options = $options->expiry($expire);
+            $options = $options->expiry($this->expire($expire));
             $this->collection->insert($key, $value, $options);
 
             $this->deleteIfExpired($key, $expire);
@@ -190,7 +191,7 @@ class Couchbase implements KeyValueStore
         try {
             $options = new \Couchbase\ReplaceOptions();
             $options = $this->timeout === null ? $options : $options->timeout($this->timeout);
-            $options = $options->expiry($expire);
+            $options = $options->expiry($this->expire($expire));
             $this->collection->replace($key, $value, $options);
 
             $this->deleteIfExpired($key, $expire);
@@ -217,7 +218,7 @@ class Couchbase implements KeyValueStore
         try {
             $options = new \Couchbase\ReplaceOptions();
             $options = $this->timeout === null ? $options : $options->timeout($this->timeout);
-            $options = $options->expiry($expire);
+            $options = $options->expiry($this->expire($expire));
             $options = $options->cas($token);
             $this->collection->replace($key, $value, $options);
 
@@ -266,7 +267,7 @@ class Couchbase implements KeyValueStore
         try {
             $options = new \Couchbase\GetAndTouchOptions();
             $options = $this->timeout === null ? $options : $options->timeout($this->timeout);
-            $this->collection->getAndTouch($key, $expire, $options);
+            $this->collection->getAndTouch($key, $this->expire($expire), $options);
 
             return true;
         } catch (\Couchbase\Exception\CouchbaseException $e) {
@@ -388,6 +389,29 @@ class Couchbase implements KeyValueStore
         }
 
         return false;
+    }
+
+    /**
+     * Couchbase expects an integer TTL (under 1576800000) for relative
+     * times, or a \DateTimeInterface for absolute times.
+     *
+     * @return int|DateTime expiration in seconds or \DateTimeInterface
+     */
+    protected function expire(int $expire): int|DateTime
+    {
+        // relative time in seconds, <30 days
+        if ($expire < 30 * 24 * 60 * 60) {flush();
+            return $expire;
+        }
+
+        if ($expire < time()) {
+            // a timestamp (whether int or DateTimeInterface) larger than
+            // 1576800000 is not accepted; let's just go with -1, result
+            // is the same: it's expired & should be evicted
+            return -1; // @todo this if statement should be useless; this case should be fine as DateTime
+        }
+
+        return (new DateTime())->setTimestamp($expire);
     }
 
     /**

@@ -166,36 +166,35 @@ class SimpleCache implements CacheInterface
             return 0;
         }
 
-        if (is_int($ttl)) {
-            /*
-             * PSR-16 specifies that if `0` is provided, it must be treated as
-             * expired, whereas KeyValueStore will interpret 0 to mean "never
-             * expire".
-             */
-            if ($ttl === 0) {
-                return -1;
-            }
-
-            /*
-             * PSR-16 only accepts relative timestamps, whereas KeyValueStore
-             * accepts both relative & absolute, depending on what the timestamp
-             * is. We'll convert all timestamps > 30 days into absolute
-             * timestamps; the others can remain relative, as KeyValueStore will
-             * already treat those values as such.
-             * @see https://github.com/dragoonis/psr-simplecache/issues/3
-             */
-            if ($ttl > 30 * 24 * 60 * 60) {
-                return $ttl + time();
-            }
-
-            return $ttl;
+        if ($ttl instanceof \DateInterval) {
+            // convert DateInterval to integer by adding it to a 0 DateTime
+            $datetime = new \DateTime();
+            $datetime->setTimestamp(0);
+            $datetime->add($ttl);
+            $ttl = (int) $datetime->format('U');
         }
 
-        // convert DateInterval to integer by adding it to a 0 DateTime
-        $datetime = new \DateTime();
-        $datetime->setTimestamp(0);
-        $datetime->add($ttl);
+        /*
+         * PSR-16 specifies that if `0` is provided, it must be treated as
+         * expired, whereas KeyValueStore will interpret 0 to mean "never
+         * expire".
+         */
+        if ($ttl === 0) {
+            return -1;
+        }
 
-        return time() + (int) $datetime->format('U');
+        /*
+         * PSR-16 only accepts relative timestamps, whereas KeyValueStore
+         * accepts both relative & absolute, depending on what the timestamp
+         * is. We'll convert all timestamps > 30 days into absolute
+         * timestamps; the others can remain relative, as KeyValueStore will
+         * already treat those values as such.
+         * @see https://github.com/dragoonis/psr-simplecache/issues/3
+         */
+        if ($ttl > 30 * 24 * 60 * 60) {
+            return $ttl + time();
+        }
+
+        return $ttl;
     }
 }

@@ -1,6 +1,11 @@
 # Changelog
 
 
+## [1.5.1] - 2023-01-26
+### Fixed
+- Fixed Couchbase's updated expiration handling
+
+
 ## [1.5.0] - 2022-11-10
 ### Added
 - Compatibility with psr/cache version 3
@@ -334,3 +339,4 @@
 [1.4.8]: https://github.com/matthiasmullie/scrapbook/compare/1.4.7...1.4.8
 [1.4.9]: https://github.com/matthiasmullie/scrapbook/compare/1.4.8...1.4.9
 [1.5.0]: https://github.com/matthiasmullie/scrapbook/compare/1.4.9...1.5.0
+[1.5.1]: https://github.com/matthiasmullie/scrapbook/compare/1.5.0...1.5.1

@@ -462,11 +462,11 @@ class Redis implements KeyValueStore
         }
 
         // relative time in seconds, <30 days
-        if ($expire > 30 * 24 * 60 * 60) {
-            return $expire - time();
+        if ($expire < 30 * 24 * 60 * 60) {
+            return $expire;
         }
 
-        return $expire;
+        return $expire - time();
     }
 
     /**

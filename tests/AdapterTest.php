@@ -575,4 +575,43 @@ class AdapterTest extends AdapterTestCase
         $this->assertEquals('value', $this->cache->get('key'));
         $this->assertFalse($collection->get('key'));
     }
+
+    public function testPermanentExpiration(): void
+    {
+        $return = $this->cache->set('set', 'value', 0);
+        $this->assertTrue($return);
+
+        $return = $this->cache->setMulti(['setMulti' => 'value'], 0);
+        $this->assertEquals(['setMulti' => true], $return);
+
+        $return = $this->cache->add('add', 'value', 0);
+        $this->assertTrue($return);
+
+        $this->cache->set('replace', 'something-else', 0);
+        $return = $this->cache->replace('replace', 'value', 0);
+        $this->assertTrue($return);
+
+        $this->cache->set('cas', 'something-else', 0);
+        $this->cache->get('cas', $token);
+        $return = $this->cache->cas($token, 'cas', 'value', 0);
+        $this->assertTrue($return);
+
+        $return = $this->cache->increment('increment', 1, 1, 0);
+        $this->assertEquals(1, $return);
+
+        $return = $this->cache->decrement('decrement', 1, 1, 0);
+        $this->assertEquals(1, $return);
+
+        sleep(2);
+
+        // confirm that data is still there, and an expiration of 0 was not
+        // interpreted to mean "expire this second"
+        $this->assertEquals('value', $this->cache->get('set'));
+        $this->assertEquals('value', $this->cache->get('setMulti'));
+        $this->assertEquals('value', $this->cache->get('add'));
+        $this->assertEquals('value', $this->cache->get('replace'));
+        $this->assertEquals('value', $this->cache->get('cas'));
+        $this->assertEquals(1, $this->cache->get('increment'));
+        $this->assertEquals(1, $this->cache->get('decrement'));
+    }
 }
