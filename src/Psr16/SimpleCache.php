@@ -39,7 +39,7 @@ class SimpleCache implements CacheInterface
         return $multi[$key] ?? $default;
     }
 
-    public function set(string $key, mixed $value, null|int|\DateInterval $ttl = null): bool
+    public function set(string $key, mixed $value, int|\DateInterval $ttl = null): bool
     {
         $this->assertValidKey($key);
         $ttl = $this->ttl($ttl);
@@ -83,7 +83,7 @@ class SimpleCache implements CacheInterface
         return array_merge($nulls, $results);
     }
 
-    public function setMultiple(iterable $values, null|int|\DateInterval $ttl = null): bool
+    public function setMultiple(iterable $values, int|\DateInterval $ttl = null): bool
     {
         if ($values instanceof \Traversable) {
             // we also need the keys, and an array is stricter about what it can

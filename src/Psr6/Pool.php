@@ -75,8 +75,6 @@ class Pool implements CacheItemPoolInterface
     }
 
     /**
-     * {@inheritdoc}
-     *
      * @return Item[]
      */
     public function getItems(array $keys = []): iterable

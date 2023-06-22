@@ -2,8 +2,6 @@ ARG version=cli
 FROM php:$version
 
 WORKDIR /var/www
-COPY makefile makefile
-COPY composer.json composer.json
-COPY docker docker
+COPY . .
 
 RUN docker/php.sh

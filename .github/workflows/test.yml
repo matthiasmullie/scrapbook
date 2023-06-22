@@ -11,6 +11,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+      - name: Install latest Docker Compose
+        run: |
+          curl -L "https://github.com/docker/compose/releases/latest/download/docker-compose-$(uname -s | tr '[:upper:]' '[:lower:]')-$(uname -m)" -o docker-compose
+          chmod +x docker-compose
+          mv docker-compose /usr/local/bin/docker-compose
       - name: Test PHP 8.2
         run: make test PHP=8.2
       - name: Test PHP 8.1

@@ -8,24 +8,6 @@ services:
       dockerfile: Dockerfile
       args:
         version: cli
-    volumes:
-      - ./src:/var/www/src
-      - ./tests:/var/www/tests
-      - ./build:/var/www/build
-      - ./.php-cs-fixer.php:/var/www/.php-cs-fixer.php
-      - ./phpunit.xml:/var/www/phpunit.xml
-      - ./ruleset.xml:/var/www/ruleset.xml
-    depends_on:
-      couchbase:
-        condition: service_healthy
-      memcached:
-        condition: service_started
-      mysql:
-        condition: service_healthy
-      postgresql:
-        condition: service_healthy
-      redis:
-        condition: service_healthy
   php-8.0:
     <<: *default-php
     build:
@@ -60,11 +42,12 @@ services:
     image: mysql
     command: ['--character-set-server=utf8mb4', '--collation-server=utf8mb4_unicode_ci','--default-authentication-plugin=mysql_native_password']
     environment:
-      - MYSQL_ALLOW_EMPTY_PASSWORD=yes
-      - MYSQL_ROOT_PASSWORD=
+      - MYSQL_ROOT_PASSWORD=pass
+      - MYSQL_USER=user
+      - MYSQL_PASSWORD=pass
       - MYSQL_DATABASE=cache
     healthcheck:
-      test: ["CMD", "mysql" ,"-h", "mysql", "-P", "3306", "-u", "root", "-e", "SELECT 1", "cache"]
+      test: ["CMD", "mysqladmin", "ping", "-hmysql", "-P3306", "-uuser", "-ppass"]
       interval: 3s
       timeout: 3s
       retries: 30

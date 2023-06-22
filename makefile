@@ -1,6 +1,8 @@
 # defaults for `make test`
 PHP ?=
 ADAPTER ?= Apc,Couchbase,Flysystem,Memcached,MemoryStore,MySQL,PostgreSQL,Redis,SQLite
+GROUP ?= adapter,buffered,collections,keyvaluestore,psr6,psr16,shard,transactional,stampede
+VOLUME_BINDS ?= src,tests,build,.php-cs-fixer.php,phpunit.xml,ruleset.xml
 
 install:
 	wget -q -O - https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
@@ -33,16 +35,20 @@ test:
 	# Usage:
 	# make test - tests all adapters on latest PHP version
 	# make test PHP=8.0 ADAPTER=Memcached - tests Memcached on PHP 8.0
+	VOLUMES=""
+	for VOLUME in $$(echo "$(VOLUME_BINDS)" | tr "," "\n"); do VOLUMES="$$VOLUMES -v $$(pwd)/$$VOLUME:/var/www/$$VOLUME"; done;\
 	test "$(PHP)" && TEST_CONTAINER=php-$(PHP) || TEST_CONTAINER=php;\
 	DEPENDENT_CONTAINERS="$(filter-out apc flysystem memorystore sqlite, $(shell echo $(ADAPTER) | tr 'A-Z,' 'a-z '))";\
 	RELEVANT_CONTAINERS="$$TEST_CONTAINER $(filter-out apc flysystem memorystore sqlite, $(shell echo $(ADAPTER) | tr 'A-Z,' 'a-z '))";\
-	docker-compose up --no-deps -d $$DEPENDENT_CONTAINERS;\
-	docker-compose run --no-deps $$TEST_CONTAINER env XDEBUG_MODE=coverage vendor/bin/phpunit --group $(ADAPTER) --coverage-clover build/coverage-$(PHP)-$(ADAPTER).clover;\
+	docker-compose up --no-deps --wait -d $$DEPENDENT_CONTAINERS;\
+	docker-compose run --no-deps $$VOLUMES $$TEST_CONTAINER env XDEBUG_MODE=coverage vendor/bin/phpunit --group $(GROUP) --testsuite $(ADAPTER) --coverage-clover build/coverage-$(PHP)-$(ADAPTER).clover;\
 	TEST_STATUS=$$?;\
 	docker-compose stop -t0 $$RELEVANT_CONTAINERS;\
 	exit $$TEST_STATUS
 
 format:
-	docker-compose run --no-deps php sh -c "vendor/bin/php-cs-fixer fix && vendor/bin/phpcbf --standard=ruleset.xml"
+	VOLUMES=""
+	for VOLUME in $$(echo "$(VOLUME_BINDS)" | tr "," "\n"); do VOLUMES="$$VOLUMES -v $$(pwd)/$$VOLUME:/var/www/$$VOLUME"; done;\
+	docker-compose run --no-deps $$VOLUMES php sh -c "vendor/bin/php-cs-fixer fix && vendor/bin/phpcbf --standard=ruleset.xml"
 
 .PHONY: docs

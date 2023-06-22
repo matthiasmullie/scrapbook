@@ -1,17 +1,43 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" colors="true" bootstrap="tests/bootstrap.php" xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/9.3/phpunit.xsd">
-	<coverage>
-		<include>
-			<directory suffix=".php">src</directory>
-		</include>
-		<report>
-			<clover outputFile="build/coverage.clover"/>
-		</report>
-	</coverage>
-	<testsuites>
-		<testsuite name="scrapbook">
-			<directory suffix="Test.php">tests</directory>
-		</testsuite>
-	</testsuites>
-	<logging/>
+<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" colors="true" bootstrap="tests/bootstrap.php" xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/10.2/phpunit.xsd">
+  <coverage>
+    <report>
+      <clover outputFile="build/coverage.clover"/>
+    </report>
+  </coverage>
+  <testsuites>
+    <testsuite name="Apc">
+      <directory suffix="Test.php">tests/Adapters/Apc</directory>
+    </testsuite>
+    <testsuite name="Couchbase">
+      <directory suffix="Test.php">tests/Adapters/Couchbase</directory>
+    </testsuite>
+    <testsuite name="Flysystem">
+      <directory suffix="Test.php">tests/Adapters/Flysystem</directory>
+    </testsuite>
+    <testsuite name="Memcached">
+      <directory suffix="Test.php">tests/Adapters/Memcached</directory>
+    </testsuite>
+    <testsuite name="MemoryStore">
+      <directory suffix="Test.php">tests/Adapters/MemoryStore</directory>
+    </testsuite>
+    <testsuite name="MySQL">
+      <directory suffix="Test.php">tests/Adapters/MySQL</directory>
+    </testsuite>
+    <testsuite name="PostgreSQL">
+      <directory suffix="Test.php">tests/Adapters/PostgreSQL</directory>
+    </testsuite>
+    <testsuite name="Redis">
+      <directory suffix="Test.php">tests/Adapters/Redis</directory>
+    </testsuite>
+    <testsuite name="SQLite">
+      <directory suffix="Test.php">tests/Adapters/SQLite</directory>
+    </testsuite>
+  </testsuites>
+  <logging/>
+  <source>
+    <include>
+      <directory suffix=".php">src</directory>
+    </include>
+  </source>
 </phpunit>

@@ -395,12 +395,14 @@ class Couchbase implements KeyValueStore
      * Couchbase expects an integer TTL (under 1576800000) for relative
      * times, or a \DateTimeInterface for absolute times.
      *
-     * @return int|DateTime expiration in seconds or \DateTimeInterface
+     * @return int|\DateTime expiration in seconds or \DateTimeInterface
      */
-    protected function expire(int $expire): int|DateTime
+    protected function expire(int $expire): int|\DateTime
     {
         // relative time in seconds, <30 days
-        if ($expire < 30 * 24 * 60 * 60) {flush();
+        if ($expire < 30 * 24 * 60 * 60) {
+            flush();
+
             return $expire;
         }
 
@@ -411,7 +413,7 @@ class Couchbase implements KeyValueStore
             return -1; // @todo this if statement should be useless; this case should be fine as DateTime
         }
 
-        return (new DateTime())->setTimestamp($expire);
+        return (new \DateTime())->setTimestamp($expire);
     }
 
     /**
