@@ -1,6 +1,11 @@
 # Changelog
 
 
+## [x.y.z] - a-b-c
+### Changed
+- Refactored tests for PHPUnit 10.x compat
+
+
 ## [1.5.1] - 2023-01-26
 ### Fixed
 - Fixed Couchbase's updated expiration handling
@@ -340,3 +345,4 @@
 [1.4.9]: https://github.com/matthiasmullie/scrapbook/compare/1.4.8...1.4.9
 [1.5.0]: https://github.com/matthiasmullie/scrapbook/compare/1.4.9...1.5.0
 [1.5.1]: https://github.com/matthiasmullie/scrapbook/compare/1.5.0...1.5.1
+[x.y.z]: https://github.com/matthiasmullie/scrapbook/compare/1.5.1...x.y.z
