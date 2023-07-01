@@ -11,8 +11,9 @@ jobs:
       - uses: actions/checkout@v3
       - name: Install latest Docker Compose
         run: |
-          curl -L "https://github.com/docker/compose/releases/latest/download/docker-compose-$(uname -s | tr '[:upper:]' '[:lower:]')-$(uname -m)" -o /usr/local/bin/docker-compose
-          chmod +x /usr/local/bin/docker-compose
+          curl -L "https://github.com/docker/compose/releases/latest/download/docker-compose-$(uname -s | tr '[:upper:]' '[:lower:]')-$(uname -m)" -o docker-compose
+          chmod +x docker-compose
+          mv docker-compose /usr/local/bin/docker-compose
       - name: Test (twice, if needed)
         run: make test || make test
       - name: Healthcheck ping
