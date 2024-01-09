@@ -1,9 +1,9 @@
 # Changelog
 
 
-## [x.y.z] - a-b-c
-### Changed
-- Refactored tests for PHPUnit 10.x compat
+## [1.5.2] - 2024-01-09
+### Fixed
+- Stampede: removed unnecessary wait caused by lingering stampede key
 
 
 ## [1.5.1] - 2023-01-26

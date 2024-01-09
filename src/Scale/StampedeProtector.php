@@ -102,6 +102,8 @@ class StampedeProtector implements KeyValueStore
         // we over-fetched (to include stampede indicators), now limit the
         // results to only the keys we requested
         $results = array_intersect_key($values, array_flip($keys));
+        // we may have fetched the values but the stampede protector is still up
+        $protected = array_diff($protected, array_keys($results));
         $tokens = array_intersect_key($tokens, $results);
 
         // we may not have been able to retrieve all keys yet: some may have
