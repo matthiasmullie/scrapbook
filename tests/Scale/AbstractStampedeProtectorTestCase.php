@@ -197,6 +197,57 @@ abstract class AbstractStampedeProtectorTestCase extends AbstractKeyValueStoreTe
         }
     }
 
+    public function testStampedeGetExistingAndProtected(): void
+    {
+        /*
+         * this test is for a rare occurrence where one request protects a key
+         * and resolves the value very fast but the other request reads both
+         * the stampede and the value but still waits and it shouldn't
+         */
+
+        if (!$this->isForkable()) {
+            $this->markTestSkipped("Can't test stampede without forking");
+        }
+
+        $this->adapterKeyValueStore->set('key', 'value');
+        $this->adapterKeyValueStore->set('key.stampede', '');
+
+        $pid = pcntl_fork();
+        if ($pid === -1) {
+            // can't fork, ignore this test...
+        } elseif ($pid === 0) {
+            // request non-existing key: this should make us go in stampede-
+            // protection mode if another process/thread requests it again...
+            $this->testKeyValueStore->get('key');
+
+            // meanwhile, sleep for a small portion of the stampede-protection
+            // time - this could be an expensive computation
+            usleep(static::SLA / 10 * 1000 + 1);
+
+            // now that we've computed the new value, store it!
+            $this->testKeyValueStore->set('key', 'value');
+
+            // exit child process, since I don't want the child to output any
+            // test results (would be rather confusing to have output twice)
+            exit;
+        } else {
+            /*
+             * Thread execution is in OS scheduler's hands. We don't want to
+             * start testing stampede protection until the other thread has done
+             * the first request though, so let's wait a bit...
+             */
+            while ($this->adapterKeyValueStore->getMulti(['key', 'key.stampede']) === []) {
+                usleep(10);
+            }
+
+            // verify that we WERE able to fetch the value, and we did not wait
+            $this->assertEquals('value', $this->testKeyValueStore->get('key'));
+            $this->assertEquals(0, $this->testKeyValueStore->count);
+
+            pcntl_waitpid(0, $status, WNOHANG);
+        }
+    }
+
     /**
      * Forking the parent is process is the only way to accurately test
      * concurrent requests. However, forking comes with its own set of problems,
