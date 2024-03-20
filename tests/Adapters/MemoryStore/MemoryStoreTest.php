@@ -6,10 +6,9 @@ namespace MatthiasMullie\Scrapbook\Tests\Adapters\MemoryStore;
 
 use MatthiasMullie\Scrapbook\Adapters\MemoryStore;
 use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\Attributes\Group;
 
-/**
- * @group adapter
- */
+#[Group('adapter')]
 class MemoryStoreTest extends TestCase
 {
     public function testLRU(): void

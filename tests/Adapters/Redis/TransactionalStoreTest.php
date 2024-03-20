@@ -5,10 +5,9 @@ declare(strict_types=1);
 namespace MatthiasMullie\Scrapbook\Tests\Adapters\Redis;
 
 use MatthiasMullie\Scrapbook\Tests\Buffered\AbstractTransactionalStoreTestCase;
+use PHPUnit\Framework\Attributes\Group;
 
-/**
- * @group transactional
- */
+#[Group('transactional')]
 class TransactionalStoreTest extends AbstractTransactionalStoreTestCase
 {
     use AdapterProviderTrait;

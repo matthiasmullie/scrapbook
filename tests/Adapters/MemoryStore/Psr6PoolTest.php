@@ -5,10 +5,9 @@ declare(strict_types=1);
 namespace MatthiasMullie\Scrapbook\Tests\Adapters\MemoryStore;
 
 use MatthiasMullie\Scrapbook\Tests\Psr6\AbstractPoolTestCase;
+use PHPUnit\Framework\Attributes\Group;
 
-/**
- * @group psr6
- */
+#[Group('psr6')]
 class Psr6PoolTest extends AbstractPoolTestCase
 {
     use AdapterProviderTrait;

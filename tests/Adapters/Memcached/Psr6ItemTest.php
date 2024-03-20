@@ -5,10 +5,9 @@ declare(strict_types=1);
 namespace MatthiasMullie\Scrapbook\Tests\Adapters\Memcached;
 
 use MatthiasMullie\Scrapbook\Tests\Psr6\AbstractItemTestCase;
+use PHPUnit\Framework\Attributes\Group;
 
-/**
- * @group psr6
- */
+#[Group('psr6')]
 class Psr6ItemTest extends AbstractItemTestCase
 {
     use AdapterProviderTrait;

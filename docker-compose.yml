@@ -8,12 +8,6 @@ services:
       dockerfile: Dockerfile
       args:
         version: cli
-  php-8.0:
-    <<: *default-php
-    build:
-      <<: *default-php-build
-      args:
-        version: 8.0-cli
   php-8.1:
     <<: *default-php
     build:
@@ -26,6 +20,12 @@ services:
       <<: *default-php-build
       args:
         version: 8.2-cli
+  php-8.3:
+    <<: *default-php
+    build:
+      <<: *default-php-build
+      args:
+        version: 8.3-cli
   couchbase:
     build:
       context: .

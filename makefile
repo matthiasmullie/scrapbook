@@ -34,7 +34,7 @@ docs:
 test:
 	# Usage:
 	# make test - tests all adapters on latest PHP version
-	# make test PHP=8.0 ADAPTER=Memcached - tests Memcached on PHP 8.0
+	# make test PHP=8.3 ADAPTER=Memcached - tests Memcached on PHP 8.3
 	VOLUMES=""
 	for VOLUME in $$(echo "$(VOLUME_BINDS)" | tr "," "\n"); do VOLUMES="$$VOLUMES -v $$(pwd)/$$VOLUME:/var/www/$$VOLUME"; done;\
 	test "$(PHP)" && TEST_CONTAINER=php-$(PHP) || TEST_CONTAINER=php;\
