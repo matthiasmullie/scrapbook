@@ -271,7 +271,7 @@ of any adapter.
 
 ## Local buffer
 
-BufferedStore helps reduce requests to your real cache. If you need the request
+BufferedStore helps reduce requests to your real cache. If you need to request
 the same value more than once (from various places in your code), it can be a
 pain to keep that value around. Requesting it again from cache would be easier,
 but then you get some latency from the connection to the cache server.
@@ -295,13 +295,13 @@ Similar to transactions in databases, all deferred writes can be rolled back or
 committed all at once to ensure the data that is stored is reliable and
 complete. All of it will be stored, or nothing at all.
 
-You may want to process code throughout your codebase, but not commit it any
+You may want to process code throughout your codebase, but not commit any
 changes until everything has successfully been validated & written to permanent
 storage.
 
 While inside a transaction, you don't have to worry about data consistency.
 Inside a transaction, even if it has not yet been committed, you'll always be
-served the one you intend to store. In other words, when you write a new value
+served the value you intend to store. In other words, when you write a new value
 to cache but have not yet committed it, you'll still get that value when you
 query for it. Should you rollback, or fail to commit (because data stored by
 another process caused your commit to fail), then you'll get the original value
