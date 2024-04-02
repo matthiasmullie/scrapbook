@@ -2,7 +2,7 @@
 
 apt-get update
 apt-get install --reinstall -y ca-certificates
-apt-get install -y libssl-dev zlib1g-dev libzip-dev libmemcached-dev libpq-dev cmake
+apt-get install -y libssl-dev zlib1g-dev libzip-dev libmemcached-dev libpq-dev git cmake
 
 pecl install -f couchbase
 pecl install -f xdebug
