@@ -48,7 +48,7 @@ storage.
 
 While inside a transaction, you don't have to worry about data consistency.
 Inside a transaction, even if it has not yet been committed, you'll always be
-served the one you intend to store. In other words, when you write a new value
+served the value you intend to store. In other words, when you write a new value
 to cache but have not yet committed it, you'll still get that value when you
 query for it. Should you rollback, or fail to commit (because data stored by
 another process caused your commit to fail), then you'll get the original value
