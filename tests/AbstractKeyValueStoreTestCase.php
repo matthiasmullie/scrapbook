@@ -265,6 +265,20 @@ abstract class AbstractKeyValueStoreTestCase extends AbstractAdapterTestCase
         $this->assertEquals('value', $this->testKeyValueStore->get('test key'));
     }
 
+    public function testAddWithExpirationFail(): void
+    {
+        $this->testKeyValueStore->set('test key', 'value', 1);
+        $return = $this->testKeyValueStore->add('test key', 'value-2', 5);
+
+        // wait 2 seconds; this ensures that we did not touch the original value,
+        // which will have expired
+        // @see https://github.com/matthiasmullie/scrapbook/issues/56
+        sleep(2);
+
+        $this->assertFalse($return);
+        $this->assertEquals(null, $this->testKeyValueStore->get('test key'));
+    }
+
     public function testAddExpired(): void
     {
         $return = $this->testKeyValueStore->add('test key', 'value', time() - 2);

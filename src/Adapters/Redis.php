@@ -228,14 +228,66 @@ class Redis implements KeyValueStore
         }
 
         /*
-         * I could use Redis 2.6.12-style options array:
-         * $this->client->set($key, $value, array('xx', 'ex' => $ttl));
-         * However, this one should be pretty fast already, compared to the
-         * replace-workaround below.
+         * Redis supports passing set() an extended options array since >=2.6.12
+         * which allows for an easy and 1-request way to replace a value.
+         * That version already comes with Ubuntu 14.04. Ubuntu 12.04 (still
+         * widely used and in LTS) comes with an older version, however, so I
+         * want to support that too.
+         * Supporting both versions comes at a cost.
+         * I'll optimize for recent versions, which will get (in case of add
+         * failure) 1 additional network request (for version info). Older
+         * versions will get 2 additional network requests: a failed add
+         * (because the options are unknown) & a version check.
          */
+        if ($this->version === null || $this->supportsOptionsArray()) {
+            $options = ['nx'];
+            if ($ttl > 0) {
+                /*
+                 * Not adding 0 TTL to options:
+                 * * HHVM (used to) interpret(s) wrongly & throw an exception
+                 * * it's not needed anyway, for 0...
+                 * @see https://github.com/facebook/hhvm/pull/4833
+                 */
+                $options['ex'] = $ttl;
+            }
+
+            // either we support options array or we haven't yet checked, in
+            // which case I'll assume a recent server is running
+            $result = $this->client->set($key, $value, $options);
+            if ($result !== false) {
+                return $result;
+            }
+
+            if ($this->supportsOptionsArray()) {
+                // failed execution, but not because our Redis version is too old
+                return false;
+            }
+        }
+
+        // workaround for old Redis versions
+        $this->client->watch($key);
+
+        $exists = $this->client->exists('key');
+        if ($exists) {
+            /*
+             * HHVM Redis only got unwatch recently
+             * @see https://github.com/asgrim/hhvm/commit/bf5a259cece5df8a7617133c85043608d1ad5316
+             */
+            if (method_exists($this->client, 'unwatch')) {
+                $this->client->unwatch();
+            } else {
+                // this should also kill the watch...
+                $this->client->multi()->discard();
+            }
+
+            return false;
+        }
+
+        // since we're watching the key, this will fail should it change in the
+        // meantime
         $this->client->multi();
-        $this->client->setnx($key, $value);
-        $this->client->expire($key, $ttl);
+
+        $this->client->set($key, $value, $ttl);
 
         /** @var bool[] $return */
         $return = (array) $this->client->exec();

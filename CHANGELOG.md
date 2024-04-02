@@ -1,6 +1,14 @@
 # Changelog
 
 
+## [1.5.3] - 2024-04-02
+### Fixed
+- Fixed Redis TLL override on failure to add key
+
+### Changed
+- Moved to PHPUnit >=10.x and attributes
+
+
 ## [1.5.2] - 2024-01-10
 ### Fixed
 - Stampede: removed unnecessary wait caused by lingering stampede key
@@ -349,3 +357,4 @@
 [1.5.0]: https://github.com/matthiasmullie/scrapbook/compare/1.4.9...1.5.0
 [1.5.1]: https://github.com/matthiasmullie/scrapbook/compare/1.5.0...1.5.1
 [1.5.2]: https://github.com/matthiasmullie/scrapbook/compare/1.5.1...1.5.2
+[1.5.3]: https://github.com/matthiasmullie/scrapbook/compare/1.5.2...1.5.3
