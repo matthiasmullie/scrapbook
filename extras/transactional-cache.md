@@ -42,7 +42,7 @@ Similar to transactions in databases, all deferred writes can be rolled back or
 committed all at once to ensure the data that is stored is reliable and
 complete. All of it will be stored, or nothing at all.
 
-You may want to process code throughout your codebase, but not commit it any
+You may want to process code throughout your codebase, but not commit any
 changes until everything has successfully been validated & written to permanent
 storage.
 
