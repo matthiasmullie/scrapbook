@@ -1,7 +1,7 @@
 ---
 layout: extra
 title: Local buffer
-description: BufferedStore helps reduce requests to your real cache. If you need the request the same value more than once (from various places in your code), it can be a pain to keep that value around. Requesting it again from cache would be easier, but then you get some latency from the connection to the cache server.
+description: BufferedStore helps reduce requests to your real cache. If you need to request the same value more than once (from various places in your code), it can be a pain to keep that value around. Requesting it again from cache would be easier, but then you get some latency from the connection to the cache server.
 weight: 0
 icon: fa fa-rocket
 class: MatthiasMullie\Scrapbook\Buffered\BufferedStore
@@ -25,7 +25,7 @@ $buffered->set('key', 'value'); // returns true
 $buffered->get('key'); // returns 'value'
 ```
 
-BufferedStore helps reduce requests to your real cache. If you need the request
+BufferedStore helps reduce requests to your real cache. If you need to request
 the same value more than once (from various places in your code), it can be a
 pain to keep that value around. Requesting it again from cache would be easier,
 but then you get some latency from the connection to the cache server.
