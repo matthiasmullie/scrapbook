@@ -113,7 +113,7 @@ class Transaction implements KeyValueStore
         return $value;
     }
 
-    public function getMulti(array $keys, array &$tokens = null): array
+    public function getMulti(array $keys, ?array &$tokens = null): array
     {
         // retrieve all that we can from local cache
         $values = $this->local->getMulti($keys);

@@ -116,7 +116,7 @@ class TransactionalStore implements KeyValueStore
         return end($this->transactions)->get($key, $token);
     }
 
-    public function getMulti(array $keys, array &$tokens = null): array
+    public function getMulti(array $keys, ?array &$tokens = null): array
     {
         return end($this->transactions)->getMulti($keys, $tokens);
     }

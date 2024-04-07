@@ -30,7 +30,7 @@ class MemoryStore implements KeyValueStore
     /**
      * @param int|string|null $limit Memory limit in bytes (defaults to 10% of memory_limit)
      */
-    public function __construct(int|string $limit = null)
+    public function __construct(int|string|null $limit = null)
     {
         if ($limit === null) {
             $phpLimit = ini_get('memory_limit');
@@ -60,7 +60,7 @@ class MemoryStore implements KeyValueStore
         return unserialize($value, ['allowed_classes' => true]);
     }
 
-    public function getMulti(array $keys, array &$tokens = null): array
+    public function getMulti(array $keys, ?array &$tokens = null): array
     {
         $items = [];
         $tokens = [];

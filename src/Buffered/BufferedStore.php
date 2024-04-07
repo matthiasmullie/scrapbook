@@ -75,7 +75,7 @@ class BufferedStore implements KeyValueStore
      *
      * {@inheritdoc}
      */
-    public function getMulti(array $keys, array &$tokens = null): array
+    public function getMulti(array $keys, ?array &$tokens = null): array
     {
         $values = $this->transaction->getMulti($keys, $tokens);
 

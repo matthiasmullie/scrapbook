@@ -34,7 +34,7 @@ class PostgreSQL extends SQL
         return $return;
     }
 
-    public function getMulti(array $keys, array &$tokens = null): array
+    public function getMulti(array $keys, ?array &$tokens = null): array
     {
         $return = parent::getMulti($keys, $tokens);
 

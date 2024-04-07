@@ -70,7 +70,7 @@ abstract class SQL implements KeyValueStore
         return $this->unserialize($result['v']);
     }
 
-    public function getMulti(array $keys, array &$tokens = null): array
+    public function getMulti(array $keys, ?array &$tokens = null): array
     {
         $tokens = [];
         if (empty($keys)) {
@@ -396,7 +396,7 @@ abstract class SQL implements KeyValueStore
      * Transforms expiration times into TIMESTAMP (Y-m-d H:i:s) format, which DB
      * will understand and be able to compare with other dates.
      */
-    protected function expire(int $expire): string|null
+    protected function expire(int $expire): ?string
     {
         if ($expire === 0) {
             return null;

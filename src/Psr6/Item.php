@@ -25,7 +25,7 @@ class Item implements CacheItemInterface
 
     protected int $expire = 0;
 
-    protected bool|null $isHit;
+    protected ?bool $isHit;
 
     protected bool $changed = false;
 

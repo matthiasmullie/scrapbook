@@ -43,7 +43,7 @@ interface KeyValueStore
      *
      * @return mixed[] [key => value]
      */
-    public function getMulti(array $keys, array &$tokens = null): array;
+    public function getMulti(array $keys, ?array &$tokens = null): array;
 
     /**
      * Stores a value, regardless of whether or not the key already exists (in

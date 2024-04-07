@@ -37,7 +37,7 @@ class Shard implements KeyValueStore
     /**
      * Overloadable with multiple KeyValueStore objects.
      */
-    public function __construct(KeyValueStore $cache1, KeyValueStore $cache2 = null /* , [KeyValueStore $cache3, [...]] */)
+    public function __construct(KeyValueStore $cache1, ?KeyValueStore $cache2 = null /* , [KeyValueStore $cache3, [...]] */)
     {
         $caches = func_get_args();
         $caches = array_filter($caches);
@@ -54,7 +54,7 @@ class Shard implements KeyValueStore
         return $this->getShard($key)->get($key, $token);
     }
 
-    public function getMulti(array $keys, array &$tokens = null): array
+    public function getMulti(array $keys, ?array &$tokens = null): array
     {
         $shards = $this->getShards($keys);
         $results = [];

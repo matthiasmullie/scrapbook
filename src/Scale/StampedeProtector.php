@@ -77,7 +77,7 @@ class StampedeProtector implements KeyValueStore
         return $values[$key] ?? false;
     }
 
-    public function getMulti(array $keys, array &$tokens = null): array
+    public function getMulti(array $keys, ?array &$tokens = null): array
     {
         // fetch both requested keys + stampede protection indicators at once
         $stampedeKeys = array_combine($keys, array_map([$this, 'stampedeKey'], $keys));
