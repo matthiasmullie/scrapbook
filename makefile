@@ -1,7 +1,7 @@
 # defaults for `make test`
 PHP ?=
 ADAPTER ?= Apc,Couchbase,Flysystem,Memcached,MemoryStore,MySQL,PostgreSQL,Redis,SQLite
-GROUP ?= adapter,buffered,collections,keyvaluestore,psr6,psr16,shard,transactional,stampede
+GROUP ?= #adapter,buffered,collections,keyvaluestore,psr6,psr16,shard,transactional,stampede
 VOLUME_BINDS ?= src,tests,build,.php-cs-fixer.php,phpunit.xml,ruleset.xml
 
 install:
@@ -35,13 +35,15 @@ test:
 	# Usage:
 	# make test - tests all adapters on latest PHP version
 	# make test PHP=8.3 ADAPTER=Memcached - tests Memcached on PHP 8.3
-	VOLUMES=""
+	VOLUMES="";\
+	ADAPTER=($$(echo $(ADAPTER) | tr ',' "\n"));\
+	GROUP=($$(echo $(GROUP) | tr ',' "\n"));\
 	for VOLUME in $$(echo "$(VOLUME_BINDS)" | tr "," "\n"); do VOLUMES="$$VOLUMES -v $$(pwd)/$$VOLUME:/var/www/$$VOLUME"; done;\
 	test "$(PHP)" && TEST_CONTAINER=php-$(PHP) || TEST_CONTAINER=php;\
-	DEPENDENT_CONTAINERS="$(filter-out apc flysystem memorystore sqlite, $(shell echo $(ADAPTER) | tr 'A-Z,' 'a-z '))";\
-	RELEVANT_CONTAINERS="$$TEST_CONTAINER $(filter-out apc flysystem memorystore sqlite, $(shell echo $(ADAPTER) | tr 'A-Z,' 'a-z '))";\
+	DEPENDENT_CONTAINERS="$(filter-out apc flysystem memorystore sqlite, $(shell echo $(ADAPTER) | tr 'A-Z' 'a-z'))";\
+	RELEVANT_CONTAINERS="$$TEST_CONTAINER $(filter-out apc flysystem memorystore sqlite, $(shell echo $(ADAPTER) | tr 'A-Z' 'a-z'))";\
 	docker-compose up --no-deps --wait -d $$DEPENDENT_CONTAINERS;\
-	docker-compose run --no-deps $$VOLUMES $$TEST_CONTAINER env XDEBUG_MODE=coverage vendor/bin/phpunit --group $(GROUP) --testsuite $(ADAPTER) --coverage-clover build/coverage-$(PHP)-$(ADAPTER).clover;\
+	docker-compose run --no-deps $$VOLUMES $$TEST_CONTAINER env XDEBUG_MODE=coverage vendor/bin/phpunit $${GROUP[@]/#/--group } $${ADAPTER[@]/#/--testsuite } --coverage-clover build/coverage-$(PHP)-$(shell echo $(ADAPTER) | tr ' ' '-').clover;\
 	TEST_STATUS=$$?;\
 	docker-compose stop -t0 $$RELEVANT_CONTAINERS;\
 	exit $$TEST_STATUS
