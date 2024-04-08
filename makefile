@@ -1,3 +1,4 @@
+SHELL := /bin/bash
 # defaults for `make test`
 PHP ?=
 ADAPTER ?= Apc,Couchbase,Flysystem,Memcached,MemoryStore,MySQL,PostgreSQL,Redis,SQLite
