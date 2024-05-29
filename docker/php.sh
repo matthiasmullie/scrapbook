@@ -2,7 +2,15 @@
 
 apt-get update
 apt-get install --reinstall -y ca-certificates
-apt-get install -y libssl-dev zlib1g-dev libzip-dev libmemcached-dev libpq-dev git cmake
+apt-get install -y libssl-dev zlib1g-dev libzip-dev libmemcached-dev libpq-dev git wget
+
+# build cmake; the apt-get version is too old for couchbase
+wget https://github.com/Kitware/CMake/releases/download/v3.29.3/cmake-3.29.3.tar.gz -P /tmp
+tar -xf /tmp/cmake-3.29.3.tar.gz -C /tmp
+cd /tmp/cmake-3.29.3
+./configure
+make
+make install
 
 pecl install -f couchbase
 pecl install -f xdebug
