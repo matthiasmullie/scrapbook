@@ -61,7 +61,7 @@ class StampedeProtector implements KeyValueStore
 
     /**
      * @param KeyValueStore $cache The real cache we'll buffer for
-     * @param int           $sla   Stampede protection time, in milliseconds
+     * @param int $sla Stampede protection time, in milliseconds
      */
     public function __construct(KeyValueStore $cache, int $sla = 1000)
     {
@@ -215,7 +215,7 @@ class StampedeProtector implements KeyValueStore
             $success[$key] = $this->cache->add(
                 $this->stampedeKey($key),
                 '',
-                (int) ceil($this->sla / 1000)
+                (int) ceil($this->sla / 1000),
             );
         }
 

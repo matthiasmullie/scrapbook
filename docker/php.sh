@@ -11,6 +11,7 @@ cd /tmp/cmake-3.29.3
 ./configure
 make
 make install
+cd /var/www # back to work dir
 
 pecl install -f couchbase
 pecl install -f xdebug

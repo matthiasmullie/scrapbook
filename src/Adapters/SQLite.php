@@ -28,7 +28,7 @@ class SQLite extends MySQL
 
         $statement = $this->client->prepare(
             "REPLACE INTO $this->table (k, v, e)
-            VALUES (:key, :value, :expire)"
+            VALUES (:key, :value, :expire)",
         );
 
         $success = [];
@@ -57,7 +57,7 @@ class SQLite extends MySQL
         // SQLite-specific way to ignore insert-on-duplicate errors
         $statement = $this->client->prepare(
             "INSERT OR IGNORE INTO $this->table (k, v, e)
-            VALUES (:key, :value, :expire)"
+            VALUES (:key, :value, :expire)",
         );
 
         $statement->execute([
@@ -82,7 +82,7 @@ class SQLite extends MySQL
                 v BLOB,
                 e TIMESTAMP NULL DEFAULT NULL,
                 KEY e
-            )"
+            )",
         );
     }
 }

@@ -479,13 +479,13 @@ class Redis implements KeyValueStore
             $client->pconnect(
                 $this->client->getHost(),
                 $this->client->getPort(),
-                $this->client->getTimeout()
+                $this->client->getTimeout(),
             );
         } else {
             $client->connect(
                 $this->client->getHost(),
                 $this->client->getPort(),
-                $this->client->getTimeout()
+                $this->client->getTimeout(),
             );
         }
 

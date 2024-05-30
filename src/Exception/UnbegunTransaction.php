@@ -9,6 +9,4 @@ namespace MatthiasMullie\Scrapbook\Exception;
  * @copyright Copyright (c) 2014, Matthias Mullie. All rights reserved
  * @license LICENSE MIT
  */
-class UnbegunTransaction extends Exception
-{
-}
+class UnbegunTransaction extends Exception {}

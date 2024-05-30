@@ -322,7 +322,7 @@ class MemoryStore implements KeyValueStore
             static function ($match) use ($units): int {
                 return $match[1] * $units[$match[2]];
             },
-            $shorthand
+            $shorthand,
         );
     }
 }

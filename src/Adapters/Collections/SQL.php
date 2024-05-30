@@ -32,7 +32,7 @@ class SQL extends PrefixKeys
         // deleting key with a prefixed LIKE should be fast, they're indexed
         $statement = $this->client->prepare(
             "DELETE FROM $this->table
-            WHERE k LIKE :key"
+            WHERE k LIKE :key",
         );
 
         return $statement->execute([

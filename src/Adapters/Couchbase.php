@@ -39,7 +39,7 @@ class Couchbase implements KeyValueStore
         \Couchbase\Collection $client,
         \Couchbase\BucketManager|\Couchbase\Management\BucketManager $bucketManager,
         \Couchbase\Bucket $bucket,
-        ?int $timeout = null
+        ?int $timeout = null,
     ) {
         $this->collection = $client;
         $this->bucketManager = $bucketManager;

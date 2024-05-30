@@ -9,6 +9,4 @@ namespace MatthiasMullie\Scrapbook\Exception;
  * @copyright Copyright (c) 2017, Martin Georgiev. All rights reserved
  * @license LICENSE MIT
  */
-class OperationFailed extends Exception
-{
-}
+class OperationFailed extends Exception {}

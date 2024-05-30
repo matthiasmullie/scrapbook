@@ -50,7 +50,7 @@ trait AdapterProviderTrait
             $collection,
             $bucketManager,
             $bucket,
-            30000
+            30000,
         );
     }
 

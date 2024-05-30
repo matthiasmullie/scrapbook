@@ -3,7 +3,7 @@ SHELL := /bin/bash
 PHP ?=
 ADAPTER ?= Apc,Couchbase,Flysystem,Memcached,MemoryStore,MySQL,PostgreSQL,Redis,SQLite
 GROUP ?= #adapter,buffered,collections,keyvaluestore,psr6,psr16,shard,transactional,stampede
-VOLUME_BINDS ?= src,tests,build,.php-cs-fixer.php,phpunit.xml,ruleset.xml
+VOLUME_BINDS ?= src,tests,build,.php-cs-fixer.php,phpunit.xml
 
 install:
 	wget -q -O - https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
@@ -51,6 +51,6 @@ test:
 format:
 	VOLUMES=""
 	for VOLUME in $$(echo "$(VOLUME_BINDS)" | tr "," "\n"); do VOLUMES="$$VOLUMES -v $$(pwd)/$$VOLUME:/var/www/$$VOLUME"; done;\
-	docker-compose run --no-deps $$VOLUMES php sh -c "vendor/bin/php-cs-fixer fix && vendor/bin/phpcbf --standard=ruleset.xml"
+	docker-compose run --no-deps $$VOLUMES php sh -c "vendor/bin/php-cs-fixer fix"
 
 .PHONY: docs
