@@ -40,7 +40,7 @@ services:
     # not sure how to properly healthcheck
   mysql:
     image: mysql
-    command: ['--character-set-server=utf8mb4', '--collation-server=utf8mb4_unicode_ci','--default-authentication-plugin=mysql_native_password']
+    command: ['--character-set-server=utf8mb4', '--collation-server=utf8mb4_unicode_ci']
     environment:
       - MYSQL_ROOT_PASSWORD=pass
       - MYSQL_USER=user
