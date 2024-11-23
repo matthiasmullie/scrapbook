@@ -54,7 +54,7 @@ class Shard implements KeyValueStore
         return $this->getShard($key)->get($key, $token);
     }
 
-    public function getMulti(array $keys, array &$tokens = null): array
+    public function getMulti(array $keys, ?array &$tokens = null): array
     {
         $shards = $this->getShards($keys);
         $results = [];

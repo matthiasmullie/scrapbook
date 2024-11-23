@@ -15,4 +15,3 @@
 /makefile export-ignore
 /phpunit.xml.dist export-ignore
 /README.md export-ignore
-/ruleset.xml.dist export-ignore

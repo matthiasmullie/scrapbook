@@ -30,7 +30,7 @@ class PrefixKeys implements KeyValueStore
         return $this->cache->get($key, $token);
     }
 
-    public function getMulti(array $keys, array &$tokens = null): array
+    public function getMulti(array $keys, ?array &$tokens = null): array
     {
         $keys = array_map([$this, 'prefix'], $keys);
         $results = $this->cache->getMulti($keys, $tokens);

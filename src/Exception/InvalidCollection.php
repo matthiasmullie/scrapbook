@@ -9,6 +9,4 @@ namespace MatthiasMullie\Scrapbook\Exception;
  * @copyright Copyright (c) 2014, Matthias Mullie. All rights reserved
  * @license LICENSE MIT
  */
-class InvalidCollection extends Exception
-{
-}
+class InvalidCollection extends Exception {}

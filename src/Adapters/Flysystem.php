@@ -63,7 +63,7 @@ class Flysystem implements KeyValueStore
         return $value;
     }
 
-    public function getMulti(array $keys, array &$tokens = null): array
+    public function getMulti(array $keys, ?array &$tokens = null): array
     {
         $results = [];
         $tokens = [];

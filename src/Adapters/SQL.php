@@ -50,7 +50,7 @@ abstract class SQL implements KeyValueStore
         $statement = $this->client->prepare(
             "SELECT v
             FROM $this->table
-            WHERE k = :key AND (e IS NULL OR e > :expire)"
+            WHERE k = :key AND (e IS NULL OR e > :expire)",
         );
         $statement->execute([
             ':key' => $key,
@@ -70,7 +70,7 @@ abstract class SQL implements KeyValueStore
         return $this->unserialize($result['v']);
     }
 
-    public function getMulti(array $keys, array &$tokens = null): array
+    public function getMulti(array $keys, ?array &$tokens = null): array
     {
         $tokens = [];
         if (empty($keys)) {
@@ -88,7 +88,7 @@ abstract class SQL implements KeyValueStore
             FROM $this->table
             WHERE
                 k IN (" . implode(',', $quoted) . ') AND
-                (e IS NULL OR e > :expire)'
+                (e IS NULL OR e > :expire)',
         );
         $statement->execute([':expire' => date('Y-m-d H:i:s')]);
         $values = $statement->fetchAll(\PDO::FETCH_ASSOC);
@@ -138,7 +138,7 @@ abstract class SQL implements KeyValueStore
     {
         $statement = $this->client->prepare(
             "DELETE FROM $this->table
-            WHERE k = :key"
+            WHERE k = :key",
         );
 
         $statement->execute([':key' => $key]);
@@ -163,7 +163,7 @@ abstract class SQL implements KeyValueStore
 
         $statement = $this->client->query(
             "DELETE FROM $this->table
-            WHERE k IN (" . implode(',', $quoted) . ')'
+            WHERE k IN (" . implode(',', $quoted) . ')',
         );
 
         /*
@@ -191,7 +191,7 @@ abstract class SQL implements KeyValueStore
 
         $statement = $this->client->prepare(
             "INSERT INTO $this->table (k, v, e)
-            VALUES (:key, :value, :expire)"
+            VALUES (:key, :value, :expire)",
         );
 
         $statement->execute([
@@ -213,7 +213,7 @@ abstract class SQL implements KeyValueStore
         $statement = $this->client->prepare(
             "UPDATE $this->table
             SET v = :value, e = :expire
-            WHERE k = :key"
+            WHERE k = :key",
         );
 
         $statement->execute([
@@ -232,7 +232,7 @@ abstract class SQL implements KeyValueStore
         $statement = $this->client->prepare(
             "SELECT e
             FROM $this->table
-            WHERE k = :key AND v = :value"
+            WHERE k = :key AND v = :value",
         );
         $statement->execute([
             ':key' => $key,
@@ -252,7 +252,7 @@ abstract class SQL implements KeyValueStore
         $statement = $this->client->prepare(
             "UPDATE $this->table
             SET v = :value, e = :expire
-            WHERE k = :key AND v = :token"
+            WHERE k = :key AND v = :token",
         );
 
         $statement->execute([
@@ -272,7 +272,7 @@ abstract class SQL implements KeyValueStore
         $statement = $this->client->prepare(
             "SELECT e
             FROM $this->table
-            WHERE k = :key AND v = :value AND v = :token"
+            WHERE k = :key AND v = :value AND v = :token",
         );
         $statement->execute([
             ':key' => $key,
@@ -310,7 +310,7 @@ abstract class SQL implements KeyValueStore
         $statement = $this->client->prepare(
             "UPDATE $this->table
             SET e = :expire
-            WHERE k = :key"
+            WHERE k = :key",
         );
 
         $statement->execute([
@@ -386,7 +386,7 @@ abstract class SQL implements KeyValueStore
     {
         $statement = $this->client->prepare(
             "DELETE FROM $this->table
-            WHERE e < :expire"
+            WHERE e < :expire",
         );
 
         $statement->execute([':expire' => date('Y-m-d H:i:s')]);
@@ -396,7 +396,7 @@ abstract class SQL implements KeyValueStore
      * Transforms expiration times into TIMESTAMP (Y-m-d H:i:s) format, which DB
      * will understand and be able to compare with other dates.
      */
-    protected function expire(int $expire): string|null
+    protected function expire(int $expire): ?string
     {
         if ($expire === 0) {
             return null;

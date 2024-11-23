@@ -43,7 +43,7 @@ interface KeyValueStore
      *
      * @return mixed[] [key => value]
      */
-    public function getMulti(array $keys, array &$tokens = null): array;
+    public function getMulti(array $keys, ?array &$tokens = null): array;
 
     /**
      * Stores a value, regardless of whether or not the key already exists (in
@@ -68,11 +68,11 @@ interface KeyValueStore
      * setMulti is preferred over multiple individual set operations as you'll
      * set them all in 1 request.
      *
-     * @param mixed[] $items  [key => value]
-     * @param int     $expire Time when item falls out of the cache:
-     *                        0 = permanent (doesn't expires);
-     *                        under 2592000 (30 days) = relative time, in seconds from now;
-     *                        over 2592000 = absolute time, unix timestamp
+     * @param mixed[] $items [key => value]
+     * @param int $expire Time when item falls out of the cache:
+     *                    0 = permanent (doesn't expires);
+     *                    under 2592000 (30 days) = relative time, in seconds from now;
+     *                    over 2592000 = absolute time, unix timestamp
      *
      * @return bool[]
      */
@@ -134,11 +134,11 @@ interface KeyValueStore
      * what's currently in cache, when a new value has been written to cache
      * after we've fetched it. If the operation succeeds, true will be returned.
      *
-     * @param mixed $token  Token received from get() or getMulti()
-     * @param int   $expire Time when item falls out of the cache:
-     *                      0 = permanent (doesn't expires);
-     *                      under 2592000 (30 days) = relative time, in seconds from now;
-     *                      over 2592000 = absolute time, unix timestamp
+     * @param mixed $token Token received from get() or getMulti()
+     * @param int $expire Time when item falls out of the cache:
+     *                    0 = permanent (doesn't expires);
+     *                    under 2592000 (30 days) = relative time, in seconds from now;
+     *                    over 2592000 = absolute time, unix timestamp
      */
     public function cas(mixed $token, string $key, mixed $value, int $expire = 0): bool;
 
@@ -150,12 +150,12 @@ interface KeyValueStore
      * false for failure (e.g. when the value currently in cache is not a
      * number, in which case it can't be incremented)
      *
-     * @param int $offset  Value to increment with
+     * @param int $offset Value to increment with
      * @param int $initial Initial value (if item doesn't yet exist)
-     * @param int $expire  Time when item falls out of the cache:
-     *                     0 = permanent (doesn't expires);
-     *                     under 2592000 (30 days) = relative time, in seconds from now;
-     *                     over 2592000 = absolute time, unix timestamp
+     * @param int $expire Time when item falls out of the cache:
+     *                    0 = permanent (doesn't expires);
+     *                    under 2592000 (30 days) = relative time, in seconds from now;
+     *                    over 2592000 = absolute time, unix timestamp
      *
      * @return int|false New value or false on failure
      */
@@ -169,12 +169,12 @@ interface KeyValueStore
      * false for failure (e.g. when the value currently in cache is not a
      * number, in which case it can't be decremented)
      *
-     * @param int $offset  Value to decrement with
+     * @param int $offset Value to decrement with
      * @param int $initial Initial value (if item doesn't yet exist)
-     * @param int $expire  Time when item falls out of the cache:
-     *                     0 = permanent (doesn't expires);
-     *                     under 2592000 (30 days) = relative time, in seconds from now;
-     *                     over 2592000 = absolute time, unix timestamp
+     * @param int $expire Time when item falls out of the cache:
+     *                    0 = permanent (doesn't expires);
+     *                    under 2592000 (30 days) = relative time, in seconds from now;
+     *                    over 2592000 = absolute time, unix timestamp
      *
      * @return int|false New value or false on failure
      */

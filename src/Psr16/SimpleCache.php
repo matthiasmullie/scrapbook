@@ -39,7 +39,7 @@ class SimpleCache implements CacheInterface
         return $multi[$key] ?? $default;
     }
 
-    public function set(string $key, mixed $value, int|\DateInterval $ttl = null): bool
+    public function set(string $key, mixed $value, int|\DateInterval|null $ttl = null): bool
     {
         $this->assertValidKey($key);
         $ttl = $this->ttl($ttl);
@@ -83,7 +83,7 @@ class SimpleCache implements CacheInterface
         return array_merge($nulls, $results);
     }
 
-    public function setMultiple(iterable $values, int|\DateInterval $ttl = null): bool
+    public function setMultiple(iterable $values, int|\DateInterval|null $ttl = null): bool
     {
         if ($values instanceof \Traversable) {
             // we also need the keys, and an array is stricter about what it can
@@ -160,7 +160,7 @@ class SimpleCache implements CacheInterface
      * Accepts all TTL inputs valid in PSR-16 (null|int|DateInterval) and
      * converts them into TTL for KeyValueStore (int).
      */
-    protected function ttl(null|int|\DateInterval $ttl): int
+    protected function ttl(int|\DateInterval|null $ttl): int
     {
         if ($ttl === null) {
             return 0;

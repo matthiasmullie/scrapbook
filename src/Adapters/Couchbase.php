@@ -30,7 +30,7 @@ class Couchbase implements KeyValueStore
     /**
      * @var int|null Timeout in ms
      */
-    protected int|null $timeout;
+    protected ?int $timeout;
 
     /**
      * @param int|null $timeout K/V timeout in ms
@@ -39,7 +39,7 @@ class Couchbase implements KeyValueStore
         \Couchbase\Collection $client,
         \Couchbase\BucketManager|\Couchbase\Management\BucketManager $bucketManager,
         \Couchbase\Bucket $bucket,
-        ?int $timeout = null
+        ?int $timeout = null,
     ) {
         $this->collection = $client;
         $this->bucketManager = $bucketManager;
@@ -71,7 +71,7 @@ class Couchbase implements KeyValueStore
         }
     }
 
-    public function getMulti(array $keys, array &$tokens = null): array
+    public function getMulti(array $keys, ?array &$tokens = null): array
     {
         // SDK >=3.0 no longer provides *multi operations
         $results = [];

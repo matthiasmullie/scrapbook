@@ -23,7 +23,7 @@ class MySQL extends SQL
 
         $statement = $this->client->prepare(
             "REPLACE INTO $this->table (k, v, e)
-            VALUES (:key, :value, :expire)"
+            VALUES (:key, :value, :expire)",
         );
 
         $statement->execute([
@@ -64,7 +64,7 @@ class MySQL extends SQL
 
         $statement = $this->client->prepare(
             "REPLACE INTO $this->table (k, v, e)
-            VALUES " . implode(',', $query)
+            VALUES " . implode(',', $query),
         );
 
         $statement->execute($params);
@@ -92,7 +92,7 @@ class MySQL extends SQL
         // MySQL-specific way to ignore insert-on-duplicate errors
         $statement = $this->client->prepare(
             "INSERT IGNORE INTO $this->table (k, v, e)
-            VALUES (:key, :value, :expire)"
+            VALUES (:key, :value, :expire)",
         );
 
         $statement->execute([
@@ -117,7 +117,7 @@ class MySQL extends SQL
                 v LONGBLOB,
                 e TIMESTAMP NULL DEFAULT NULL,
                 KEY e (e)
-            )"
+            )",
         );
     }
 }

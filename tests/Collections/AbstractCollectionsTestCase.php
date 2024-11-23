@@ -30,7 +30,7 @@ abstract class AbstractCollectionsTestCase extends AbstractKeyValueStoreTestCase
     {
         $this->markTestSkipped(
             'This test is invalid for collections derived from collections. ' .
-            "They don't keep nesting, there's only server/collection."
+            "They don't keep nesting, there's only server/collection.",
         );
     }
 
@@ -38,7 +38,7 @@ abstract class AbstractCollectionsTestCase extends AbstractKeyValueStoreTestCase
     {
         $this->markTestSkipped(
             'This test is invalid for collections derived from collections. ' .
-            "They don't keep nesting, there's only server/collection."
+            "They don't keep nesting, there's only server/collection.",
         );
     }
 
@@ -46,7 +46,7 @@ abstract class AbstractCollectionsTestCase extends AbstractKeyValueStoreTestCase
     {
         $this->markTestSkipped(
             'This test is invalid for collections derived from collections. ' .
-            "They don't keep nesting, there's only server/collection."
+            "They don't keep nesting, there's only server/collection.",
         );
     }
 
@@ -54,7 +54,7 @@ abstract class AbstractCollectionsTestCase extends AbstractKeyValueStoreTestCase
     {
         $this->markTestSkipped(
             'This test is invalid for collections derived from collections. ' .
-            "They don't keep nesting, there's only server/collection."
+            "They don't keep nesting, there's only server/collection.",
         );
     }
 
@@ -62,7 +62,7 @@ abstract class AbstractCollectionsTestCase extends AbstractKeyValueStoreTestCase
     {
         $this->markTestSkipped(
             'This test is invalid for collections derived from collections. ' .
-            "They don't keep nesting, there's only server/collection."
+            "They don't keep nesting, there's only server/collection.",
         );
     }
 }

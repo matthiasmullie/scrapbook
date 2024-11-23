@@ -104,12 +104,12 @@ abstract class AbstractStampedeProtectorTestCase extends AbstractKeyValueStoreTe
          */
         $this->assertEquals(
             ['key' => 'value', 'key2' => 'value2'],
-            $this->testKeyValueStore->getMulti(['key', 'key2'])
+            $this->testKeyValueStore->getMulti(['key', 'key2']),
         );
         $this->assertEquals(0, $this->testKeyValueStore->count);
         $this->assertEquals(
             [],
-            $this->adapterKeyValueStore->getMulti(['key.stampede', 'key2.stampede'])
+            $this->adapterKeyValueStore->getMulti(['key.stampede', 'key2.stampede']),
         );
     }
 
@@ -121,12 +121,12 @@ abstract class AbstractStampedeProtectorTestCase extends AbstractKeyValueStoreTe
          */
         $this->assertEquals(
             [],
-            $this->testKeyValueStore->getMulti(['key', 'key2'])
+            $this->testKeyValueStore->getMulti(['key', 'key2']),
         );
         $this->assertEquals(0, $this->testKeyValueStore->count);
         $this->assertEquals(
             ['key.stampede' => '', 'key2.stampede' => ''],
-            $this->adapterKeyValueStore->getMulti(['key.stampede', 'key2.stampede'])
+            $this->adapterKeyValueStore->getMulti(['key.stampede', 'key2.stampede']),
         );
     }
 
@@ -140,12 +140,12 @@ abstract class AbstractStampedeProtectorTestCase extends AbstractKeyValueStoreTe
          */
         $this->assertEquals(
             ['key' => 'value'],
-            $this->testKeyValueStore->getMulti(['key', 'key2'])
+            $this->testKeyValueStore->getMulti(['key', 'key2']),
         );
         $this->assertEquals(0, $this->testKeyValueStore->count);
         $this->assertEquals(
             ['key2.stampede' => ''],
-            $this->adapterKeyValueStore->getMulti(['key.stampede', 'key2.stampede'])
+            $this->adapterKeyValueStore->getMulti(['key.stampede', 'key2.stampede']),
         );
     }
 
@@ -189,7 +189,7 @@ abstract class AbstractStampedeProtectorTestCase extends AbstractKeyValueStoreTe
             // some time because we were in stampede protection
             $this->assertEquals(
                 ['key' => 'value', 'key2' => 'value2'],
-                $this->testKeyValueStore->getMulti(['key', 'key2'])
+                $this->testKeyValueStore->getMulti(['key', 'key2']),
             );
             $this->assertGreaterThan(0, $this->testKeyValueStore->count);
 

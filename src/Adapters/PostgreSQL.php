@@ -34,7 +34,7 @@ class PostgreSQL extends SQL
         return $return;
     }
 
-    public function getMulti(array $keys, array &$tokens = null): array
+    public function getMulti(array $keys, ?array &$tokens = null): array
     {
         $return = parent::getMulti($keys, $tokens);
 
@@ -61,7 +61,7 @@ class PostgreSQL extends SQL
         $statement = $this->client->prepare(
             "INSERT INTO $this->table (k, v, e)
             VALUES (:key, :value, :expire) 
-            ON CONFLICT (k) DO UPDATE SET v=EXCLUDED.v, e=EXCLUDED.e"
+            ON CONFLICT (k) DO UPDATE SET v=EXCLUDED.v, e=EXCLUDED.e",
         );
 
         $statement->bindParam(':key', $key);
@@ -87,7 +87,7 @@ class PostgreSQL extends SQL
                 k VARCHAR NOT NULL PRIMARY KEY,
                 v BYTEA,
                 e TIMESTAMP NULL DEFAULT NULL
-            )"
+            )",
         );
         $this->client->exec("CREATE INDEX IF NOT EXISTS e_index ON $this->table (e)");
     }

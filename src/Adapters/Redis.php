@@ -20,7 +20,7 @@ class Redis implements KeyValueStore
 {
     protected \Redis $client;
 
-    protected string|null $version = null;
+    protected ?string $version = null;
 
     public function __construct(\Redis $client)
     {
@@ -60,7 +60,7 @@ class Redis implements KeyValueStore
         return $value;
     }
 
-    public function getMulti(array $keys, array &$tokens = null): array
+    public function getMulti(array $keys, ?array &$tokens = null): array
     {
         $tokens = [];
         if (empty($keys)) {
@@ -479,13 +479,13 @@ class Redis implements KeyValueStore
             $client->pconnect(
                 $this->client->getHost(),
                 $this->client->getPort(),
-                $this->client->getTimeout()
+                $this->client->getTimeout(),
             );
         } else {
             $client->connect(
                 $this->client->getHost(),
                 $this->client->getPort(),
-                $this->client->getTimeout()
+                $this->client->getTimeout(),
             );
         }
 
@@ -507,7 +507,7 @@ class Redis implements KeyValueStore
      *
      * @return int|null TTL in seconds, or `null` for no expiration
      */
-    protected function ttl(int $expire): int|null
+    protected function ttl(int $expire): ?int
     {
         if ($expire === 0) {
             return null;
