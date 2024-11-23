@@ -37,7 +37,7 @@ class Shard implements KeyValueStore
     /**
      * Overloadable with multiple KeyValueStore objects.
      */
-    public function __construct(KeyValueStore $cache1, KeyValueStore $cache2 = null /* , [KeyValueStore $cache3, [...]] */)
+    public function __construct(KeyValueStore $cache1, ?KeyValueStore $cache2 = null /* , [KeyValueStore $cache3, [...]] */)
     {
         $caches = func_get_args();
         $caches = array_filter($caches);
