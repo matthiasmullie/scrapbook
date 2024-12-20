@@ -1,6 +1,11 @@
 # Changelog
 
 
+## [1.5.4] - 2024-12-20
+### Fixed
+- Fixed PHP 8.4 deprecation of implicit nullable parameters
+
+
 ## [1.5.3] - 2024-04-02
 ### Fixed
 - Fixed Redis TLL override on failure to add key
@@ -358,3 +363,4 @@
 [1.5.1]: https://github.com/matthiasmullie/scrapbook/compare/1.5.0...1.5.1
 [1.5.2]: https://github.com/matthiasmullie/scrapbook/compare/1.5.1...1.5.2
 [1.5.3]: https://github.com/matthiasmullie/scrapbook/compare/1.5.2...1.5.3
+[1.5.4]: https://github.com/matthiasmullie/scrapbook/compare/1.5.3...1.5.4

@@ -8,6 +8,10 @@ services:
       dockerfile: Dockerfile
       args:
         version: cli
+    volumes:
+      - ./src:/var/www/src
+      - ./tests:/var/www/tests
+      - ./phpunit.xml:/var/www/phpunit.xml
   php-8.1:
     <<: *default-php
     build:
@@ -26,6 +30,12 @@ services:
       <<: *default-php-build
       args:
         version: 8.3-cli
+  php-8.4:
+    <<: *default-php
+    build:
+      <<: *default-php-build
+      args:
+        version: 8.4.0RC3-cli-bookworm
   couchbase:
     build:
       context: .
