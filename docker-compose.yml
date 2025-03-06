@@ -35,7 +35,7 @@ services:
     build:
       <<: *default-php-build
       args:
-        version: 8.4.0RC3-cli-bookworm
+        version: 8.4-cli
   couchbase:
     build:
       context: .
