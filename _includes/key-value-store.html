@@ -1,4 +1,4 @@
-<h3 class="headline">get($key, &$token = null): mixed|bool</h3>
+<h3 class="headline headline-php-method">get($key, &$token = null): mixed|bool</h3>
 <span class="brd-headling"></span>
 <div class="clearfix"></div>
 
@@ -7,7 +7,7 @@
 <p>Optionally, an 2nd variable can be passed to this function. It will be
 filled with a value that can be used for cas()</p>
 
-<h3 class="headline">getMulti(array $keys, array &$tokens = null): mixed[]</h3>
+<h3 class="headline headline-php-method">getMulti(array $keys, array &$tokens = null): mixed[]</h3>
 <span class="brd-headling"></span>
 <div class="clearfix"></div>
 
@@ -24,7 +24,7 @@ array.</p>
 <p>getMulti is preferred over multiple individual get operations as you'll
 get them all in 1 request.</p>
 
-<h3 class="headline">set($key, $value, $expire = 0): bool</h3>
+<h3 class="headline headline-php-method">set($key, $value, $expire = 0): bool</h3>
 <span class="brd-headling"></span>
 <div class="clearfix"></div>
 
@@ -34,7 +34,7 @@ which case it will overwrite the existing value for that key)</p>
 <p>Return value is a boolean true when the operation succeeds, or false on
 failure.</p>
 
-<h3 class="headline">setMulti(array $items, $expire = 0): bool[]</h3>
+<h3 class="headline headline-php-method">setMulti(array $items, $expire = 0): bool[]</h3>
 <span class="brd-headling"></span>
 <div class="clearfix"></div>
 
@@ -46,7 +46,7 @@ status is a boolean true for success, or false for failure.</p>
 <p>setMulti is preferred over multiple individual set operations as you'll
 set them all in 1 request.</p>
 
-<h3 class="headline">delete($key): bool</h3>
+<h3 class="headline headline-php-method">delete($key): bool</h3>
 <span class="brd-headling"></span>
 <div class="clearfix"></div>
 
@@ -56,7 +56,7 @@ Returns true if item existed & was successfully deleted, false otherwise.</p>
 <p>Return value is a boolean true when the operation succeeds, or false on
 failure.</p>
 
-<h3 class="headline">deleteMulti(array $keys): bool[]</h3>
+<h3 class="headline headline-php-method">deleteMulti(array $keys): bool[]</h3>
 <span class="brd-headling"></span>
 <div class="clearfix"></div>
 
@@ -66,7 +66,7 @@ individual operations)</p>
 <p>Return value will be an associative array in [key => status] form, where
 status is a boolean true for success, or false for failure.</p>
 
-<h3 class="headline">add($key, $value, $expire = 0): bool</h3>
+<h3 class="headline headline-php-method">add($key, $value, $expire = 0): bool</h3>
 <span class="brd-headling"></span>
 <div class="clearfix"></div>
 
@@ -75,7 +75,7 @@ status is a boolean true for success, or false for failure.</p>
 <p>This operation fails (returns false) if the key already exists in cache.
 If the operation succeeds, true will be returned.</p>
 
-<h3 class="headline">replace($key, $value, $expire = 0): bool</h3>
+<h3 class="headline headline-php-method">replace($key, $value, $expire = 0): bool</h3>
 <span class="brd-headling"></span>
 <div class="clearfix"></div>
 
@@ -84,7 +84,7 @@ If the operation succeeds, true will be returned.</p>
 <p>This operation fails (returns false) if the key does not yet exist in
 cache. If the operation succeeds, true will be returned.</p>
 
-<h3 class="headline">cas($token, $key, $value, $expire = 0): bool</h3>
+<h3 class="headline headline-php-method">cas($token, $key, $value, $expire = 0): bool</h3>
 <span class="brd-headling"></span>
 <div class="clearfix"></div>
 
@@ -95,7 +95,7 @@ it was originally read, when the CAS token was issued.</p>
 what's currently in cache, when a new value has been written to cache
 after we've fetched it. If the operation succeeds, true will be returned.</p>
 
-<h3 class="headline">increment($key, $offset = 1, $initial = 0, $expire = 0): int|bool</h3>
+<h3 class="headline headline-php-method">increment($key, $offset = 1, $initial = 0, $expire = 0): int|bool</h3>
 <span class="brd-headling"></span>
 <div class="clearfix"></div>
 
@@ -106,7 +106,7 @@ exist.</p>
 false for failure (e.g. when the value currently in cache is not a
 number, in which case it can't be incremented)</p>
 
-<h3 class="headline">decrement($key, $offset = 1, $initial = 0, $expire = 0): int|bool</h3>
+<h3 class="headline headline-php-method">decrement($key, $offset = 1, $initial = 0, $expire = 0): int|bool</h3>
 <span class="brd-headling"></span>
 <div class="clearfix"></div>
 
@@ -117,7 +117,7 @@ exist.</p>
 false for failure (e.g. when the value currently in cache is not a
 number, in which case it can't be decremented)</p>
 
-<h3 class="headline">touch($key, $expire): bool</h3>
+<h3 class="headline headline-php-method">touch($key, $expire): bool</h3>
 <span class="brd-headling"></span>
 <div class="clearfix"></div>
 
@@ -126,13 +126,13 @@ number, in which case it can't be decremented)</p>
 <p>Return value is a boolean true when the operation succeeds, or false on
 failure.</p>
 
-<h3 class="headline">flush(): bool</h3>
+<h3 class="headline headline-php-method">flush(): bool</h3>
 <span class="brd-headling"></span>
 <div class="clearfix"></div>
 
 <p>Clears the entire cache.</p>
 
-<h3 class="headline">getCollection(): KeyValueStore</h3>
+<h3 class="headline headline-php-method">getCollection(): KeyValueStore</h3>
 <span class="brd-headling"></span>
 <div class="clearfix"></div>
 

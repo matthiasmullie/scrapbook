@@ -56,7 +56,7 @@ from cache instead of the one your intended to commit.
 
 It too is a KeyValueStore, but adds 3 methods:
 
-<h3 class="headline">begin()</h3>
+<h3 class="headline headline-php-method">begin()</h3>
 <span class="brd-headling"></span>
 <div class="clearfix"></div>
 
@@ -70,7 +70,7 @@ cache once the original transaction is committed.
 Rolling back a nested transaction will only roll back those changes and leave
 changes in the parent transaction alone.
 
-<h3 class="headline">commit(): bool</h3>
+<h3 class="headline headline-php-method">commit(): bool</h3>
 <span class="brd-headling"></span>
 <div class="clearfix"></div>
 
@@ -78,7 +78,7 @@ Commits the deferred updates to real cache.
 If the any write fails, all subsequent writes will be aborted & all keys
 that had already been written to will be restored to their original value.
 
-<h3 class="headline">rollback()</h3>
+<h3 class="headline headline-php-method">rollback()</h3>
 <span class="brd-headling"></span>
 <div class="clearfix"></div>
 

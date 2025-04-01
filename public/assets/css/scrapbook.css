@@ -273,3 +273,7 @@ html, body, .jPanelMenu-panel {
 	list-style: outside none none;
 	margin: 0;
 }
+
+.headline-php-method {
+	text-transform: none;
+}
