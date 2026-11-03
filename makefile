@@ -41,16 +41,16 @@ test:
 	test "$(PHP)" && TEST_CONTAINER=php-$(PHP) || TEST_CONTAINER=php;\
 	DEPENDENT_CONTAINERS="$(filter-out apc flysystem memorystore sqlite, $(shell echo $(ADAPTER) | tr 'A-Z,' 'a-z '))";\
 	RELEVANT_CONTAINERS="$$TEST_CONTAINER $(filter-out apc flysystem memorystore sqlite, $(shell echo $(ADAPTER) | tr 'A-Z,' 'a-z '))";\
-	docker-compose up --no-deps --wait -d $$DEPENDENT_CONTAINERS;\
+	docker compose up --no-deps --wait -d $$DEPENDENT_CONTAINERS;\
 	GROUP_ARRAY=($$(echo "$(GROUP)" | tr "," "\n"));\
-	docker-compose run --no-deps $$VOLUMES $$TEST_CONTAINER env XDEBUG_MODE=coverage vendor/bin/phpunit $${GROUP_ARRAY[@]/#/--group } --testsuite $(ADAPTER) --coverage-clover build/coverage-$(PHP)-$(ADAPTER).clover --configuration=phpunit.xml;\
+	docker compose run --no-deps $$VOLUMES $$TEST_CONTAINER env XDEBUG_MODE=coverage vendor/bin/phpunit $${GROUP_ARRAY[@]/#/--group } --testsuite $(ADAPTER) --coverage-clover build/coverage-$(PHP)-$(ADAPTER).clover --configuration=phpunit.xml;\
 	TEST_STATUS=$$?;\
-	docker-compose stop -t0 $$RELEVANT_CONTAINERS;\
+	docker compose stop -t0 $$RELEVANT_CONTAINERS;\
 	exit $$TEST_STATUS
 
 format:
 	VOLUMES=""
 	for VOLUME in $$(echo "$(VOLUME_BINDS)" | tr "," "\n"); do VOLUMES="$$VOLUMES -v $$(pwd)/$$VOLUME:/var/www/$$VOLUME"; done;\
-	docker-compose run --no-deps $$VOLUMES php sh -c "vendor/bin/php-cs-fixer fix"
+	docker compose run --no-deps $$VOLUMES php sh -c "vendor/bin/php-cs-fixer fix"
 
 .PHONY: docs
