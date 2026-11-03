@@ -36,6 +36,12 @@ services:
       <<: *default-php-build
       args:
         version: 8.4-cli
+  php-8.5:
+    <<: *default-php
+    build:
+      <<: *default-php-build
+      args:
+        version: 8.5-cli
   couchbase:
     build:
       context: .
