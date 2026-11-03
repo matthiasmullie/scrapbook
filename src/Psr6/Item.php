@@ -49,7 +49,7 @@ class Item implements CacheItemInterface
          * up this value in the repository when it's no longer needed.
          */
         $this->repository = $repository;
-        $this->hash = spl_object_hash($this);
+        $this->hash = (string)spl_object_id($this);
         $this->repository->add($this->hash, $this->key);
     }
 

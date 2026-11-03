@@ -1,6 +1,11 @@
 # Changelog
 
 
+## [1.5.5] - 2026-11-03
+### Fixed
+- Fixed PHP 8.6 deprecation of spl_object_hash
+
+
 ## [1.5.4] - 2024-12-20
 ### Fixed
 - Fixed PHP 8.4 deprecation of implicit nullable parameters
@@ -364,3 +369,4 @@
 [1.5.2]: https://github.com/matthiasmullie/scrapbook/compare/1.5.1...1.5.2
 [1.5.3]: https://github.com/matthiasmullie/scrapbook/compare/1.5.2...1.5.3
 [1.5.4]: https://github.com/matthiasmullie/scrapbook/compare/1.5.3...1.5.4
+[1.5.5]: https://github.com/matthiasmullie/scrapbook/compare/1.5.4...1.5.5
